@@ -18,7 +18,9 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
   @Override
-  public void robotInit() {}
+  public void robotInit() {
+    System.out.println("Hello World from RED 5 2021!");
+  }
 
   @Override
   public void robotPeriodic() {}
