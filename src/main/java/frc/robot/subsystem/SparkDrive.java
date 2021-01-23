@@ -14,10 +14,10 @@ public class SparkDrive {
     /**
      * Collection of motors of the drivetrain.
      * Their indexes are as follows:
-     * 0 - frontLeftMotor
-     * 1 - frontRightMotor
-     * 2 - backLeftMotor
-     * 3 - backRightMotor
+     * 1 - frontLeftMotor
+     * 2 - frontRightMotor
+     * 3 - backLeftMotor
+     * 4 - backRightMotor
      */
     private List<CANSparkMax> motors; 
 
