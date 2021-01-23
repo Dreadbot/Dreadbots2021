@@ -6,12 +6,12 @@ import java.util.List;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import frc.robot.utility.DreadbotMath;
+
 public class SparkDrive {
-    /**
-     * Motor Type of CANSparkMax on RedFive.
-     */
     public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
-    
+    public static final double K_JOYSTICK_DEADBAND = 0.2d;
+
     /**
      * Collection of motors of the drivetrain.
      * Their indexes are as follows:
@@ -38,5 +38,11 @@ public class SparkDrive {
             motor.set(0.0d);
     }
 
-    
+    public void tankDrive(double forwardAxis, double rotationAxis, final double finalValueMultiplier, final double joystickDeadband) {
+        DreadbotMath.clampValue(forwardAxis, -1.0d, 1.0d);
+        DreadbotMath.clampValue(forwardAxis, -1.0d, 1.0d);
+        
+        DreadbotMath.applyDeadbandToValue(forwardAxis, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
+        DreadbotMath.applyDeadbandToValue(rotationAxis, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
+    }
 }
