@@ -49,8 +49,8 @@ public class SparkDrive {
         forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
         rotationAxis = DreadbotMath.applyDeadbandToValue(rotationAxis, -joystickDeadband, joystickDeadband, 0.0d);
 
-        double leftFinalSpeed = -forwardAxisFactor - rotationAxis;
-        double rightFinalSpeed = forwardAxisFactor - rotationAxis;
+        double leftFinalSpeed = -forwardAxisFactor + rotationAxis;
+        double rightFinalSpeed = forwardAxisFactor + rotationAxis;
         
         speedControllerOutputs[0] = leftFinalSpeed;
         speedControllerOutputs[1] = rightFinalSpeed;
