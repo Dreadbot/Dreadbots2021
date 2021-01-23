@@ -43,6 +43,9 @@ public class SparkDrive {
                           final double joystickDeadband) {
         double[] speedControllerOutputs = new double[4];
         
+        System.out.println(forwardAxisFactor);
+        System.out.println(rotationAxis);
+
         forwardAxisFactor = DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
         rotationAxis = DreadbotMath.clampValue(rotationAxis, -1.0d, 1.0d);
 
