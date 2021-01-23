@@ -52,7 +52,8 @@ public class SparkDrive {
         double leftFinalSpeed = -forwardAxisFactor - rotationAxis;
         double rightFinalSpeed = forwardAxisFactor - rotationAxis;
 
-        motors.get(0).set(leftFinalSpeed / 2.5);
+        motors.get(0).set(leftFinalSpeed * finalValueMultiplier);
+        motors.get(2).set(leftFinalSpeed * finalValueMultiplier);
 
         // speedControllerOutputs[1] = leftFinalSpeed;
         // speedControllerOutputs[2] = rightFinalSpeed;
