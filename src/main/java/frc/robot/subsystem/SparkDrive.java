@@ -51,21 +51,18 @@ public class SparkDrive {
 
         double leftFinalSpeed = -forwardAxisFactor - rotationAxis;
         double rightFinalSpeed = forwardAxisFactor - rotationAxis;
-
-        motors.get(0).set(leftFinalSpeed * finalValueMultiplier);
-        motors.get(2).set(leftFinalSpeed * finalValueMultiplier);
-
-        // speedControllerOutputs[1] = leftFinalSpeed;
-        // speedControllerOutputs[2] = rightFinalSpeed;
-        // speedControllerOutputs[3] = leftFinalSpeed;
-        // speedControllerOutputs[4] = rightFinalSpeed;
-
-        // for(int i = 0; i < speedControllerOutputs.length; i++)
-        //     speedControllerOutputs[i] *= finalValueMultiplier;
         
+        speedControllerOutputs[0] = leftFinalSpeed;
+        speedControllerOutputs[1] = rightFinalSpeed;
+        speedControllerOutputs[2] = leftFinalSpeed;
+        speedControllerOutputs[3] = rightFinalSpeed;
+
+        for(int i = 0; i < speedControllerOutputs.length; i++)
+            speedControllerOutputs[i] *= finalValueMultiplier;
+
         // speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);
 
-        // for(int i = 0; i < speedControllerOutputs.length; i++)
-        //     motors.get(i).set(speedControllerOutputs[i]);
+        for(int i = 0; i < speedControllerOutputs.length; i++)
+            motors.get(i).set(speedControllerOutputs[i]);
     }
 }
