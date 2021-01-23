@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     //testMotor.set(0.3d);
+    System.out.println(joystick.getY());
     sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
   }
 
