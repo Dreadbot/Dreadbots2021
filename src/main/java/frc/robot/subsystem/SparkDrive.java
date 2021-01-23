@@ -63,6 +63,6 @@ public class SparkDrive {
         speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);
 
         for(int i = 0; i < speedControllerOutputs.length; i++)
-            motors.get(i + 1).set(speedControllerOutputs[i]);
+            motors.get(i).set(speedControllerOutputs[i]);
     }
 }
