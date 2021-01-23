@@ -45,24 +45,27 @@ public class SparkDrive {
         
         forwardAxisFactor = DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
         rotationAxis = DreadbotMath.clampValue(rotationAxis, -1.0d, 1.0d);
-        
-        forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
-        rotationAxis = DreadbotMath.applyDeadbandToValue(rotationAxis, -joystickDeadband, joystickDeadband, 0.0d);
-        
-        double leftFinalSpeed = -forwardAxisFactor - rotationAxis;
-        double rightFinalSpeed = forwardAxisFactor - rotationAxis;
 
-        speedControllerOutputs[1] = leftFinalSpeed;
-        speedControllerOutputs[2] = rightFinalSpeed;
-        speedControllerOutputs[3] = leftFinalSpeed;
-        speedControllerOutputs[4] = rightFinalSpeed;
-
-        for(int i = 0; i < speedControllerOutputs.length; i++)
-            speedControllerOutputs[i] *= finalValueMultiplier;
+        System.out.println(forwardAxisFactor);
+        System.out.println(rotationAxis);
         
-        speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);
+        // forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
+        // rotationAxis = DreadbotMath.applyDeadbandToValue(rotationAxis, -joystickDeadband, joystickDeadband, 0.0d);
+        
+        // double leftFinalSpeed = -forwardAxisFactor - rotationAxis;
+        // double rightFinalSpeed = forwardAxisFactor - rotationAxis;
 
-        for(int i = 0; i < speedControllerOutputs.length; i++)
-            motors.get(i).set(speedControllerOutputs[i]);
+        // speedControllerOutputs[1] = leftFinalSpeed;
+        // speedControllerOutputs[2] = rightFinalSpeed;
+        // speedControllerOutputs[3] = leftFinalSpeed;
+        // speedControllerOutputs[4] = rightFinalSpeed;
+
+        // for(int i = 0; i < speedControllerOutputs.length; i++)
+        //     speedControllerOutputs[i] *= finalValueMultiplier;
+        
+        // speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);
+
+        // for(int i = 0; i < speedControllerOutputs.length; i++)
+        //     motors.get(i).set(speedControllerOutputs[i]);
     }
 }
