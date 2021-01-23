@@ -7,7 +7,9 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystem.SparkDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,7 +18,10 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
-  public CANSparkMax testMotor;
+  //public CANSparkMax testMotor;
+  public SparkDrive sparkDrive;
+
+  public Joystick joystick;
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -25,7 +30,9 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     System.out.println("Hello World from RED 5 2021!");
-    testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+    //testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+    joystick = new Joystick(0);
+    sparkDrive = new SparkDrive();
   }
 
   @Override
@@ -44,7 +51,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    testMotor.set(0.3d);
+    //testMotor.set(0.3d);
+    sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
   }
 
   @Override

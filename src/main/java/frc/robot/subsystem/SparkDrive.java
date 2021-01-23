@@ -10,7 +10,6 @@ import frc.robot.utility.DreadbotMath;
 
 public class SparkDrive {
     public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
-    public static final double K_JOYSTICK_DEADBAND = 0.2d;
 
     /**
      * Collection of motors of the drivetrain.
@@ -25,7 +24,7 @@ public class SparkDrive {
     public SparkDrive() {
         this.motors = new ArrayList<>();
         for(int i = 0; i < 4; i++)
-            this.motors.set(i, new CANSparkMax(i, K_MOTORTYPE));
+            this.motors.set(i, new CANSparkMax(i + 1, K_MOTORTYPE));
         
         this.stop();
     }
@@ -38,7 +37,6 @@ public class SparkDrive {
             motor.set(0.0d);
     }
 
-    // 
     public void tankDrive(double forwardAxisFactor, 
                           double rotationAxis, 
                           final double finalValueMultiplier, 
@@ -48,12 +46,15 @@ public class SparkDrive {
         DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
         DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
         
-        DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
-        DreadbotMath.applyDeadbandToValue(rotationAxis, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
+        DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
+        DreadbotMath.applyDeadbandToValue(rotationAxis, -joystickDeadband, joystickDeadband, 0.0d);
 
         for(int i = 0; i < speedControllerOutputs.length; i++)
             speedControllerOutputs[i] *= finalValueMultiplier;
         
         DreadbotMath.normalizeValues(speedControllerOutputs);
+
+        for(int i = 0; i < speedControllerOutputs.length; i++)
+            motors.get(i + 1).set(speedControllerOutputs[i]);
     }
 }
