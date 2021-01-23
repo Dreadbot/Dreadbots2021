@@ -38,11 +38,18 @@ public class SparkDrive {
             motor.set(0.0d);
     }
 
-    public void tankDrive(double forwardAxis, double rotationAxis, final double finalValueMultiplier, final double joystickDeadband) {
-        DreadbotMath.clampValue(forwardAxis, -1.0d, 1.0d);
-        DreadbotMath.clampValue(forwardAxis, -1.0d, 1.0d);
+    public void tankDrive(double forwardAxisFactor, double rotationAxis, final double finalValueMultiplier, final double joystickDeadband) {
+        double[] speedControllerOutputs = new double[4];
         
-        DreadbotMath.applyDeadbandToValue(forwardAxis, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
+        DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
+        DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
+        
+        DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
         DreadbotMath.applyDeadbandToValue(rotationAxis, -K_JOYSTICK_DEADBAND, K_JOYSTICK_DEADBAND, 0.0d);
+
+        for(int i = 0; i < speedControllerOutputs.length; i++)
+            speedControllerOutputs[i] *= finalValueMultiplier;
+        
+        DreadbotMath.normalizeValues(speedControllerOutputs);
     }
 }

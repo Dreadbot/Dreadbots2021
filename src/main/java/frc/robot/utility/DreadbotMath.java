@@ -48,4 +48,82 @@ public class DreadbotMath {
 
         return testingValue;
     }
+
+    /**
+     * Normalizes an array of given values to fit between -1.0 and 1.0.
+     * <p>
+     * Normalization is especially important for drive code, as most
+     * SpeedControllers only accept values between -1.0 and 1.0, since these values
+     * represent percentages of voltage.
+     *
+     * @param values The given values to normalize.
+     * @return The values, now normalized.
+     */
+    public static double[] normalizeValues(final double[] values) {
+        final double[] absoluteValues = new double[values.length];
+        for (int i = 0; i < absoluteValues.length; i++)
+            absoluteValues[i] = Math.abs(values[i]);
+
+        final double magnitude = DreadbotMath.maximumElement(absoluteValues);
+        if (magnitude > 1.0)
+            for (int i = 0; i < values.length; i++)
+                values[i] /= magnitude;
+
+        return values;
+    }
+
+    /**
+     * Normalizes an array of given values to fit between -1.0f and 1.0f.
+     * <p>
+     * Normalization is especially important for drive code, as most
+     * SpeedControllers only accept values between -1.0 and 1.0, since these values
+     * represent percentages of voltage.
+     *
+     * @param values The given values to normalize.
+     * @return The values, now normalized.
+     */
+    public static float[] normalizeValues(final float[] values) {
+        final float[] absoluteValues = new float[values.length];
+        for (int i = 0; i < absoluteValues.length; i++)
+            absoluteValues[i] = Math.abs(values[i]);
+
+        final float magnitude = DreadbotMath.maximumElement(absoluteValues);
+        if (magnitude > 1.0)
+            for (int i = 0; i < values.length; i++)
+                values[i] /= magnitude;
+
+        return values;
+    }
+
+    /**
+     * Finds and returns the maximum element in an array of given elements.
+     *
+     * @param values The given values to search.
+     * @return The greatest element in the array.
+     */
+    public static double maximumElement(final double[] values) {
+        double currentMaximumElement = 0.0;
+
+        for (final double element : values)
+            if (element > currentMaximumElement)
+                currentMaximumElement = element;
+
+        return currentMaximumElement;
+    }
+
+    /**
+     * Finds and returns the maximum element in an array of given elements.
+     *
+     * @param values The given values to search.
+     * @return The greatest element in the array.
+     */
+    public static float maximumElement(final float[] values) {
+        float currentMaximumElement = 0.0f;
+
+        for (final float element : values)
+            if (element > currentMaximumElement)
+                currentMaximumElement = element;
+
+        return currentMaximumElement;
+    }
 }
