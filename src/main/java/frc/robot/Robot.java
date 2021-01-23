@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 
 /**
@@ -13,6 +16,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public class Robot extends TimedRobot {
+  public CANSparkMax testMotor;
+  
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -20,6 +25,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     System.out.println("Hello World from RED 5 2021!");
+    testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
   }
 
   @Override
@@ -32,10 +38,14 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    System.out.println("Starting Teleop");
+  }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    testMotor.set(0.01d);
+  }
 
   @Override
   public void disabledInit() {}
