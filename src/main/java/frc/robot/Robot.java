@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    testMotor.set(0.01d);
+    testMotor.set(0.3d);
   }
 
   @Override
