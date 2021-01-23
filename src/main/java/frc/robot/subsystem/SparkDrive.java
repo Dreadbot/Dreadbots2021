@@ -24,7 +24,7 @@ public class SparkDrive {
     public SparkDrive() {
         this.motors = new ArrayList<>();
         for(int i = 0; i < 4; i++)
-            this.motors.set(i, new CANSparkMax(i + 1, K_MOTORTYPE));
+            this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
         
         this.stop();
     }
