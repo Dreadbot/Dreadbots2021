@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import com.revrobotics.CANSparkMax;
+
+import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.subsystem.Shooter;
 import frc.robot.subsystem.SparkDrive;
 
 /**
@@ -15,8 +19,10 @@ import frc.robot.subsystem.SparkDrive;
  * project.
  */
 public class Robot extends TimedRobot {
-	//public CANSparkMax testMotor;
+	public CANSparkMax testMotor;
+	
 	public SparkDrive sparkDrive;
+	public Shooter shooter;
 
 	public Joystick joystick;
 
@@ -27,9 +33,11 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		System.out.println("Hello World from RED 5 2021!");
-		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+		testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		joystick = new Joystick(0);
+		
 		sparkDrive = new SparkDrive();
+		shooter = new Shooter();
 	}
 
 	@Override
