@@ -3,9 +3,9 @@ package frc.robot.subsystem;
 import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Ultra {
-
+    Ultrasonic ultra1;
     public Ultra(int pingChannel, int echoChannel){
-        Ultrasonic ultra1 = new Ultrasonic(pingChannel, echoChannel);
+        ultra1 = new Ultrasonic(pingChannel, echoChannel);
     }
 
     public static void automatic(){
@@ -13,6 +13,6 @@ public class Ultra {
     }
     
     public double getRangeInches(){
-        return getRangeInches();
+        return ultra1.getRangeInches();
     }
 }

@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
   public SparkDrive sparkDrive;
 
   public Ultra sonic1;
-  public Ultra sonic2;
+ // public Ultra sonic2;
   
 
   public Joystick joystick;
@@ -37,8 +37,8 @@ public class Robot extends TimedRobot {
     //testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
     joystick = new Joystick(0);
     sparkDrive = new SparkDrive();
-    sonic1 = new Ultra(0, 1);
-    sonic2 = new Ultra(6, 7);
+    sonic1 = new Ultra(6, 7);
+  // sonic2 = new Ultra(6, 7);
   }
 
   @Override
@@ -58,11 +58,14 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Ultra.automatic();
-    sonic1.getRangeInches();
-    sonic2.getRangeInches();
+    double a = sonic1.getRangeInches();
+
+  //  sonic2.getRangeInches();
     //testMotor.set(0.3d);
-    System.out.println(joystick.getY());
+    //System.out.println(joystick.getY());
     sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
+
+    System.out.println(a);
   }
 
   @Override
