@@ -9,7 +9,7 @@ import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystem.SparkDrive;
+import frc.robot.subsystem.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -20,6 +20,10 @@ import frc.robot.subsystem.SparkDrive;
 public class Robot extends TimedRobot {
   //public CANSparkMax testMotor;
   public SparkDrive sparkDrive;
+
+  public Ultra sonic1;
+  public Ultra sonic2;
+  
 
   public Joystick joystick;
   
@@ -33,6 +37,8 @@ public class Robot extends TimedRobot {
     //testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
     joystick = new Joystick(0);
     sparkDrive = new SparkDrive();
+    sonic1 = new Ultra(0, 1);
+    sonic2 = new Ultra(6, 7);
   }
 
   @Override
@@ -51,6 +57,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+    Ultra.automatic();
+    sonic1.getRangeInches();
+    sonic2.getRangeInches();
     //testMotor.set(0.3d);
     System.out.println(joystick.getY());
     sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
