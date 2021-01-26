@@ -18,53 +18,53 @@ import frc.robot.subsystem.SparkDrive;
  * project.
  */
 public class Robot extends TimedRobot {
-  //public CANSparkMax testMotor;
-  public SparkDrive sparkDrive;
+	//public CANSparkMax testMotor;
+	public SparkDrive sparkDrive;
 
-  public Joystick joystick;
-  
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() {
-    System.out.println("Hello World from RED 5 2021!");
-    //testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-    joystick = new Joystick(0);
-    sparkDrive = new SparkDrive();
-  }
+	public Joystick joystick;
 
-  @Override
-  public void robotPeriodic() {}
+	/**
+	 * This function is run when the robot is first started up and should be used for any
+	 * initialization code.
+	 */
+	@Override
+	public void robotInit() {
+		System.out.println("Hello World from RED 5 2021!");
+		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+		joystick = new Joystick(0);
+		sparkDrive = new SparkDrive();
+	}
 
-  @Override
-  public void autonomousInit() {}
+	@Override
+	public void robotPeriodic() {}
 
-  @Override
-  public void autonomousPeriodic() {}
+	@Override
+	public void autonomousInit() {}
 
-  @Override
-  public void teleopInit() {
-    System.out.println("Starting Teleop");
-  }
+	@Override
+	public void autonomousPeriodic() {}
 
-  @Override
-  public void teleopPeriodic() {
-    //testMotor.set(0.3d);
-    System.out.println(joystick.getY());
-    sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
-  }
+	@Override
+	public void teleopInit() {
+		System.out.println("Starting Teleop");
+	}
 
-  @Override
-  public void disabledInit() {}
+	@Override
+	public void teleopPeriodic() {
+		//testMotor.set(0.3d);
+		System.out.println(joystick.getY());
+		sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
+	}
 
-  @Override
-  public void disabledPeriodic() {}
+	@Override
+	public void disabledInit() {}
 
-  @Override
-  public void testInit() {}
+	@Override
+	public void disabledPeriodic() {}
 
-  @Override
-  public void testPeriodic() {}
+	@Override
+	public void testInit() {}
+
+	@Override
+	public void testPeriodic() {}
 }
