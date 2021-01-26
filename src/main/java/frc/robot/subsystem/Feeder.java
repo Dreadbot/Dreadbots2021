@@ -3,20 +3,20 @@ package frc.robot.subsystem;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 
 public class Feeder {
+	private final int genevaSwitchPort = 9;
+	private final int punchSwitchPort = 3;
 	private CANSparkMax genevaDrive;
 	private CANPIDController genevaControler;
 	private CANEncoder genevaEncoder;
 	private Solenoid punch;
 	private DigitalInput genevaLimitSwitch;
 	private DigitalInput punchLimitSwitch;
-	private final int genevaSwitchPort = 9;
-	private final int punchSwitchPort = 3;
 
-	public Feeder(CANSparkMax genevaDrive, Solenoid punch){
+	public Feeder(CANSparkMax genevaDrive, Solenoid punch) {
 		this.genevaDrive = genevaDrive;
 		this.punch = punch;
 
@@ -35,30 +35,35 @@ public class Feeder {
 		genevaControler.setOutputRange(-1.0, 1.0);
 	}
 
-	public void setSpin(double power){
+	public void setSpin(double power) {
 		genevaDrive.set(power);
 	}
-	public void setPunchExtension(boolean extended){
-		punch.set(extended);
-	}
-	public boolean getPunchExtension(){
+
+	public boolean getPunchExtension() {
 		return punch.get();
 	}
-	public boolean getGenevaSwitchState(){
+
+	public void setPunchExtension(boolean extended) {
+		punch.set(extended);
+	}
+
+	public boolean getGenevaSwitchState() {
 		return !genevaLimitSwitch.get();
 	}
-	public boolean getPunchSwitchState(){
+
+	public boolean getPunchSwitchState() {
 		return punchLimitSwitch.get();
 	}
-	public double getGenevaPosition(){
+
+	public double getGenevaPosition() {
 		return genevaEncoder.getPosition();
 	}
-	public void ExtendRetract(int millisecondsBetween){
+
+	public void ExtendRetract(int millisecondsBetween) {
 		setPunchExtension(true);
-		try{
+		try {
 			Thread.sleep(millisecondsBetween);
-		}
-		catch(Exception ex){
+		} catch (Exception ex) {
 			System.err.println(ex);
 		}
 		setPunchExtension(false);

@@ -2,6 +2,25 @@ package frc.robot.utility;
 
 public class DreadbotMath {
 	/**
+	 * Java Generic In-Range Function
+	 * <p>
+	 * The in-range function determines whether a value is 'in-between' a given minimum
+	 * value and a maximum value.
+	 *
+	 * @param <T>          Generic Type that extends that of a Comparable object.
+	 * @param inputValue   The input value
+	 * @param minimumValue The minimum value of the constraints
+	 * @param maximumValue The maximum values of the constraints
+	 * @return Boolean if the inputValue is in the range specified.
+	 */
+	public static <T extends Comparable<T>> boolean inRange(final T inputValue, final T minimumValue,
+	                                                        final T maximumValue) {
+		if (inputValue.compareTo(minimumValue) < 0)
+			return false;
+		return inputValue.compareTo(maximumValue) <= 0;
+	}
+
+	/**
 	 * Java Generic Clamp Function
 	 * <p>
 	 * Clamp functions specify specific constraints for a value's validity. For
@@ -102,7 +121,7 @@ public class DreadbotMath {
 	 * @return The greatest element in the array.
 	 */
 	public static double maximumElement(final double[] values) {
-		double currentMaximumElement = 0.0;
+		double currentMaximumElement = 0.0d;
 
 		for (final double element : values)
 			if (element > currentMaximumElement)

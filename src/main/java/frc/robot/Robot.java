@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.subsystem.SparkDrive;
@@ -36,13 +33,16 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void robotPeriodic() {}
+	public void robotPeriodic() {
+	}
 
 	@Override
-	public void autonomousInit() {}
+	public void autonomousInit() {
+	}
 
 	@Override
-	public void autonomousPeriodic() {}
+	public void autonomousPeriodic() {
+	}
 
 	@Override
 	public void teleopInit() {
@@ -53,18 +53,22 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		//testMotor.set(0.3d);
 		System.out.println(joystick.getY());
-		sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
+		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
 	}
 
 	@Override
-	public void disabledInit() {}
+	public void disabledInit() {
+	}
 
 	@Override
-	public void disabledPeriodic() {}
+	public void disabledPeriodic() {
+	}
 
 	@Override
-	public void testInit() {}
+	public void testInit() {
+	}
 
 	@Override
-	public void testPeriodic() {}
+	public void testPeriodic() {
+	}
 }

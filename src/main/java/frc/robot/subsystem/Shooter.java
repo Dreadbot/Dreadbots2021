@@ -1,46 +1,41 @@
 package frc.robot.subsystem;
 
-import com.revrobotics.CANEncoder;
-import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel;
-import com.revrobotics.ControlType;
-
+import com.revrobotics.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.utility.DreadbotMath;
 
 public class Shooter {
-	// Motor Controllers
-	private CANSparkMax shooterMotor;
-	private CANSparkMax aimingMotor;
-
-	// PID Controllers
-	private CANPIDController shooterMotorPID;
-	private CANPIDController aimingMotorPID;
-
-	// Encoders
-	private CANEncoder shooterMotorEncoder;
-	private CANEncoder aimingMotorEncoder;
-
-	// Limit Switches
-	private DigitalInput upperLimitSwitch;
-	private DigitalInput lowerLimitSwitch;
-
-	// Vision Light
-	private Solenoid visionLEDRing;
-
-	// Shooting Mechanism Variables
-	private double speed;
-	private double aimPosition;
-	private double range;
-
 	// Limit Switch Variables
 	int minHoodPosition;
 	int maxHoodPosition;
 	boolean readyToAim = false;
 	boolean lowerLimitHit = false;
 	boolean upperLimitHit = false;
+
+	// Motor Controllers
+	private final CANSparkMax shooterMotor;
+	private final CANSparkMax aimingMotor;
+
+	// PID Controllers
+	private final CANPIDController shooterMotorPID;
+	private final CANPIDController aimingMotorPID;
+
+	// Encoders
+	private final CANEncoder shooterMotorEncoder;
+	private final CANEncoder aimingMotorEncoder;
+
+	// Limit Switches
+	private final DigitalInput upperLimitSwitch;
+	private final DigitalInput lowerLimitSwitch;
+
+	// Vision Light
+	private final Solenoid visionLEDRing;
+
+	// Shooting Mechanism Variables
+	private final double speed;
+	private double aimPosition;
+	private double range;
 
 	public Shooter() {
 		// Instantiate Motor Controllers
@@ -83,7 +78,7 @@ public class Shooter {
 		shooterMotorPID.setReference(rpm, ControlType.kVelocity);
 	}
 
-	public void aimHeight(double rotations){
+	public void aimHeight(double rotations) {
 		aimingMotorPID.setReference(rotations, ControlType.kPosition);
 	}
 
@@ -96,7 +91,7 @@ public class Shooter {
 	}
 
 	public void setHoodPercentOutput(double percentOutput) {
-		if(!lowerLimitSwitch.get() || !upperLimitSwitch.get())
+		if (!lowerLimitSwitch.get() || !upperLimitSwitch.get())
 			percentOutput = 0.0;
 
 		aimingMotor.set(percentOutput);
@@ -107,14 +102,6 @@ public class Shooter {
 		return (int) shooterMotorEncoder.getVelocity();
 	}
 
-	public void setHoodPosition(double position) {
-		DreadbotMath.clampValue(position, 0.0d, 1.0d);
-
-		position = minHoodPosition + (position * range);
-
-		aimingMotorPID.setReference(position, ControlType.kPosition);
-	}
-
 	public void setLowerLimit(int position) {
 		minHoodPosition = position;
 		lowerLimitHit = true;
@@ -123,12 +110,6 @@ public class Shooter {
 	public void setUpperLimit(int position) {
 		maxHoodPosition = position;
 		upperLimitHit = true;
-	}
-
-	public void setAimReadiness(boolean ready) {
-		readyToAim = ready;
-		if(ready)
-			range = maxHoodPosition - minHoodPosition;
 	}
 
 	public void setUpperBool(boolean value) {
@@ -143,8 +124,22 @@ public class Shooter {
 		return readyToAim;
 	}
 
+	public void setAimReadiness(boolean ready) {
+		readyToAim = ready;
+		if (ready)
+			range = maxHoodPosition - minHoodPosition;
+	}
+
 	public int getHoodPosition() {
 		return (int) aimingMotorEncoder.getPosition();
+	}
+
+	public void setHoodPosition(double position) {
+		DreadbotMath.clampValue(position, 0.0d, 1.0d);
+
+		position = minHoodPosition + (position * range);
+
+		aimingMotorPID.setReference(position, ControlType.kPosition);
 	}
 
 	public boolean getUpperLimitSwitch() {
@@ -163,7 +158,7 @@ public class Shooter {
 		return lowerLimitHit;
 	}
 
-	public void setPID(double p, double i, double d){
+	public void setPID(double p, double i, double d) {
 		shooterMotorPID.setP(p);
 		shooterMotorPID.setI(i);
 		shooterMotorPID.setD(d);
