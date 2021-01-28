@@ -20,12 +20,8 @@ public class Robot extends TimedRobot {
 
 	public Joystick joystick;
 
-<<<<<<< HEAD
   public Ultra sonic1;
  // public Ultra sonic2;
-  
-
-  public Joystick joystick;
   
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,19 +36,7 @@ public class Robot extends TimedRobot {
     sonic1 = new Ultra(6, 7);
   // sonic2 = new Ultra(6, 7);
   }
-=======
-	/**
-	 * This function is run when the robot is first started up and should be used for any
-	 * initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		System.out.println("Hello World from RED 5 2021!");
-		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-		joystick = new Joystick(0);
-		sparkDrive = new SparkDrive();
-	}
->>>>>>> 2b22db1ec7874cf39a1d3ecf406fafeaadfd0d8b
+
 
 	@Override
 	public void robotPeriodic() {
@@ -71,7 +55,6 @@ public class Robot extends TimedRobot {
 		System.out.println("Starting Teleop");
 	}
 
-<<<<<<< HEAD
   @Override
   public void teleopPeriodic() {
     Ultra.automatic();
@@ -84,14 +67,6 @@ public class Robot extends TimedRobot {
 
     System.out.println(a);
   }
-=======
-	@Override
-	public void teleopPeriodic() {
-		//testMotor.set(0.3d);
-		System.out.println(joystick.getY());
-		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
-	}
->>>>>>> 2b22db1ec7874cf39a1d3ecf406fafeaadfd0d8b
 
 	@Override
 	public void disabledInit() {
