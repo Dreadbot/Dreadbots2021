@@ -41,7 +41,7 @@ public class Shooter {
 		// Instantiate Motor Controllers
 		shooterMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		aimingMotor = new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless);
-
+		shooterMotor.restoreFactoryDefaults();
 		// Get the PID Controller Objects
 		shooterMotorPID = shooterMotor.getPIDController();
 		aimingMotorPID = aimingMotor.getPIDController();
@@ -72,6 +72,8 @@ public class Shooter {
 		aimingMotorPID.setIZone(0);
 		aimingMotorPID.setFF(0.000015);
 		aimingMotorPID.setOutputRange(-1.0, 1.0);
+
+		// aimingMotor.set(0.25);
 	}
 
 	public void shoot(int rpm) {
@@ -91,8 +93,14 @@ public class Shooter {
 	}
 
 	public void setHoodPercentOutput(double percentOutput) {
-		if (!lowerLimitSwitch.get() || !upperLimitSwitch.get())
+		System.out.println(!lowerLimitSwitch.get());
+		System.out.println(!upperLimitSwitch.get());
+		if(getLowerLimitSwitch() && percentOutput > 0){
 			percentOutput = 0.0;
+		}
+		else if(getUpperLimitSwitch() && percentOutput <0){
+			percentOutput = 0.0;
+		}
 
 		aimingMotor.set(percentOutput);
 	}
@@ -158,6 +166,27 @@ public class Shooter {
 		return lowerLimitHit;
 	}
 
+	public void hoodCalibration(){
+		if(getLowerLimitSwitch() && !getLowerLimitBool()){ 
+		  System.out.println("***************LOWER LIMIT TRIGGERED");
+		  setLowerLimit(getHoodPosition());
+		  setHoodPercentOutput(-0.75);
+		}
+		else if(getUpperLimitSwitch() && !getUpperLimitBool()){
+		  System.out.println("***************UPPER LIMIT TRIGGERED");
+		  setUpperLimit(getHoodPosition());
+		  setHoodPercentOutput(0.75);
+		}
+		else if (getUpperLimitBool() && getLowerLimitBool() && !getAimReadiness()){
+		  setAimReadiness(true);
+		  setHoodPosition(0.5);
+		}
+		if(getAimReadiness()){
+		//   position = frc::SmartDashboard::GetNumber("Hood Position", 0.5);
+
+		  //std::cout << "Adjusting Position to: " << position << std::endl;
+		}
+	}
 	public void setPID(double p, double i, double d) {
 		shooterMotorPID.setP(p);
 		shooterMotorPID.setI(i);
@@ -166,5 +195,9 @@ public class Shooter {
 
 	void setVisionLEDRingEnabled(boolean enabled) {
 		visionLEDRing.set(enabled);
+	}
+
+	public void restoreFactoryDefaults(){
+		shooterMotor.restoreFactoryDefaults();
 	}
 }

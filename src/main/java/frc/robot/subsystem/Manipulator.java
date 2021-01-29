@@ -168,6 +168,7 @@ public class Manipulator {
 		return genevaState.ordinal();
 	}
 
+	
 	Intake getIntake(){
 		return intake;
 	}
