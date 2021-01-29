@@ -1,0 +1,17 @@
+{
+    "default" : {
+        "hue": 0,
+        "sat": 0,
+        "lum": 0
+    },
+    "arena2": {
+        "hue": 4,
+        "sat": 5,
+        "lum": 6
+    },
+    "arena3": {
+        "hue": 4,
+        "sat": 5,
+        "lum": 6
+    }
+}
