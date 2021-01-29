@@ -25,12 +25,14 @@ public class Shooter {
 	private final CANEncoder shooterMotorEncoder;
 	private final CANEncoder aimingMotorEncoder;
 
+	/* These are static because once a object is created for a given channel, another object cannot be created
+	 * with the same channel.
+	 */
 	// Limit Switches
-	private final DigitalInput upperLimitSwitch;
-	private final DigitalInput lowerLimitSwitch;
-
+	private static final DigitalInput upperLimitSwitch = new DigitalInput(1);
+	private static final DigitalInput lowerLimitSwitch = new DigitalInput(2);
 	// Vision Light
-	private final Solenoid visionLEDRing;
+	private static final Solenoid visionLEDRing = new Solenoid(7);
 
 	// Shooting Mechanism Variables
 	private final double speed;
@@ -38,9 +40,14 @@ public class Shooter {
 	private double range;
 
 	public Shooter() {
+		this(new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless),
+			new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless));
+	}
+
+	public Shooter(CANSparkMax shooterMotor, CANSparkMax aimingMotor) {
 		// Instantiate Motor Controllers
-		shooterMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-		aimingMotor = new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless);
+		this.shooterMotor = shooterMotor;
+		this.aimingMotor = aimingMotor;
 
 		// Get the PID Controller Objects
 		shooterMotorPID = shooterMotor.getPIDController();
@@ -49,13 +56,6 @@ public class Shooter {
 		// Get the Encoder Objects
 		shooterMotorEncoder = shooterMotor.getEncoder();
 		aimingMotorEncoder = aimingMotor.getEncoder();
-
-		// Instantiate Limit Switches
-		upperLimitSwitch = new DigitalInput(1);
-		lowerLimitSwitch = new DigitalInput(2);
-
-		// Instantiate Vision LED Ring
-		visionLEDRing = new Solenoid(7);
 
 		// Configure PID Controllers (values are tuned)
 		shooterMotorPID.setP(9e-3);

@@ -2,7 +2,7 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2021.2.1"
 }
-
+repositories { jcenter() }
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
@@ -52,7 +52,7 @@ dependencies {
     nativeZip wpi.deps.vendor.jni(wpi.platforms.roborio)
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
-    testImplementation 'junit:junit:4.12'
+    //testImplementation 'junit:junit:4.12'
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging
@@ -62,6 +62,10 @@ dependencies {
     // Websocket extensions require additional configuration.
     // simulation wpi.deps.sim.ws_server(wpi.platforms.desktop, false)
     // simulation wpi.deps.sim.ws_client(wpi.platforms.desktop, false)
+    testCompile "org.mockito:mockito-core:2.+"
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.5.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:5.5.2"
+    testImplementation "org.junit.platform:junit-platform-runner:1.5.2"
 }
 
 // Simulation configuration (e.g. environment variables).
