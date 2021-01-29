@@ -66,6 +66,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		System.out.println("Entering Robot Test Mode.");
 	}
 
 	@Override

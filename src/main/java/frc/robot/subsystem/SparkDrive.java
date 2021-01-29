@@ -7,7 +7,7 @@ import frc.robot.utility.DreadbotMath;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SparkDrive {
+public class SparkDrive implements Subsystem {
 	public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
 
 	private final List<CANSparkMax> motors;
@@ -100,6 +100,11 @@ public class SparkDrive {
 		// Assign each value of the array to the motor output.
 		for (int i = 0; i < speedControllerOutputs.length; i++)
 			motors.get(i).set(speedControllerOutputs[i]);
+	}
+
+	@Override
+	public void testFeatures() {
+		System.out.println("Starting to test SparkDrive features...");
 	}
 
 	/**
