@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.subsystem.*;
 
+import java.util.ArrayList;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -20,7 +22,12 @@ public class Robot extends TimedRobot {
 
 	public Joystick joystick;
 
-  public Ultra sonic1;
+	// Testing only
+	public ArrayList<Subsystem> testingSubsystems;
+	public int currentTestingIndex;
+	public boolean isTestingCompleted;
+
+	public Ultra sonic1;
  // public Ultra sonic2;
   
   /**
@@ -79,9 +86,22 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() {
 		System.out.println("Entering Robot Test Mode.");
+
+		testingSubsystems = new ArrayList<>();
+		testingSubsystems.add(sparkDrive);
+		isTestingCompleted = false;
 	}
 
 	@Override
 	public void testPeriodic() {
+  	    if(isTestingCompleted)
+  	    	return;
+
+		if(currentTestingIndex >= testingSubsystems.size()) {
+			isTestingCompleted = true;
+			return;
+		}
+
+		testingSubsystems.get(currentTestingIndex).testPeriodic();
 	}
 }

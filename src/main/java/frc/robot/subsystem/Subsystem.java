@@ -13,6 +13,9 @@ public abstract class Subsystem {
 	private final ArrayList<String> testNames;
 	int currentTestIndex;
 
+	// Testing only
+	private boolean testingCompleted;
+
 	private final Timer timer;
 
 	public Subsystem(String name) {
@@ -21,6 +24,8 @@ public abstract class Subsystem {
 		testDurationsSeconds = new ArrayList<>();
 		testNames = new ArrayList<>();
 		currentTestIndex = 0;
+
+		testingCompleted = false;
 
 		timer = new Timer();
 	}
@@ -37,6 +42,11 @@ public abstract class Subsystem {
 	}
 
 	public final void testPeriodic() {
+		if(currentTestIndex >= tests.size()) {
+			testingCompleted = true;
+			return;
+		}
+
 		double testSeconds = testDurationsSeconds.get(currentTestIndex);
 		if(!timer.hasElapsed(testSeconds))
 			return;
