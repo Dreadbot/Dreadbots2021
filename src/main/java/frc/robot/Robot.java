@@ -6,7 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.subsystem.SparkDrive;
+import frc.robot.subsystem.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -20,17 +20,23 @@ public class Robot extends TimedRobot {
 
 	public Joystick joystick;
 
-	/**
-	 * This function is run when the robot is first started up and should be used for any
-	 * initialization code.
-	 */
-	@Override
-	public void robotInit() {
-		System.out.println("Hello World from RED 5 2021!");
-		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-		joystick = new Joystick(0);
-		sparkDrive = new SparkDrive();
-	}
+  public Ultra sonic1;
+ // public Ultra sonic2;
+  
+  /**
+   * This function is run when the robot is first started up and should be used for any
+   * initialization code.
+   */
+  @Override
+  public void robotInit() {
+    System.out.println("Hello World from RED 5 2021!");
+    //testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
+    joystick = new Joystick(0);
+    sparkDrive = new SparkDrive();
+    sonic1 = new Ultra(6, 7);
+  // sonic2 = new Ultra(6, 7);
+  }
+
 
 	@Override
 	public void robotPeriodic() {
@@ -49,12 +55,18 @@ public class Robot extends TimedRobot {
 		System.out.println("Starting Teleop");
 	}
 
-	@Override
-	public void teleopPeriodic() {
-		//testMotor.set(0.3d);
-		System.out.println(joystick.getY());
-		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
-	}
+  @Override
+  public void teleopPeriodic() {
+    Ultra.automatic();
+    double a = sonic1.getRangeInches();
+
+  //  sonic2.getRangeInches();
+    //testMotor.set(0.3d);
+    //System.out.println(joystick.getY());
+    sparkDrive.tankDrive(joystick.getY(), joystick.getZ(), 0.2, 0.2);
+
+    System.out.println(a);
+  }
 
 	@Override
 	public void disabledInit() {
@@ -66,6 +78,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		System.out.println("Entering Robot Test Mode.");
 	}
 
 	@Override
