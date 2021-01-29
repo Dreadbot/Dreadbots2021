@@ -55,5 +55,8 @@ public abstract class Subsystem {
 		tests.get(currentTestIndex).perform();
 
 		++currentTestIndex;
+		timer.stop();
+		timer.reset();
+		timer.start();
 	}
 }
