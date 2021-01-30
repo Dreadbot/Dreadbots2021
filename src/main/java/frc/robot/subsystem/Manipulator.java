@@ -1,6 +1,6 @@
 package frc.robot.subsystem;
 
-public class Manipulator {
+public class Manipulator extends Subsystem{
 	private Intake intake;
 	private Feeder feeder;
 	private Shooter shooter;
@@ -15,12 +15,30 @@ public class Manipulator {
 	private int numPunches;
 
 	public Manipulator(Intake intake, Feeder feeder, Shooter shooter){
+		super("Manipulator");
 		this.intake = intake;
 		this.feeder = feeder;
 		this.shooter = shooter;
 		shooterState = shooterStates.RAMPING;
 		numPunches = 0;
 		stateChangeCounter = 0;
+
+		addTest(()->{
+			intake.setPercentOutput(.3);
+		}, "Intake 30%", 2.0d);
+		addTest(()->{
+			intake.setPercentOutput(0);
+		}, "Intake Stop", 1.0d);
+		addTest(()->sensorAdvanceGeneva(true, true), "Geneva Start Rotate", 1.0d);
+		addTest(()->sensorAdvanceGeneva(false, true), "Geneva Resolve Rotation", 4.0d);
+		addTest(()->{
+			shooter.shoot(3750);
+			shooter.setHoodPercentOutput(.3);
+		}, "Shooter 2000rpm, Hood 30%", 5.0d);
+		addTest(()->{
+			shooter.setShootingPercentOutput(0);
+			shooter.setHoodPercentOutput(0);
+		}, "Shooter & Hood Stop", 1.0d);
 	}
 
 	public void prepareShot(int rpm, double aimPosition){

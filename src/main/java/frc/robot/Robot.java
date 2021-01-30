@@ -137,6 +137,7 @@ public class Robot extends TimedRobot {
 
 		testingSubsystems = new ArrayList<>();
 		testingSubsystems.add(sparkDrive);
+		testingSubsystems.add(manipulator);
 		isTestingCompleted = false;
 	}
 
