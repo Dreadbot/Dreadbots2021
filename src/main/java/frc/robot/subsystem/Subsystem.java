@@ -36,6 +36,12 @@ public abstract class Subsystem {
 		testNames.add(testName);
 	}
 
+	protected void addTest(TestSegment testSegment, double testDurationSeconds) {
+		tests.add(testSegment);
+		testDurationsSeconds.add(testDurationSeconds);
+		testNames.add("");
+	}
+
 	public final void testInit() {
 		System.out.printf("Starting subsystem %s test routine...%n");
 		timer.start();

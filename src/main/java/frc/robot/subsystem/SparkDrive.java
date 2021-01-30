@@ -26,19 +26,19 @@ public class SparkDrive extends Subsystem {
 	private void configureTests() {
 		// Runs a forward drive test for 2.5s, then stops the drivetrain.
 		addTest(() -> tankDrive(1.0d, 0.0d, 0.2d, 0.0d), "Forward Drive Test", 2.5d);
-		addTest(this::stop, "", 1.0d);
+		addTest(this::stop, 1.0d);
 
 		// Runs a backward drive test for 2.5s, then stops the drivetrain.
 		addTest(() -> tankDrive(-1.0d, 0.0d, 0.2d, 0.0d), "Backward Drive Test", 2.5d);
-		addTest(this::stop, "", 1.0d);
+		addTest(this::stop, 1.0d);
 
 		// Runs a rotation (positive) drive test for 2.5s, then stops the drivetrain.
 		addTest(() -> tankDrive(0.0d, 1.0d, 0.2d, 0.0d), "Positive Rotation Drive Test", 2.5d);
-		addTest(this::stop, "", 1.0d);
+		addTest(this::stop, 1.0d);
 
 		// Runs a rotation (negative) drive test for 2.5s, then stops the drivetrain.
 		addTest(() -> tankDrive(0.0d, -1.0d, 0.2d, 0.0d), "Negative Rotation Drive Test", 2.5d);
-		addTest(this::stop, "", 1.0d);
+		addTest(this::stop, 1.0d);
 	}
 
 	/**
