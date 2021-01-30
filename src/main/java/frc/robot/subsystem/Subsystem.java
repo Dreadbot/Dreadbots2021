@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystem.test.TestSegment;
 
 import java.util.ArrayList;
+import java.util.Currency;
 
 public abstract class Subsystem {
 	protected final String name;
@@ -12,6 +13,7 @@ public abstract class Subsystem {
 	private final ArrayList<Double> testDurationsSeconds;
 	private final ArrayList<String> testNames;
 	int currentTestIndex;
+	int previousTestIndex;
 
 	// Testing only
 	private boolean testingCompleted;
@@ -24,6 +26,7 @@ public abstract class Subsystem {
 		testDurationsSeconds = new ArrayList<>();
 		testNames = new ArrayList<>();
 		currentTestIndex = 0;
+		previousTestIndex = -1;
 
 		testingCompleted = false;
 
@@ -43,23 +46,33 @@ public abstract class Subsystem {
 	}
 
 	public final void testInit() {
-		System.out.printf("Starting subsystem %s test routine...%n");
+		//something wrong with this printf, don't have the energy to find out
+		try{
+			System.out.printf("Starting subsystem %s test routine...%n");
+		}
+		catch(Exception e){
+			System.err.println(e);
+		}
 		timer.start();
 	}
 
 	public final void testPeriodic() {
-		if(currentTestIndex >= tests.size()) {
+		double testSeconds = testDurationsSeconds.get(currentTestIndex);
+		if(previousTestIndex != currentTestIndex){
+			System.out.printf("Running Test %s.%s%n", name, testNames.get(currentTestIndex));
+			tests.get(currentTestIndex).perform();
+			previousTestIndex = currentTestIndex;
+		}
+
+		if(currentTestIndex >= tests.size() - 1) {
 			testingCompleted = true;
 			return;
 		}
-
-		double testSeconds = testDurationsSeconds.get(currentTestIndex);
-		if(!timer.hasElapsed(testSeconds))
+	
+		if(!timer.hasElapsed(testSeconds)){
 			return;
-
-		System.out.printf("Running Test %s.%s%n", name, testNames.get(currentTestIndex));
-		tests.get(currentTestIndex).perform();
-
+		}
+		
 		++currentTestIndex;
 		timer.stop();
 		timer.reset();

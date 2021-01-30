@@ -134,10 +134,12 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() {
 		System.out.println("Entering Robot Test Mode.");
-
 		testingSubsystems = new ArrayList<>();
 		testingSubsystems.add(sparkDrive);
 		testingSubsystems.add(manipulator);
+		for(Subsystem i : testingSubsystems){
+			i.testInit();
+		}
 		isTestingCompleted = false;
 	}
 
