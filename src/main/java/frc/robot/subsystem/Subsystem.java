@@ -78,4 +78,20 @@ public abstract class Subsystem {
 		timer.reset();
 		timer.start();
 	}
+
+	public Timer getTimer() {
+		return timer;
+	}
+
+	public boolean isTestingCompleted() {
+		return testingCompleted;
+	}
+
+	public void setTestingCompleted(boolean testingCompleted) {
+		this.testingCompleted = testingCompleted;
+	}
+
+	public void setCurrentTestIndex(int currentTestIndex) {
+		this.currentTestIndex = currentTestIndex;
+	}
 }

@@ -80,6 +80,10 @@ public class Robot extends TimedRobot {
 
 		sonic1 = new Ultra(6, 7);
 		// sonic2 = new Ultra(6, 7);
+
+		testingSubsystems = new ArrayList<>();
+		testingSubsystems.add(sparkDrive);
+		testingSubsystems.add(manipulator);
 	}
 
 	@Override
@@ -125,6 +129,15 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		isTestingCompleted = false;
+		for(Subsystem subsystem : testingSubsystems) {
+			subsystem.setTestingCompleted(false);
+			subsystem.setCurrentTestIndex(0);
+
+			subsystem.getTimer().stop();
+			subsystem.getTimer().reset();
+		}
+		currentTestingIndex = 0;
 	}
 
 	@Override
@@ -134,9 +147,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void testInit() {
 		System.out.println("Entering Robot Test Mode.");
-		testingSubsystems = new ArrayList<>();
-		testingSubsystems.add(sparkDrive);
-		testingSubsystems.add(manipulator);
 		for(Subsystem i : testingSubsystems){
 			i.testInit();
 		}
