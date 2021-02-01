@@ -59,7 +59,7 @@ public class SparkDrive extends Subsystem {
 	 */
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor) {
-		tankDrive(forwardAxisFactor, rotationAxisFactor, 0.5);
+		tankDrive(forwardAxisFactor, rotationAxisFactor, DriveMode.NORMAL);
 	}
 
 	/**
@@ -73,8 +73,8 @@ public class SparkDrive extends Subsystem {
 	 */
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
-	                      final double finalValueMultiplier) {
-		tankDrive(forwardAxisFactor, rotationAxisFactor, finalValueMultiplier, 0.2);
+	                      final DriveMode driveMode) {
+		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.2);
 	}
 
 	/**
@@ -89,7 +89,7 @@ public class SparkDrive extends Subsystem {
 	 */
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
-	                      final double finalValueMultiplier,
+	                      final DriveMode driveMode,
 	                      final double joystickDeadband) {
 		double[] speedControllerOutputs = new double[4];
 
@@ -113,7 +113,7 @@ public class SparkDrive extends Subsystem {
 
 		// Add the final multiplier to the values.
 		for (int i = 0; i < speedControllerOutputs.length; i++)
-			speedControllerOutputs[i] *= finalValueMultiplier;
+			speedControllerOutputs[i] *= driveMode.finalValueMultiplier;
 
 		// Normalize the values to become between 1.0 and -1.0.
 		speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);

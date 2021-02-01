@@ -57,7 +57,7 @@ public abstract class Subsystem {
 
 	public final void testPeriodic() {
 		double testSeconds = testDurationsSeconds.get(currentTestIndex);
-		if(previousTestIndex != currentTestIndex){
+		if(previousTestIndex != currentTestIndex) {
 			if(!testNames.get(currentTestIndex).isEmpty())
 				System.out.printf("Running Test %s: %s%n", name, testNames.get(currentTestIndex));
 
