@@ -35,10 +35,10 @@ public class Intake {
 		//and the pin should physically be setup so that it is extended by default
 		intakePin.set(true);
 	}
-	public void Start(){
+	public void start(){
 		intakeMotor.set(0.5d);
 	}
-	public void Stop(){
+	public void stop(){
 		intakeMotor.set(0.0d);
 	}
 }

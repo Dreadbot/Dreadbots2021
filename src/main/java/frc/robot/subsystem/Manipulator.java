@@ -101,7 +101,8 @@ public class Manipulator {
 
 	public void resetManipulatorElements(){
 		//This function should be called continuously if the system is not shooting or collecting power cells
-		// this function will get the system back into a state where the punch is retracted and the geneva gear is aligned in order to be able to begin the FSM again
+		// this function will get the system back into a state where the punch is retracted and the geneva gear is
+		// aligned in order to be able to begin the FSM again
 
 		numPunches = 0;
 		shooter.setVisionLEDRingEnabled(true);

@@ -3,15 +3,16 @@ package frc.robot.subsystem;
 import com.revrobotics.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.Constants;
 import frc.robot.utility.DreadbotMath;
 
 public class Shooter {
 	// Limit Switch Variables
-	int minHoodPosition;
-	int maxHoodPosition;
-	boolean readyToAim = false;
-	boolean lowerLimitHit = false;
-	boolean upperLimitHit = false;
+	private int minHoodPosition;
+	private int maxHoodPosition;
+	private boolean readyToAim = false;
+	private boolean lowerLimitHit = false;
+	private boolean upperLimitHit = false;
 
 	// Motor Controllers
 	private final CANSparkMax shooterMotor;
@@ -39,8 +40,8 @@ public class Shooter {
 
 	public Shooter() {
 		// Instantiate Motor Controllers
-		shooterMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-		aimingMotor = new CANSparkMax(8, CANSparkMaxLowLevel.MotorType.kBrushless);
+		shooterMotor = new CANSparkMax(Constants.MOTOR_ID_FLYWHEEL, CANSparkMaxLowLevel.MotorType.kBrushless);
+		aimingMotor = new CANSparkMax(Constants.MOTOR_ID_HOOD, CANSparkMaxLowLevel.MotorType.kBrushless);
 		shooterMotor.restoreFactoryDefaults();
 		// Get the PID Controller Objects
 		shooterMotorPID = shooterMotor.getPIDController();
@@ -55,7 +56,7 @@ public class Shooter {
 		lowerLimitSwitch = new DigitalInput(2);
 
 		// Instantiate Vision LED Ring
-		visionLEDRing = new Solenoid(7);
+		visionLEDRing = new Solenoid(Constants.SOLENOID_ID_LED_RING);
 
 		// Configure PID Controllers (values are tuned)
 		shooterMotorPID.setP(9e-3);

@@ -20,26 +20,17 @@ import frc.robot.subsystem.*;
  * project.
  */
 public class Robot extends TimedRobot {
-	//public CANSparkMax testMotor;
-	//
-
-	private int kIntakeMotorID = 5;
-	private int kGenevaMotorID = 6;
-	private int kFlyWheelMotorID = 7;
-	private int kAimMotorID = 8;
-
-	private int kIntakePinID = 0;
-	private int kPunchSolenoidID = 2;
 
 	//MOTORS
 	public SparkDrive sparkDrive;
 	public CANSparkMax genevaDrive;
 	public CANSparkMax intakeMotor;
+	//public CANSparkMax testMotor;
 
 	//JOYSTICKS
 	public Joystick joystick;
 
-	//GAME PEICE HANDLING
+	//GAME PIECE HANDLING
 	public Shooter shooter;
 	public Intake intake;
 	public Feeder feeder;
@@ -49,6 +40,7 @@ public class Robot extends TimedRobot {
 	Solenoid punch;
 	Solenoid intakePin;
 
+	// ULTRASONICS
 	Ultra sonic1;
 
 	/**
@@ -58,18 +50,18 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		System.out.println("Hello World from RED 5 2021!");
-		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		//JOYSTICKS
 		joystick = new Joystick(0);
 
 		//MOTORS
 		sparkDrive = new SparkDrive();
-		genevaDrive = new CANSparkMax(kGenevaMotorID, CANSparkMax.MotorType.kBrushless);
-		intakeMotor = new CANSparkMax(kIntakeMotorID, CANSparkMax.MotorType.kBrushless);
+		genevaDrive = new CANSparkMax(Constants.MOTOR_ID_GENEVA, CANSparkMax.MotorType.kBrushless);
+		intakeMotor = new CANSparkMax(Constants.MOTOR_ID_INTAKE, CANSparkMax.MotorType.kBrushless);
+		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 
 		//SOLENOIDS
-		punch = new Solenoid(kPunchSolenoidID);
-		intakePin = new Solenoid(kIntakePinID);
+		punch = new Solenoid(Constants.SOLENOID_ID_PUNCH);
+		intakePin = new Solenoid(Constants.SOLENOID_ID_INTAKE);
 
 		shooter = new Shooter();
 		intake = new Intake(intakeMotor, intakePin);
@@ -104,16 +96,15 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		//testMotor.set(0.3d);
+		// testMotor.set(0.3d);
 		// System.out.println(joystick.getY());
 		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
 
 		shooter.hoodCalibration();
 
-		if(joystick.getRawButton(1)){
+		if (joystick.getRawButton(1)) {
 			manipulator.prepareShot(2500, 0.75);
-		}
-		else{
+		} else {
 			shooter.setShootingPercentOutput(0);
 		}
 
