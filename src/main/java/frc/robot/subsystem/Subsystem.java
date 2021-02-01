@@ -46,9 +46,8 @@ public abstract class Subsystem {
 	}
 
 	public final void testInit() {
-		//something wrong with this printf, don't have the energy to find out
 		try{
-			System.out.printf("Starting subsystem %s test routine...%n");
+			System.out.printf("Starting subsystem %s test routine...%n", name);
 		}
 		catch(Exception e){
 			System.err.println(e);
@@ -59,7 +58,9 @@ public abstract class Subsystem {
 	public final void testPeriodic() {
 		double testSeconds = testDurationsSeconds.get(currentTestIndex);
 		if(previousTestIndex != currentTestIndex){
-			System.out.printf("Running Test %s.%s%n", name, testNames.get(currentTestIndex));
+			if(!testNames.get(currentTestIndex).isEmpty())
+				System.out.printf("Running Test %s: %s%n", name, testNames.get(currentTestIndex));
+
 			tests.get(currentTestIndex).perform();
 			previousTestIndex = currentTestIndex;
 		}
