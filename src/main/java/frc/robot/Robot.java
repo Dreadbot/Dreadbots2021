@@ -164,5 +164,8 @@ public class Robot extends TimedRobot {
 		}
 
 		testingSubsystems.get(currentTestingIndex).testPeriodic();
+
+		if(testingSubsystems.get(currentTestingIndex).isTestingCompleted())
+			currentTestingIndex++;
 	}
 }
