@@ -20,7 +20,6 @@ public class Diagnostic {
     public CANSparkMax geniva;
     public CANSparkMax shooty;
     public CANSparkMax aim;
-    public Climber climb;
     public Solenoid solup;
     public Solenoid solcolor;
   
