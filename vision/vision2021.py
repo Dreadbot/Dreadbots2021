@@ -12,7 +12,8 @@ Python vision 2021
 
 Commands:
 -h - Display this message
--s - set the setting (-s <setting name>)
+-s - set the setting (-s <setting name>)      | --setting=<setting_name>
+-o - set the target object (-o <target name>) | --oject=<target/powercell>
 -d - Debug setting
 
 If you need help contact a vision member
@@ -102,7 +103,7 @@ def calibrate(target_object):
     add_calibration("tmp", target_object, [0, 255], [0, 255], [0, 255])
 
     while True:
-        calibration = read_calibration("tmp")
+        calibration = read_calibration("tmp", target_object)
 
         hue = calibration['hue']
         sat = calibration['sat']
@@ -126,7 +127,7 @@ def main(argv):
     setting = ''
     target_object = ''
     try:
-        opts, args = getopt.getopt(argv, "s:d:o", ["setting=", "object="])
+        opts, args = getopt.getopt(argv, "h:o:s:d", ["setting=", "object="])
     except getopt.GetoptError:
         print(help_msg)
         sys.exit(2)
@@ -140,6 +141,7 @@ def main(argv):
             setting = arg
             img_thread(target_object, setting=setting)
         elif opt == '-d':
+            print(target_object)
             calibrate(target_object)
 
 
