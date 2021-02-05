@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Ultrasonic;
 
 public class Ultra extends Subsystem {
     Ultrasonic ultra1;
+
     public Ultra(int pingChannel, int echoChannel){
         super("Ultrasonics");
         ultra1 = new Ultrasonic(pingChannel, echoChannel);

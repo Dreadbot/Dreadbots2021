@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.subsystem.*;
 import frc.robot.utility.*;
 
-import java.lang.reflect.InaccessibleObjectException;
 import java.util.ArrayList;
 
 /**
@@ -21,14 +20,12 @@ import java.util.ArrayList;
  * project.
  */
 public class Robot extends TimedRobot {
-	//public CANSparkMax testMotor;
-	//
-	
 
 	//MOTORS
 	public SparkDrive sparkDrive;
 	public CANSparkMax genevaDrive;
 	public CANSparkMax intakeMotor;
+	//public CANSparkMax testMotor;
 
 	//JOYSTICKS
 	public Joystick joystick;
@@ -43,17 +40,13 @@ public class Robot extends TimedRobot {
 	public ArrayList<Subsystem> testingSubsystems;
 	public int currentTestingIndex;
 	public boolean isTestingCompleted;
+
 	public Ultra sonic1;
 
 	//SOLENOIDS
 	Solenoid punch;
 	Solenoid intakePin;
-	private int kIntakeMotorID = 5;
-	private int kGenevaMotorID = 6;
-	private int kFlyWheelMotorID = 7;
-	private int kAimMotorID = 8;
-	private int kIntakePinID = 0;
-	private int kPunchSolenoidID = 2;
+
 	// public Ultra sonic2;
 
 	/**
@@ -132,6 +125,7 @@ public class Robot extends TimedRobot {
 			// feeder.setPunchExtension(false);
 			manipulator.resetManipulatorElements();
 		}
+
 		if(joystick.getRawButton(Constants.RIGHT_BUMPER)){
 			manipulator.sensorAdvanceGeneva(true, true);
 		}
@@ -141,7 +135,8 @@ public class Robot extends TimedRobot {
 		else{
 			manipulator.sensorAdvanceGeneva(false, false);
 		}
-		if(joystick.getRawButton(Constants.X_BUTTON)){
+
+		if (joystick.getRawButton(Constants.X_BUTTON)){
 			intake.setSpeed(-4000);
 		}
 		else if(joystick.getRawButton(Constants.A_BUTTON)){

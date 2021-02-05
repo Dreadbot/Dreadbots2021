@@ -23,6 +23,10 @@ public class Manipulator extends Subsystem{
 		numPunches = 0;
 		stateChangeCounter = 0;
 
+		configureTests(intake, shooter);
+	}
+
+	private void configureTests(Intake intake, Shooter shooter) {
 		addTest(()->{
 			intake.setPercentOutput(.3);
 		}, "Intake 30%", 2.0d);
