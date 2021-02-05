@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.*;
 import frc.robot.utility.*;
 
@@ -92,12 +93,17 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
+
 	}
 
 	@Override
 	public void teleopInit() {
+		SmartDashboard.putNumber("Shooter P", .002);
+		SmartDashboard.putNumber("Shooter I", 5e-7);
+		SmartDashboard.putNumber("Shooter D", 0);
+		SmartDashboard.putNumber("Shooter Target Speed", 3550);
 		System.out.println("Starting Teleop");
-		// shooter.restoreFactoryDefaults();
+		shooter.restoreFactoryDefaults();
 		shooter.setHoodPercentOutput(0.25);
 		shooter.setUpperBool(false);
 		shooter.setLowerBool(false);
@@ -107,8 +113,11 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		//testMotor.set(0.3d);
-		// System.out.println(joystick.getY());
+		shooter.setPID(SmartDashboard.getNumber("Shooter P", .002), 
+					   SmartDashboard.getNumber("Shooter I", 5e-7),
+				       SmartDashboard.getNumber("Shooter D", 0));
+		SmartDashboard.putNumber("Shooter RPM", manipulator.getShooter().getShootingSpeed());
+
 		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
 
 		shooter.hoodCalibration();
@@ -120,7 +129,7 @@ public class Robot extends TimedRobot {
 		// }
 		if(joystick.getRawButton(Constants.Y_BUTTON)){
 			manipulator.continuousShoot(0.5, 0.75, 3550);
-			System.out.println(shooter.getShootingSpeed());
+			SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed();
 		} else {
 			// feeder.setPunchExtension(false);
 			manipulator.resetManipulatorElements();
@@ -170,6 +179,11 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		sparkDrive.tankDrive(0, 0);
+		manipulator.getShooter().setShootingPercentOutput(0);
+		manipulator.genevaSetSpin(0);
+		manipulator.getShooter().setHoodPercentOutput(0);
+
 		System.out.println("Entering Robot Test Mode.");
 		for(Subsystem i : testingSubsystems){
 			i.testInit();

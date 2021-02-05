@@ -63,7 +63,7 @@ public class Shooter {
 		// shooterMotorPID.setD(0.03);
 
 		shooterMotorPID.setP(9e-3);
-		shooterMotorPID.setI(5e-7);
+		shooterMotorPID.setI(1e-6);
 		shooterMotorPID.setD(0);
 		shooterMotorPID.setIZone(0);
 		shooterMotorPID.setFF(0.000015);
