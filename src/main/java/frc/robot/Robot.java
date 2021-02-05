@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.subsystem.*;
+import frc.robot.utility.*;
 
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.ArrayList;
 
 /**
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 public class Robot extends TimedRobot {
 	//public CANSparkMax testMotor;
 	//
+	
 
 	//MOTORS
 	public SparkDrive sparkDrive;
@@ -66,12 +69,12 @@ public class Robot extends TimedRobot {
 
 		//MOTORS
 		sparkDrive = new SparkDrive();
-		genevaDrive = new CANSparkMax(kGenevaMotorID, CANSparkMax.MotorType.kBrushless);
-		intakeMotor = new CANSparkMax(kIntakeMotorID, CANSparkMax.MotorType.kBrushless);
+		genevaDrive = new CANSparkMax(Constants.GENEVA_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
+		intakeMotor = new CANSparkMax(Constants.INTAKE_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
 
 		//SOLENOIDS
-		punch = new Solenoid(kPunchSolenoidID);
-		intakePin = new Solenoid(kIntakePinID);
+		punch = new Solenoid(Constants.PUNCH_SOLENOID_ID);
+		intakePin = new Solenoid(Constants.INTAKE_PIN_ID);
 
 		shooter = new Shooter();
 		intake = new Intake(intakeMotor, intakePin);
@@ -106,6 +109,7 @@ public class Robot extends TimedRobot {
 		shooter.setUpperBool(false);
 		shooter.setLowerBool(false);
 		shooter.setAimReadiness(false);
+		intake.deployIntake();
 	}
 
 	@Override
@@ -116,15 +120,40 @@ public class Robot extends TimedRobot {
 
 		shooter.hoodCalibration();
 
-		if (joystick.getRawButton(1)) {
-			manipulator.prepareShot(2500, 0.75);
+		// if (joystick.getRawButton(Constants.X_BUTTON)) {
+		// 	manipulator.prepareShot(2500, 0.75);
+		// } else {
+		// 	shooter.setShootingPercentOutput(0);
+		// }
+		if(joystick.getRawButton(Constants.Y_BUTTON)){
+			manipulator.continuousShoot(0.5, 0.75, 3550);
+			System.out.println(shooter.getShootingSpeed());
 		} else {
-			shooter.setShootingPercentOutput(0);
+			// feeder.setPunchExtension(false);
+			manipulator.resetManipulatorElements();
+		}
+		if(joystick.getRawButton(Constants.RIGHT_BUMPER)){
+			manipulator.sensorAdvanceGeneva(true, true);
+		}
+		else if(joystick.getRawButton(Constants.LEFT_BUMPER)){
+			manipulator.sensorAdvanceGeneva(true, false);
+		}
+		else{
+			manipulator.sensorAdvanceGeneva(false, false);
+		}
+		if(joystick.getRawButton(Constants.X_BUTTON)){
+			intake.setSpeed(-4000);
+		}
+		else if(joystick.getRawButton(Constants.A_BUTTON)){
+			intake.setSpeed(4000);
+		}
+		else{
+			intake.setPercentOutput(0);
 		}
 
 		Ultra.automatic();
 		double a = sonic1.getRangeInches();
-		System.out.println(a);
+		// System.out.println(a);
 	}
 
 	@Override

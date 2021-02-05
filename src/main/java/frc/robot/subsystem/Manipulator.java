@@ -141,6 +141,7 @@ public class Manipulator extends Subsystem{
 		if(shooter.getAimReadiness()){
 			shooter.setHoodPosition(0);
 		}
+		shooter.setShootingPercentOutput(0);
 	}
 
 	public int getNumPunches(){

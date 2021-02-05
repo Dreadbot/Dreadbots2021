@@ -58,6 +58,10 @@ public class Shooter {
 		visionLEDRing = new Solenoid(7);
 
 		// Configure PID Controllers (values are tuned)
+		// shooterMotorPID.setP(0.0025);
+		// shooterMotorPID.setI(0.00000033);
+		// shooterMotorPID.setD(0.03);
+
 		shooterMotorPID.setP(9e-3);
 		shooterMotorPID.setI(5e-7);
 		shooterMotorPID.setD(0);
