@@ -12,7 +12,8 @@ Python vision 2021
 
 Commands:
 -h - Display this message
--s - set the setting (-s <setting name>)
+-s - set the setting (-s <setting name>)      | --setting=<setting_name>
+-o - set the target object (-o <target name>) | --oject=<target/powercell>
 -d - Debug setting
 
 If you need help contact a vision member
@@ -20,9 +21,10 @@ If you need help contact a vision member
 
 
 # All calibrations must be lowercase
-def read_calibration(setting):
+def read_calibration(setting, target_object):
     # Open the calibrations file
-    with open("calibrations.json", "r") as f:
+    file = "calibrations-{0}.json".format(target_object)
+    with open(file, "r") as f:
         # Read the file
         dump = f.read()
         calibrations = json.loads(dump)
@@ -31,9 +33,10 @@ def read_calibration(setting):
     return calibrations[setting]
 
 
-def add_calibration(setting_name, hue, sat, lum):
+def add_calibration(setting_name, target_object, hue, sat, lum):
     # Open the calibrations file
-    with open("calibrations.json", "r") as f:
+    file = "calibrations-{0}.json".format(target_object)
+    with open(file, "r") as f:
         # Read the file
         dump = f.read()
         calibrations = json.loads(dump)
@@ -52,7 +55,7 @@ def add_calibration(setting_name, hue, sat, lum):
     calibrations.update(calibration)
 
     # Write over the calibration file with the new calibration file
-    with open("calibrations.json", "w+") as f:
+    with open(file, "w+") as f:
         json.dump(calibrations, f, indent=4)
 
 
@@ -63,35 +66,50 @@ def pipe_image(img, hue, lum, sat, dil_iterations=20):
     # Dilate areas of high val then close holes
     img_dilate = cv2.dilate(bw_img, None, dil_iterations)
     img_closing = cv2.morphologyEx(img_dilate, cv2.MORPH_CLOSE, None)
-    return bw_img
+    return img_dilate
 
 
-def img_thread(setting="default", debug_mode=False):
-    if debug_mode is not True:
-        calibration = read_calibration(setting)
+def img_thread(target_object, setting="default"):
+    calibration = read_calibration(setting, target_object)
 
-        hue = calibration['hue']
-        sat = calibration['sat']
-        lum = calibration['lum']
-    else:
-        hue = [None, None]
-        sat = [None, None]
-        lum = [None, None]
-        hue[0] = int(input("Hue lower: "))
-        hue[1] = int(input("Hue upper: "))
-        sat[0] = int(input("Sat lower: "))
-        sat[1] = int(input("Sat upper: "))
-        lum[0] = int(input("Lum lower: "))
-        lum[1] = int(input("Lum upper: "))
+    hue = calibration['hue']
+    sat = calibration['sat']
+    lum = calibration['lum']
 
-    print(hue)
-    print(lum)
-    print(sat)
     driveCap = cv2.VideoCapture(2)
     driveCap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # For some reason 1 works, idk man
     driveCap.set(cv2.CAP_PROP_EXPOSURE, .00001)
 
     while True:
+        calibration = read_calibration(setting, target_object)
+
+        hue = calibration['hue']
+        sat = calibration['sat']
+        lum = calibration['lum']
+        print(hue)
+
+        ret, frame = driveCap.read()
+        out_img = pipe_image(frame, hue, sat, lum)
+        cv2.imshow('frame', out_img)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+
+def calibrate(target_object):
+    driveCap = cv2.VideoCapture(2)
+    driveCap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 1)  # For some reason 1 works, idk man
+    driveCap.set(cv2.CAP_PROP_EXPOSURE, .00001)
+
+    add_calibration("tmp", target_object, [0, 255], [0, 255], [0, 255])
+
+    while True:
+        calibration = read_calibration("tmp", target_object)
+
+        hue = calibration['hue']
+        sat = calibration['sat']
+        lum = calibration['lum']
+        print(hue)
+
         ret, frame = driveCap.read()
         out_img = pipe_image(frame, hue, sat, lum)
         cv2.imshow('frame', out_img)
@@ -101,11 +119,15 @@ def img_thread(setting="default", debug_mode=False):
     driveCap.release()
     cv2.destroyAllWindows()
 
+    setting_name = input("Name this setting (leave blank to delete) :")
+    add_calibration(setting_name, target_object, hue, sat, lum)
+
 
 def main(argv):
     setting = ''
+    target_object = ''
     try:
-        opts, args = getopt.getopt(argv,"s:d",["setting="])
+        opts, args = getopt.getopt(argv, "h:o:s:d", ["setting=", "object="])
     except getopt.GetoptError:
         print(help_msg)
         sys.exit(2)
@@ -113,11 +135,14 @@ def main(argv):
         if opt == '-h':
             print(help_msg)
             sys.exit()
+        elif opt in ("-o", "--object"):
+            target_object = arg
         elif opt in ("-s", "--setting"):
             setting = arg
-            print(read_calibration(setting))
+            img_thread(target_object, setting=setting)
         elif opt == '-d':
-            img_thread(debug_mode=True)
+            print(target_object)
+            calibrate(target_object)
 
 
 if __name__ == "__main__":
@@ -126,3 +151,5 @@ if __name__ == "__main__":
 # TODO
 # - Simplify debug/self-calibrate mode
 # - Lay out power cell detection
+# - Get to work on brochure
+#   - Contact Gena
