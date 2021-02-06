@@ -27,14 +27,15 @@ public class Manipulator extends Subsystem{
 	}
 
 	private void configureTests(Intake intake, Shooter shooter) {
-		addTest(()->{
+		/*addTest(()->{
 			intake.setPercentOutput(.3);
-		}, "Intake 30%", 2.0d);
+		}, "Intake 30%", 5.0d);
 		addTest(()->{
 			intake.setPercentOutput(0);
+			resetManipulatorElements();
 		}, "Intake Stop", 1.0d);
 		addTest(()->sensorAdvanceGeneva(true, true), "Geneva Start Rotate", 1.0d);
-		addTest(()->sensorAdvanceGeneva(false, true), "Geneva Resolve Rotation", 4.0d);
+		addTest(()->resetManipulatorElements(), "Stop Geneva", 4.0d);
 		addTest(()->{
 			shooter.shoot(3750);
 			shooter.setHoodPercentOutput(.3);
@@ -42,7 +43,7 @@ public class Manipulator extends Subsystem{
 		addTest(()->{
 			shooter.setShootingPercentOutput(0);
 			shooter.setHoodPercentOutput(0);
-		}, "Shooter & Hood Stop", 1.0d);
+		}, "Shooter & Hood Stop", 1.0d);*/
 	}
 
 	public void prepareShot(double rpm, double aimPosition){
@@ -124,7 +125,6 @@ public class Manipulator extends Subsystem{
 	public void resetManipulatorElements(){
 		//This function should be called continuously if the system is not shooting or collecting power cells
 		// this function will get the system back into a state where the punch is retracted and the geneva gear is aligned in order to be able to begin the FSM again
-
 		numPunches = 0;
 		shooter.setVisionLight(true);
 
@@ -195,7 +195,7 @@ public class Manipulator extends Subsystem{
 	public Intake getIntake(){
 		return intake;
 	}
-	Feeder getFeeder(){
+	public Feeder getFeeder(){
 		return feeder;
 	}
 	public Shooter getShooter(){
