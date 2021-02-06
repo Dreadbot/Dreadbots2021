@@ -1,7 +1,11 @@
 package frc.robot.subsystem;
 
+import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.utility.DreadbotMath;
 
 import java.util.ArrayList;
@@ -11,12 +15,15 @@ public class SparkDrive extends Subsystem {
 	public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
 
 	private final List<CANSparkMax> motors;
+	private final AHRS gyroscope;
 
 	public SparkDrive() {
 		super("SparkDrive");
 		this.motors = new ArrayList<>();
 		for (int i = 0; i < 4; i++)
 			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
+		this.gyroscope = new AHRS(SPI.Port.kMXP);
+		this.gyroscope.reset();
 
 		this.stop();
 
@@ -74,7 +81,7 @@ public class SparkDrive extends Subsystem {
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
 	                      final DriveMode driveMode) {
-		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.2);
+		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.05);
 	}
 
 	/**
@@ -121,6 +128,32 @@ public class SparkDrive extends Subsystem {
 		// Assign each value of the array to the motor output.
 		for (int i = 0; i < speedControllerOutputs.length; i++)
 			motors.get(i).set(speedControllerOutputs[i]);
+	}
+
+	public AHRS getGyroscope() {
+		return gyroscope;
+	}
+
+	public CANSparkMax getMotor(int port) {
+		if(!DreadbotMath.inRange(port, 0, motors.size()))
+			return null;
+		return motors.get(port);
+	}
+	
+	public CANEncoder getMotorEncoder(int port) {
+		CANSparkMax motor = getMotor(port);
+		if(motor == null)
+			return null;
+		
+		return motor.getEncoder();
+	}
+
+	public CANPIDController getMotorPIDController(int port) {
+		CANSparkMax motor = getMotor(port);
+		if(motor == null)
+			return null;
+
+		return motor.getPIDController();
 	}
 
 	/**

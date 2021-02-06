@@ -45,7 +45,7 @@ public class Manipulator extends Subsystem{
 		}, "Shooter & Hood Stop", 1.0d);
 	}
 
-	public void prepareShot(int rpm, double aimPosition){
+	public void prepareShot(double rpm, double aimPosition){
 		shooter.shoot(-rpm);
 		shooter.setHoodPosition(aimPosition);
 	}
@@ -62,11 +62,11 @@ public class Manipulator extends Subsystem{
 		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
 	}
 
-	public void continuousShoot(double aimPosition, double genevaSpeed, int shootingRPM){
+	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
 
 		//Find difference between intended speed and actual speed
-		int speedDifference = Math.abs(shooter.getShootingSpeed()) - shootingRPM;
+		int speedDifference = (int) (Math.abs(shooter.getShootingSpeed()) - shootingRPM);
 
 		//if speed is within acceptable margin of error, switch to punching
 		if(shooterState == shooterStates.RAMPING && speedDifference < 300 && speedDifference > 0){
@@ -116,7 +116,7 @@ public class Manipulator extends Subsystem{
 		}
 		shooter.setHoodPosition(aimPosition);
 		shooter.shoot(-shootingRPM);
-		shooter.setVisionLEDRingEnabled(true);
+		shooter.setVisionLight(true);
 
 		lastShooterState = shooterState;
 	}
@@ -126,7 +126,7 @@ public class Manipulator extends Subsystem{
 		// this function will get the system back into a state where the punch is retracted and the geneva gear is aligned in order to be able to begin the FSM again
 
 		numPunches = 0;
-		shooter.setVisionLEDRingEnabled(true);
+		shooter.setVisionLight(true);
 
 		//If the punch is out, retract it
 		if(feeder.getPunchExtension()){
@@ -192,13 +192,13 @@ public class Manipulator extends Subsystem{
 	}
 
 	
-	Intake getIntake(){
+	public Intake getIntake(){
 		return intake;
 	}
 	Feeder getFeeder(){
 		return feeder;
 	}
-	Shooter getShooter(){
+	public Shooter getShooter(){
 		return shooter;
 	}
 

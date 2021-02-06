@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
 import frc.robot.utility.*;
 
@@ -28,13 +29,18 @@ public class Robot extends TimedRobot {
 	//public CANSparkMax testMotor;
 
 	//JOYSTICKS
-	public Joystick joystick;
+	public Joystick primaryJoystick;
+	public Joystick secondaryJoystick;
 
 	//GAME PEICE HANDLING
 	public Shooter shooter;
 	public Intake intake;
 	public Feeder feeder;
 	public Manipulator manipulator;
+
+	// GAME STATE
+	private Teleoperated teleoperated;
+	private TeleopFunctions teleopFunctions;
 
 	// TESTING ONLY
 	public ArrayList<Subsystem> testingSubsystems;
@@ -58,7 +64,8 @@ public class Robot extends TimedRobot {
 		System.out.println("Hello World from RED 5 2021!");
 		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		//JOYSTICKS
-		joystick = new Joystick(0);
+		primaryJoystick = new Joystick(0);
+		secondaryJoystick = new Joystick(1);
 
 		//MOTORS
 		sparkDrive = new SparkDrive();
@@ -73,6 +80,14 @@ public class Robot extends TimedRobot {
 		intake = new Intake(intakeMotor, intakePin);
 		feeder = new Feeder(genevaDrive, punch);
 		manipulator = new Manipulator(intake, feeder, shooter);
+
+		// GAME STATE
+		teleopFunctions = new TeleopFunctions(secondaryJoystick, manipulator, sparkDrive);
+		teleoperated = new Teleoperated(primaryJoystick,
+			secondaryJoystick,
+			manipulator,
+			sparkDrive,
+			teleopFunctions);
 
 		sonic1 = new Ultra(6, 7);
 		// sonic2 = new Ultra(6, 7);
@@ -108,17 +123,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void teleopPeriodic() {
 		//testMotor.set(0.3d);
-		// System.out.println(joystick.getY());
-		sparkDrive.tankDrive(joystick.getY(), joystick.getZ());
+		// System.out.println(primaryJoystick.getY());
+		sparkDrive.tankDrive(primaryJoystick.getY(), primaryJoystick.getZ());
 
 		shooter.hoodCalibration();
 
-		// if (joystick.getRawButton(Constants.X_BUTTON)) {
+		// if (primaryJoystick.getRawButton(Constants.X_BUTTON)) {
 		// 	manipulator.prepareShot(2500, 0.75);
 		// } else {
 		// 	shooter.setShootingPercentOutput(0);
 		// }
-		if(joystick.getRawButton(Constants.Y_BUTTON)){
+		if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
 			manipulator.continuousShoot(0.5, 0.75, 3550);
 			System.out.println(shooter.getShootingSpeed());
 		} else {
@@ -126,20 +141,20 @@ public class Robot extends TimedRobot {
 			manipulator.resetManipulatorElements();
 		}
 
-		if(joystick.getRawButton(Constants.RIGHT_BUMPER)){
+		if(primaryJoystick.getRawButton(Constants.RIGHT_BUMPER)){
 			manipulator.sensorAdvanceGeneva(true, true);
 		}
-		else if(joystick.getRawButton(Constants.LEFT_BUMPER)){
+		else if(primaryJoystick.getRawButton(Constants.LEFT_BUMPER)){
 			manipulator.sensorAdvanceGeneva(true, false);
 		}
 		else{
 			manipulator.sensorAdvanceGeneva(false, false);
 		}
 
-		if (joystick.getRawButton(Constants.X_BUTTON)){
+		if (primaryJoystick.getRawButton(Constants.X_BUTTON)){
 			intake.setSpeed(-4000);
 		}
-		else if(joystick.getRawButton(Constants.A_BUTTON)){
+		else if(primaryJoystick.getRawButton(Constants.A_BUTTON)){
 			intake.setSpeed(4000);
 		}
 		else{

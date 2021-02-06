@@ -1,6 +1,11 @@
 package frc.robot.utility;
 
 public class Constants{
+    // Joystick axes
+    public static final int X_AXIS = 0;
+    public static final int Y_AXIS = 1;
+    public static final int Z_AXIS = 2;
+    public static final int W_AXIS = 3;
 
     // Motor Ids
     public static final int INTAKE_MOTOR_ID = 5;

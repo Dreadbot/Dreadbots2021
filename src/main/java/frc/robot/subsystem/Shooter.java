@@ -80,7 +80,7 @@ public class Shooter {
 		// aimingMotor.set(0.25);
 	}
 
-	public void shoot(int rpm) {
+	public void shoot(double rpm) {
 		shooterMotorPID.setReference(rpm, ControlType.kVelocity);
 	}
 
@@ -197,11 +197,11 @@ public class Shooter {
 		shooterMotorPID.setD(d);
 	}
 
-	void setVisionLEDRingEnabled(boolean enabled) {
-		visionLEDRing.set(enabled);
-	}
-
 	public void restoreFactoryDefaults(){
 		shooterMotor.restoreFactoryDefaults();
+	}
+
+	public void setVisionLight(boolean visionLightEnabled) {
+		visionLEDRing.set(visionLightEnabled);
 	}
 }
