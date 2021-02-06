@@ -117,7 +117,6 @@ public class Manipulator extends Subsystem{
 		}
 		shooter.setHoodPosition(aimPosition);
 		shooter.shoot(-shootingRPM);
-		shooter.setVisionLight(true);
 
 		lastShooterState = shooterState;
 	}
@@ -126,7 +125,6 @@ public class Manipulator extends Subsystem{
 		//This function should be called continuously if the system is not shooting or collecting power cells
 		// this function will get the system back into a state where the punch is retracted and the geneva gear is aligned in order to be able to begin the FSM again
 		numPunches = 0;
-		shooter.setVisionLight(true);
 
 		//If the punch is out, retract it
 		if(feeder.getPunchExtension()){

@@ -104,6 +104,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
+		shooter.setVisionLight(true);
 	}
 
 	@Override
@@ -118,6 +119,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Shooter D", 0);
 		SmartDashboard.putNumber("Shooter Target Speed", 3550);
 		System.out.println("Starting Teleop");
+		shooter.setVisionLight(true);
 		shooter.restoreFactoryDefaults();
 		shooter.setHoodPercentOutput(0.25);
 		shooter.setUpperBool(false);
@@ -178,6 +180,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		shooter.setVisionLight(false);
+
 		isTestingCompleted = false;
 		for(Subsystem subsystem : testingSubsystems) {
 			subsystem.setTestingCompleted(false);

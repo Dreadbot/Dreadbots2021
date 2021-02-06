@@ -103,7 +103,6 @@ public class Teleoperated {
 			SmartDashboard.putNumber("camNumber", 0);
 			staleCount = 0;
 		} else if (secondaryJoystick.getRawButton(Constants.B_BUTTON)) {
-			manipulator.getShooter().setVisionLight(true);
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.getRawButton(Constants.RIGHT_BUMPER)) {
 			manipulator.sensorAdvanceGeneva(true, true);
