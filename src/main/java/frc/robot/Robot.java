@@ -173,6 +173,7 @@ public class Robot extends TimedRobot {
 			intake.setPercentOutput(0);
 		}
 
+		teleoperated.teleopShooter();
 		Ultra.automatic();
 		double a = sonic1.getRangeInches();
 		// System.out.println(a);
