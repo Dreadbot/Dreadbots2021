@@ -96,7 +96,8 @@ public class Teleoperated {
 		if (secondaryJoystick.getRawButton(Constants.Y_BUTTON)) {
 			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
 			System.out.println("Cont Shooting");
-			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
+			manipulator.continuousShoot(0.5, 0.5, 3000);
+			//manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.getRawButton(Constants.B_BUTTON) && staleCount < 5) {
 			aimingContinuousShoot(distance, pValue, selectedAngle, 0.4);
