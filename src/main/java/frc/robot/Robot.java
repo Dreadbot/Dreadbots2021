@@ -147,7 +147,6 @@ public class Robot extends TimedRobot {
 		// }
 		if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
 			manipulator.continuousShoot(0.5, 0.75, 3550);
-			SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		} else {
 			// feeder.setPunchExtension(false);
 			manipulator.resetManipulatorElements();
@@ -173,6 +172,7 @@ public class Robot extends TimedRobot {
 			intake.setPercentOutput(0);
 		}
 
+		SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		teleoperated.teleopShooter();
 		Ultra.automatic();
 		double a = sonic1.getRangeInches();
