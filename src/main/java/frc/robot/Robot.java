@@ -113,9 +113,9 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		SmartDashboard.putNumber("Shooter P", .002);
-		SmartDashboard.putNumber("Shooter I", 5e-7);
-		SmartDashboard.putNumber("Shooter D", 0);
+		SmartDashboard.putNumber("Shooter P", .0025);
+		SmartDashboard.putNumber("Shooter I", 3.3e-7);
+		SmartDashboard.putNumber("Shooter D", 0.03);
 		SmartDashboard.putNumber("Shooter Target Speed", 3550);
 		System.out.println("Starting Teleop");
 		shooter.setVisionLight(true);
@@ -132,9 +132,9 @@ public class Robot extends TimedRobot {
 		//testMotor.set(0.3d);
 		// System.out.println(primaryJoystick.getY());
 		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis());
-		shooter.setPID(SmartDashboard.getNumber("Shooter P", .002),
-			SmartDashboard.getNumber("Shooter I", 5e-7),
-			SmartDashboard.getNumber("Shooter D", 0));
+		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
+			SmartDashboard.getNumber("Shooter I", 3.3e-7),
+			SmartDashboard.getNumber("Shooter D", 0.03));
 		SmartDashboard.putNumber("Shooter RPM", manipulator.getShooter().getShootingSpeed());
 
 		shooter.hoodCalibration();
@@ -144,13 +144,12 @@ public class Robot extends TimedRobot {
 		// } else {
 		// 	shooter.setShootingPercentOutput(0);
 		// }
-		if (primaryJoystick.isYButtonPressed()) {
-			manipulator.continuousShoot(0.5, 0.75, 3550);
-			SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
-		} else {
-			// feeder.setPunchExtension(false);
-			manipulator.resetManipulatorElements();
-		}
+		// if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
+		// 	manipulator.continuousShoot(0.5, 0.75, 3550);
+		// } else {
+		// 	// feeder.setPunchExtension(false);
+		// 	manipulator.resetManipulatorElements();
+		// }
 
 		if (primaryJoystick.isRightBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, true);
@@ -168,6 +167,8 @@ public class Robot extends TimedRobot {
 			intake.setPercentOutput(0);
 		}
 
+		SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
+		teleoperated.teleopShooter();
 		Ultra.automatic();
 		double a = sonic1.getRangeInches();
 		// System.out.println(a);

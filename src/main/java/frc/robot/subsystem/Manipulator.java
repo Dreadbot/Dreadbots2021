@@ -47,7 +47,7 @@ public class Manipulator extends Subsystem{
 	}
 
 	public void prepareShot(double rpm, double aimPosition){
-		shooter.shoot(-rpm);
+		shooter.shoot(rpm);
 		shooter.setHoodPosition(aimPosition);
 	}
 
@@ -65,6 +65,7 @@ public class Manipulator extends Subsystem{
 
 	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
+System.out.println("Shooter state: " + shooterState.ordinal());
 
 		//Find difference between intended speed and actual speed
 		int speedDifference = (int) (Math.abs(shooter.getShootingSpeed()) - shootingRPM);
