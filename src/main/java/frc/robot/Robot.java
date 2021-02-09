@@ -8,12 +8,17 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.gamestate.Teleoperated;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.configuration.DreadbotController;
+import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
-import frc.robot.utility.*;
+import frc.robot.utility.Constants;
+import frc.robot.utility.TeleopFunctions;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import static frc.robot.configuration.DreadbotController.JoystickInput.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -38,21 +43,17 @@ public class Robot extends TimedRobot {
 	public Intake intake;
 	public Feeder feeder;
 	public Manipulator manipulator;
-
-	// GAME STATE
-	private Teleoperated teleoperated;
-	private TeleopFunctions teleopFunctions;
-
 	// TESTING ONLY
 	public ArrayList<Subsystem> testingSubsystems;
 	public int currentTestingIndex;
 	public boolean isTestingCompleted;
-
 	public Ultra sonic1;
-
 	//SOLENOIDS
 	Solenoid punch;
 	Solenoid intakePin;
+	// GAME STATE
+	private Teleoperated teleoperated;
+	private TeleopFunctions teleopFunctions;
 
 	// public Ultra sonic2;
 
@@ -65,6 +66,17 @@ public class Robot extends TimedRobot {
 		System.out.println("Hello World from RED 5 2021!");
 		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		//JOYSTICKS
+		try {
+			DreadbotController.init();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		DreadbotController primaryCustomJoystick = new DreadbotController(0);
+		primaryCustomJoystick.isButtonPressed(A_BUTTON);
+		primaryCustomJoystick.isButtonPressed(X_BUTTON);
+		primaryCustomJoystick.getAxisValue(X_AXIS);
+
 		primaryJoystick = new Joystick(0);
 		secondaryJoystick = new Joystick(1);
 
@@ -133,9 +145,9 @@ public class Robot extends TimedRobot {
 		//testMotor.set(0.3d);
 		// System.out.println(primaryJoystick.getY());
 		sparkDrive.tankDrive(primaryJoystick.getY(), primaryJoystick.getZ());
-		shooter.setPID(SmartDashboard.getNumber("Shooter P", .002), 
-					   SmartDashboard.getNumber("Shooter I", 5e-7),
-				       SmartDashboard.getNumber("Shooter D", 0));
+		shooter.setPID(SmartDashboard.getNumber("Shooter P", .002),
+			SmartDashboard.getNumber("Shooter I", 5e-7),
+			SmartDashboard.getNumber("Shooter D", 0));
 		SmartDashboard.putNumber("Shooter RPM", manipulator.getShooter().getShootingSpeed());
 
 		shooter.hoodCalibration();
@@ -145,7 +157,7 @@ public class Robot extends TimedRobot {
 		// } else {
 		// 	shooter.setShootingPercentOutput(0);
 		// }
-		if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
+		if (primaryJoystick.getRawButton(Constants.Y_BUTTON)) {
 			manipulator.continuousShoot(0.5, 0.75, 3550);
 			SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		} else {
@@ -153,23 +165,19 @@ public class Robot extends TimedRobot {
 			manipulator.resetManipulatorElements();
 		}
 
-		if(primaryJoystick.getRawButton(Constants.RIGHT_BUMPER)){
+		if (primaryJoystick.getRawButton(Constants.RIGHT_BUMPER)) {
 			manipulator.sensorAdvanceGeneva(true, true);
-		}
-		else if(primaryJoystick.getRawButton(Constants.LEFT_BUMPER)){
+		} else if (primaryJoystick.getRawButton(Constants.LEFT_BUMPER)) {
 			manipulator.sensorAdvanceGeneva(true, false);
-		}
-		else{
+		} else {
 			manipulator.sensorAdvanceGeneva(false, false);
 		}
 
-		if (primaryJoystick.getRawButton(Constants.X_BUTTON)){
+		if (primaryJoystick.getRawButton(Constants.X_BUTTON)) {
 			intake.setSpeed(-4000);
-		}
-		else if(primaryJoystick.getRawButton(Constants.A_BUTTON)){
+		} else if (primaryJoystick.getRawButton(Constants.A_BUTTON)) {
 			intake.setSpeed(4000);
-		}
-		else{
+		} else {
 			intake.setPercentOutput(0);
 		}
 
@@ -183,7 +191,7 @@ public class Robot extends TimedRobot {
 		shooter.setVisionLight(false);
 
 		isTestingCompleted = false;
-		for(Subsystem subsystem : testingSubsystems) {
+		for (Subsystem subsystem : testingSubsystems) {
 			subsystem.setTestingCompleted(false);
 			subsystem.setCurrentTestIndex(0);
 
@@ -205,7 +213,7 @@ public class Robot extends TimedRobot {
 		manipulator.getShooter().setHoodPercentOutput(0);
 
 		System.out.println("Entering Robot Test Mode.");
-		for(Subsystem i : testingSubsystems){
+		for (Subsystem i : testingSubsystems) {
 			i.testInit();
 		}
 		isTestingCompleted = false;
@@ -223,7 +231,7 @@ public class Robot extends TimedRobot {
 
 		testingSubsystems.get(currentTestingIndex).testPeriodic();
 
-		if(testingSubsystems.get(currentTestingIndex).isTestingCompleted())
+		if (testingSubsystems.get(currentTestingIndex).isTestingCompleted())
 			currentTestingIndex++;
 	}
 }
