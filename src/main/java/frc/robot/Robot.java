@@ -9,16 +9,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.configuration.DreadbotController;
+import frc.robot.utility.DreadbotController;
 import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
 import frc.robot.utility.Constants;
 import frc.robot.utility.TeleopFunctions;
 
-import java.io.IOException;
 import java.util.ArrayList;
-
-import static frc.robot.configuration.DreadbotController.JoystickInput.*;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -35,8 +32,8 @@ public class Robot extends TimedRobot {
 	//public CANSparkMax testMotor;
 
 	//JOYSTICKS
-	public Joystick primaryJoystick;
-	public Joystick secondaryJoystick;
+	public DreadbotController primaryJoystick;
+	public DreadbotController secondaryJoystick;
 
 	//GAME PEICE HANDLING
 	public Shooter shooter;
@@ -66,19 +63,9 @@ public class Robot extends TimedRobot {
 		System.out.println("Hello World from RED 5 2021!");
 		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
 		//JOYSTICKS
-		try {
-			DreadbotController.init();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
-		DreadbotController primaryCustomJoystick = new DreadbotController(0);
-		primaryCustomJoystick.isButtonPressed(A_BUTTON);
-		primaryCustomJoystick.isButtonPressed(X_BUTTON);
-		primaryCustomJoystick.getAxisValue(X_AXIS);
-
-		primaryJoystick = new Joystick(0);
-		secondaryJoystick = new Joystick(1);
+		primaryJoystick = new DreadbotController(0);
+		secondaryJoystick = new DreadbotController(1);
 
 		//MOTORS
 		sparkDrive = new SparkDrive();
@@ -107,7 +94,7 @@ public class Robot extends TimedRobot {
 
 		testingSubsystems = new ArrayList<>();
 		testingSubsystems.add(sparkDrive);
-		testingSubsystems.add(manipulator);
+		//testingSubsystems.add(manipulator);
 	}
 
 	@Override
@@ -144,7 +131,7 @@ public class Robot extends TimedRobot {
 	public void teleopPeriodic() {
 		//testMotor.set(0.3d);
 		// System.out.println(primaryJoystick.getY());
-		sparkDrive.tankDrive(primaryJoystick.getY(), primaryJoystick.getZ());
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis());
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .002),
 			SmartDashboard.getNumber("Shooter I", 5e-7),
 			SmartDashboard.getNumber("Shooter D", 0));
@@ -157,7 +144,7 @@ public class Robot extends TimedRobot {
 		// } else {
 		// 	shooter.setShootingPercentOutput(0);
 		// }
-		if (primaryJoystick.getRawButton(Constants.Y_BUTTON)) {
+		if (primaryJoystick.isYButtonPressed()) {
 			manipulator.continuousShoot(0.5, 0.75, 3550);
 			SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		} else {
@@ -165,17 +152,17 @@ public class Robot extends TimedRobot {
 			manipulator.resetManipulatorElements();
 		}
 
-		if (primaryJoystick.getRawButton(Constants.RIGHT_BUMPER)) {
+		if (primaryJoystick.isRightBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, true);
-		} else if (primaryJoystick.getRawButton(Constants.LEFT_BUMPER)) {
+		} else if (primaryJoystick.isLeftBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, false);
 		} else {
 			manipulator.sensorAdvanceGeneva(false, false);
 		}
 
-		if (primaryJoystick.getRawButton(Constants.X_BUTTON)) {
+		if (primaryJoystick.isXButtonPressed()) {
 			intake.setSpeed(-4000);
-		} else if (primaryJoystick.getRawButton(Constants.A_BUTTON)) {
+		} else if (primaryJoystick.isAButtonPressed()) {
 			intake.setSpeed(4000);
 		} else {
 			intake.setPercentOutput(0);

@@ -64,20 +64,18 @@ public abstract class Subsystem {
 			tests.get(currentTestIndex).perform();
 			previousTestIndex = currentTestIndex;
 		}
+	
+		if(timer.hasElapsed(testSeconds)){
+			++currentTestIndex;
+			timer.stop();
+			timer.reset();
+			timer.start();
+		}
 
-		if(currentTestIndex >= tests.size() - 1) {
+		if(currentTestIndex >= tests.size()) {
 			testingCompleted = true;
 			return;
 		}
-	
-		if(!timer.hasElapsed(testSeconds)){
-			return;
-		}
-		
-		++currentTestIndex;
-		timer.stop();
-		timer.reset();
-		timer.start();
 	}
 
 	public Timer getTimer() {

@@ -6,11 +6,12 @@ import frc.robot.subsystem.Manipulator;
 import frc.robot.subsystem.SparkDrive;
 import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
+import frc.robot.utility.DreadbotController;
 import frc.robot.utility.TeleopFunctions;
 
 public class Teleoperated {
-	private Joystick primaryJoystick;
-	private Joystick secondaryJoystick;
+	private DreadbotController primaryJoystick;
+	private DreadbotController secondaryJoystick;
 	private Manipulator manipulator;
 	private SparkDrive sparkDrive;
 	private TeleopFunctions teleopFunctions;
@@ -26,8 +27,8 @@ public class Teleoperated {
 	double distance = 120;
 	double rotSpeed = 0;
 
-	public Teleoperated(Joystick primaryJoystick,
-	                    Joystick secondaryJoystick,
+	public Teleoperated(DreadbotController primaryJoystick,
+	                    DreadbotController secondaryJoystick,
 	                    Manipulator manipulator,
 	                    SparkDrive sparkDrive,
 	                    TeleopFunctions teleopFunctions) {
@@ -52,9 +53,9 @@ public class Teleoperated {
 	}
 
 	public void teleopIntake() {
-		if (secondaryJoystick.getRawButton(Constants.X_BUTTON)) {
+		if (secondaryJoystick.isXButtonPressed()) {
 			manipulator.getIntake().setSpeed(-4000);
-		} else if (secondaryJoystick.getRawButton(Constants.A_BUTTON)) {
+		} else if (secondaryJoystick.isAButtonPressed()) {
 			manipulator.getIntake().setSpeed(4000);
 		} else {
 			manipulator.getIntake().setPercentOutput(0);
@@ -62,12 +63,13 @@ public class Teleoperated {
 	}
 
 	public void teleopDrive() {
+		//TODO Write this better
 		DriveMode driveMode = DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_TRIGGER) ? DriveMode.TURBO : DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_BUMPER) ? DriveMode.TURTLE : DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightTriggerPressed() ? DriveMode.TURBO : DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightBumperPressed() ? DriveMode.TURTLE : DriveMode.NORMAL;
 
-		sparkDrive.tankDrive(primaryJoystick.getRawAxis(Constants.Y_AXIS),
-			primaryJoystick.getRawAxis(Constants.Z_AXIS),
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
+			primaryJoystick.getZAxis(),
 			driveMode);
 	}
 
@@ -93,20 +95,20 @@ public class Teleoperated {
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
 
-		if (secondaryJoystick.getRawButton(Constants.Y_BUTTON)) {
+		if (secondaryJoystick.isYButtonPressed()) {
 			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
 			System.out.println("Cont Shooting");
 			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
 			SmartDashboard.putNumber("camNumber", 0);
-		} else if (secondaryJoystick.getRawButton(Constants.B_BUTTON) && staleCount < 5) {
+		} else if (secondaryJoystick.isBButtonPressed() && staleCount < 5) {
 			aimingContinuousShoot(distance, pValue, selectedAngle, 0.4);
 			SmartDashboard.putNumber("camNumber", 0);
 			staleCount = 0;
-		} else if (secondaryJoystick.getRawButton(Constants.B_BUTTON)) {
+		} else if (secondaryJoystick.isBButtonPressed()) {
 			SmartDashboard.putNumber("camNumber", 0);
-		} else if (secondaryJoystick.getRawButton(Constants.RIGHT_BUMPER)) {
+		} else if (secondaryJoystick.isRightBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, true);
-		} else if (secondaryJoystick.getRawButton(Constants.LEFT_BUMPER)) {
+		} else if (secondaryJoystick.isLeftBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, false);
 		} else if (manipulator.getSensorAdvanceGenevaState() == 2) {
 			//std::cout << "Reseting" << std::endl;

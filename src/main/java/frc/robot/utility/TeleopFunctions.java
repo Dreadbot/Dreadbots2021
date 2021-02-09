@@ -9,7 +9,7 @@ import frc.robot.subsystem.SparkDrive;
 public class TeleopFunctions {
 	private final double slop = 1.5;
 	private final int timeToAdjust = 10;
-	private Joystick primaryJoystick;
+	private DreadbotController primaryJoystick;
 	private Manipulator manipulator;
 	private SparkDrive sparkDrive;
 	private int shooterButton = 1;
@@ -21,7 +21,7 @@ public class TeleopFunctions {
 	private int turnButtonTimeout;
 	private boolean turnComplete = true;
 
-	public TeleopFunctions(Joystick primaryJoystick, Manipulator manipulator, SparkDrive sparkDrive) {
+	public TeleopFunctions(DreadbotController primaryJoystick, Manipulator manipulator, SparkDrive sparkDrive) {
 		this.primaryJoystick = primaryJoystick;
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
@@ -78,11 +78,12 @@ public class TeleopFunctions {
 
 		//Drive the robot using the SparkDrive::TankDrive function, with the forward/backward axis still based on
 		//controller input, but the rotation axis of the drive base based on the rotation rate found
+		//TODO Write this better
 		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_TRIGGER) ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_BUMPER) ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
 
-		sparkDrive.tankDrive(primaryJoystick.getRawAxis(Constants.Y_AXIS),
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
 			-currentRotationRate,
 			driveMode);
 
@@ -116,10 +117,10 @@ public class TeleopFunctions {
 		//Drive the robot using the SparkDrive::TankDrive function, with the forward/backward axis still based on
 		//controller input, but the rotation axis of the drive base based on the rotation rate found
 		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_TRIGGER) ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.getRawButton(Constants.RIGHT_BUMPER) ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
 
-		sparkDrive.tankDrive(primaryJoystick.getRawAxis(Constants.Y_AXIS),
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
 			-currentRotationRate,
 			driveMode);
 
