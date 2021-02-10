@@ -30,14 +30,13 @@ public class Teleoperated {
 	public Teleoperated(DreadbotController primaryJoystick,
 	                    DreadbotController secondaryJoystick,
 	                    Manipulator manipulator,
-	                    SparkDrive sparkDrive,
-	                    TeleopFunctions teleopFunctions) {
+	                    SparkDrive sparkDrive) {
 		this.primaryJoystick = primaryJoystick;
 		this.secondaryJoystick = secondaryJoystick;
 
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
-		this.teleopFunctions = teleopFunctions;
+		this.teleopFunctions = new TeleopFunctions(secondaryJoystick, manipulator, sparkDrive);
 
 		aimShootState = AimShootStates.AIMING;
 		maxAimCounts = 150;

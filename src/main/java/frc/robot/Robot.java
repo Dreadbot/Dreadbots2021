@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import com.revrobotics.CANSparkMax;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.utility.DreadbotController;
 import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
-import frc.robot.utility.Constants;
+import frc.robot.utility.DreadbotController;
 import frc.robot.utility.TeleopFunctions;
 
 import java.util.ArrayList;
@@ -25,34 +21,26 @@ import java.util.ArrayList;
  */
 public class Robot extends TimedRobot {
 
-	//MOTORS
+	// SUBSYSTEMS
 	public SparkDrive sparkDrive;
-	public CANSparkMax genevaDrive;
-	public CANSparkMax intakeMotor;
-	//public CANSparkMax testMotor;
-
-	//JOYSTICKS
-	public DreadbotController primaryJoystick;
-	public DreadbotController secondaryJoystick;
-
-	//GAME PEICE HANDLING
 	public Shooter shooter;
 	public Intake intake;
 	public Feeder feeder;
 	public Manipulator manipulator;
+	public Ultra sonic1;
+	// public Ultra sonic2;
+
+	// JOYSTICKS
+	public DreadbotController primaryJoystick;
+	public DreadbotController secondaryJoystick;
+
 	// TESTING ONLY
 	public ArrayList<Subsystem> testingSubsystems;
 	public int currentTestingIndex;
 	public boolean isTestingCompleted;
-	public Ultra sonic1;
-	//SOLENOIDS
-	Solenoid punch;
-	Solenoid intakePin;
+
 	// GAME STATE
 	private Teleoperated teleoperated;
-	private TeleopFunctions teleopFunctions;
-
-	// public Ultra sonic2;
 
 	/**
 	 * This function is run when the robot is first started up and should be used for any
@@ -60,41 +48,46 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		System.out.println("Hello World from RED 5 2021!");
-		//testMotor = new CANSparkMax(7, CANSparkMaxLowLevel.MotorType.kBrushless);
-		//JOYSTICKS
+		System.out.println("Robot.robotInit\n");
 
+		System.out.println("Starting Initialization of RedFive 2021...");
+
+		// Joystick Initialization
+		System.out.println("Joystick Initialization...");
 		primaryJoystick = new DreadbotController(0);
 		secondaryJoystick = new DreadbotController(1);
 
-		//MOTORS
+		// Subsystem Initialization
+		System.out.println("SparkDrive Initialization...");
 		sparkDrive = new SparkDrive();
-		genevaDrive = new CANSparkMax(Constants.GENEVA_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
-		intakeMotor = new CANSparkMax(Constants.INTAKE_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
 
-		//SOLENOIDS
-		punch = new Solenoid(Constants.PUNCH_SOLENOID_ID);
-		intakePin = new Solenoid(Constants.INTAKE_PIN_ID);
-
+		System.out.println("Manipulator Initialization...");
 		shooter = new Shooter();
-		intake = new Intake(intakeMotor, intakePin);
-		feeder = new Feeder(genevaDrive, punch);
-		manipulator = new Manipulator(intake, feeder, shooter);
+		intake = new Intake();
+		feeder = new Feeder();
+		manipulator = new Manipulator(intake,
+			feeder,
+			shooter);
 
-		// GAME STATE
-		teleopFunctions = new TeleopFunctions(secondaryJoystick, manipulator, sparkDrive);
-		teleoperated = new Teleoperated(primaryJoystick,
-			secondaryJoystick,
-			manipulator,
-			sparkDrive,
-			teleopFunctions);
-
+		System.out.println("Ultrasonic Initialization...");
 		sonic1 = new Ultra(6, 7);
 		// sonic2 = new Ultra(6, 7);
 
+		// Game State Initialization
+		System.out.println("Game State Initialization...");
+		teleoperated = new Teleoperated(primaryJoystick,
+			secondaryJoystick,
+			manipulator,
+			sparkDrive);
+
+		// Testing Initialization
+		System.out.println("Testing Initialization...");
 		testingSubsystems = new ArrayList<>();
 		testingSubsystems.add(sparkDrive);
 		//testingSubsystems.add(manipulator);
+
+		System.out.println("RedFive, standing by.");
+		System.out.println("GO DREADBOTS!");
 	}
 
 	@Override
@@ -108,7 +101,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousPeriodic() {
-
 	}
 
 	@Override

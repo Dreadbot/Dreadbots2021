@@ -5,6 +5,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import frc.robot.utility.Constants;
 
 public class Feeder {
 	private final int genevaSwitchPort = 9;
@@ -16,9 +17,9 @@ public class Feeder {
 	private DigitalInput genevaLimitSwitch;
 	private DigitalInput punchLimitSwitch;
 
-	public Feeder(CANSparkMax genevaDrive, Solenoid punch) {
-		this.genevaDrive = genevaDrive;
-		this.punch = punch;
+	public Feeder() {
+		this.genevaDrive = new CANSparkMax(Constants.GENEVA_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
+		this.punch = new Solenoid(Constants.PUNCH_SOLENOID_ID);
 
 		genevaDrive.setIdleMode(CANSparkMax.IdleMode.kBrake);
 		genevaControler = genevaDrive.getPIDController();
@@ -63,7 +64,7 @@ public class Feeder {
 		setPunchExtension(true);
 		try {
 			Thread.sleep(millisecondsBetween);
-		} catch (Exception ex) {
+		} catch (InterruptedException ex) {
 			System.err.println(ex);
 		}
 		setPunchExtension(false);
