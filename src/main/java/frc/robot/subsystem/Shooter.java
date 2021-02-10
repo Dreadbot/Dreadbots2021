@@ -197,10 +197,6 @@ public class Shooter {
 		shooterMotorPID.setD(d);
 	}
 
-	public void restoreFactoryDefaults(){
-		shooterMotor.restoreFactoryDefaults();
-	}
-
 	public void setVisionLight(boolean visionLightEnabled) {
 		visionLEDRing.set(visionLightEnabled);
 	}

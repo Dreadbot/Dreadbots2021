@@ -105,25 +105,29 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		System.out.println("Robot.teleopInit\n");
+
+		// SmartDashboard Setup
 		SmartDashboard.putNumber("Shooter P", .0025);
 		SmartDashboard.putNumber("Shooter I", 3.3e-7);
 		SmartDashboard.putNumber("Shooter D", 0.03);
 		SmartDashboard.putNumber("Shooter Target Speed", 3550);
-		System.out.println("Starting Teleop");
+
+		// Setup shooter for teleop
 		shooter.setVisionLight(true);
-		shooter.restoreFactoryDefaults();
 		shooter.setHoodPercentOutput(0.25);
 		shooter.setUpperBool(false);
 		shooter.setLowerBool(false);
 		shooter.setAimReadiness(false);
+
 		intake.deployIntake();
 	}
 
 	@Override
 	public void teleopPeriodic() {
-		//testMotor.set(0.3d);
-		// System.out.println(primaryJoystick.getY());
+		// Teleop Logic
 		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis());
+
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
 			SmartDashboard.getNumber("Shooter I", 3.3e-7),
 			SmartDashboard.getNumber("Shooter D", 0.03));
