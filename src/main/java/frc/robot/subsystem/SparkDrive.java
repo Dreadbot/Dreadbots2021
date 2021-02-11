@@ -134,6 +134,10 @@ public class SparkDrive extends Subsystem {
 		return gyroscope;
 	}
 
+	public List<CANSparkMax> getMotors() {
+		return motors;
+	}
+
 	public CANSparkMax getMotor(int port) {
 		if(!DreadbotMath.inRange(port, 0, motors.size()))
 			return null;

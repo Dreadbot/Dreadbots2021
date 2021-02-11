@@ -6,10 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
 import frc.robot.utility.DreadbotController;
-import frc.robot.utility.TeleopFunctions;
 
 import java.util.ArrayList;
 
@@ -40,6 +40,7 @@ public class Robot extends TimedRobot {
 	public boolean isTestingCompleted;
 
 	// GAME STATE
+	private Autonomous autonomous;
 	private Teleoperated teleoperated;
 
 	/**
@@ -79,6 +80,7 @@ public class Robot extends TimedRobot {
 			secondaryJoystick,
 			manipulator,
 			sparkDrive);
+		autonomous = new Autonomous();
 
 		// Testing Initialization
 		System.out.println("Testing Initialization...");
@@ -97,10 +99,13 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		shooter.setVisionLight(true);
+
+		autonomous.autonomousInit();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
+		autonomous.autonomousPeriodic();
 	}
 
 	@Override
@@ -172,6 +177,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		autonomous.disabledInit();
+
 		shooter.setVisionLight(false);
 
 		isTestingCompleted = false;
