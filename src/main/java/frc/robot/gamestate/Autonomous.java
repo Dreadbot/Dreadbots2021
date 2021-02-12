@@ -1,7 +1,9 @@
 package frc.robot.gamestate;
 
+import frc.robot.Robot;
 import frc.robot.gamestate.routine.AutonSegment;
 import frc.robot.gamestate.routine.AutonTimer;
+import frc.robot.subsystem.Ultra;
 
 import java.util.ArrayList;
 
@@ -13,14 +15,19 @@ public class Autonomous {
 	private ArrayList<AutonSegment> autonSegments;
 	private int autonRoutineIndex;
 	private boolean autonCompleted;
+	private Robot robot;
+
+	private Ultra ultrasonic = robot.sonic1;
 
 	/**
 	 * Default Constructor (no-args)
 	 */
-	public Autonomous() {
+	public Autonomous(Robot robot) {
 		this.autonSegments = new ArrayList<>();
 		this.autonRoutineIndex = 0;
 		this.autonCompleted = false;
+
+		this.robot = robot;
 
 		// Manually add segments to the routine (will be changed in the future)
 		this.autonSegments.add(new AutonTimer(1.0));
@@ -36,6 +43,10 @@ public class Autonomous {
 
 		// Call init method for first autonomous segment in the routine
 		autonSegments.get(autonRoutineIndex).autonomousInit();
+
+		// Test for ultrasonics
+		
+
 	}
 
 	/**
