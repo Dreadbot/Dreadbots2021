@@ -5,7 +5,8 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.SPI;
+
+import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.utility.DreadbotMath;
 
 import java.util.ArrayList;
@@ -22,7 +23,8 @@ public class SparkDrive extends Subsystem {
 		this.motors = new ArrayList<>();
 		for (int i = 0; i < 4; i++)
 			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
-		this.gyroscope = new AHRS(SPI.Port.kMXP);
+		//this.gyroscope = new AHRS(SPI.Port.kMXP);
+		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
 
 		this.stop();
@@ -81,7 +83,7 @@ public class SparkDrive extends Subsystem {
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
 	                      final DriveMode driveMode) {
-		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.05);
+		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.09);
 	}
 
 	/**

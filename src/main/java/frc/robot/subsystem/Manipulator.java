@@ -53,19 +53,19 @@ public class Manipulator extends Subsystem{
 
 	public double getSelectedRPM(double inches){
 		inches /= 12;
-		//below math really should have been commented in the C++ original, but wasn't
+		//equation from a regression we did by trial and error.
 		return ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000;
 	}
 
 	public double getSelectedHoodPosition(double inches){
 		inches /= 12;
-		//below math really should have been commented in the C++ original, but wasn't
+		//equation from a regression we did by trial and error
 		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
 	}
 
 	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
-System.out.println("Shooter state: " + shooterState.ordinal());
+// System.out.println("Shooter state: " + shooterState.ordinal());
 
 		//Find difference between intended speed and actual speed
 		int speedDifference = (int) (Math.abs(shooter.getShootingSpeed()) - shootingRPM);
