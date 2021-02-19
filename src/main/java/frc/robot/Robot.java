@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
+import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotController;
 
@@ -126,13 +127,22 @@ public class Robot extends TimedRobot {
 		shooter.setLowerBool(false);
 		shooter.setAimReadiness(false);
 
+		sparkDrive.getGyroscope().reset();
+
 		intake.deployIntake();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		// Teleop Logic
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis());
+		DriveMode mode = DriveMode.NORMAL;
+		if(primaryJoystick.isRightBumperPressed()){
+			mode = DriveMode.TURTLE;
+		}
+		else if (primaryJoystick.isLeftBumperPressed()){
+			mode = DriveMode.TURBO;
+		}
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis(), mode);
 
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
 			SmartDashboard.getNumber("Shooter I", 3.3e-7),

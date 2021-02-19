@@ -69,7 +69,9 @@ public class Manipulator extends Subsystem{
 
 		//Find difference between intended speed and actual speed
 		int speedDifference = (int) (Math.abs(shooter.getShootingSpeed()) - shootingRPM);
-
+		System.out.println("**********speed diff: "+speedDifference);
+		System.out.println("*************shooter state: "+shooterState);
+		System.out.println("feeder.getPunchSwitchState(): " + feeder.getPunchSwitchState());
 		//if speed is within acceptable margin of error, switch to punching
 		if(shooterState == shooterStates.RAMPING && speedDifference < 300 && speedDifference > 0){
 			shooterState = shooterStates.PUNCHING;
@@ -145,6 +147,7 @@ public class Manipulator extends Subsystem{
 			shooter.setHoodPosition(0);
 		}
 		shooter.setShootingPercentOutput(0);
+		sensorAdvanceGeneva(false, false);
 	}
 
 	public int getNumPunches(){
@@ -152,7 +155,7 @@ public class Manipulator extends Subsystem{
 	}
 
 	public void sensorAdvanceGeneva(boolean spin, boolean forward){
-		double genevaSpeed = 0.4;
+		double genevaSpeed = 0.5;
 		if(genevaState == genevaStates.STOPPED && spin){
 			if(forward){
 				feeder.setSpin(-genevaSpeed);

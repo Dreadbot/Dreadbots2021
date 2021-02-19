@@ -14,4 +14,7 @@ public class Constants{
     //Ultra
     public static final int ULTRA_PING_CHANNEL_ID = 6;
     public static final int ULTRA_ECHO_CHANNEL_ID = 7;
+
+    //DRIVE CONSTANTS
+    public static final double DRIVE_SPEED_MULTIPLIER = 0.75;
 }

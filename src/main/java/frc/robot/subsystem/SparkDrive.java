@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotMath;
 
 import java.util.ArrayList;
@@ -102,9 +103,14 @@ public class SparkDrive extends Subsystem {
 	                      final double joystickDeadband) {
 		double[] speedControllerOutputs = new double[4];
 
+		// System.out.println("TankDrive: forward:" + forwardAxisFactor
+		// 	+ " rotation:" + rotationAxisFactor + "  mode: " + driveMode
+		// 	+ " deadband: " + joystickDeadband );
 		// Clamp Values to Acceptable Ranges (between -1.0 and 1.0).
 		forwardAxisFactor = DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
 		rotationAxisFactor = DreadbotMath.clampValue(rotationAxisFactor, -1.0d, 1.0d);
+		//forwardAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
+		//rotationAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
 
 		// Apply an Optional Joystick Deadband
 		forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);

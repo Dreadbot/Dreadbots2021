@@ -109,8 +109,8 @@ public class TeleopFunctions {
 		// Find the difference between the current angle and the target angle, multiply
 		// by a set value, and use that to find the rate
 		// System.out.println("Gyroscope Angle: " 	+sparkDrive.getGyroscope().getYaw());
-		double error = (((double) sparkDrive.getGyroscope().getYaw()) - targetAngle)*-1;
-		// System.out.println("ERROR: " + error);
+		double error = (((double) sparkDrive.getGyroscope().getYaw()) - targetAngle) * -1;
+		System.out.println("Yaw: " + sparkDrive.getGyroscope().getYaw() + " ERROR: " + error);
 
 		// std::cout << "Error: " << error;
 

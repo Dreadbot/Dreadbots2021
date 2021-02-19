@@ -92,13 +92,13 @@ public class Teleoperated {
 			selectedAngle = SmartDashboard.getNumber("selectedAngle", 0.0);
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
-
 		if (secondaryJoystick.isYButtonPressed()) {
 			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
 			System.out.println("Cont Shooting");
 			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.isBButtonPressed() && staleCount < 5) {
+			//System.out.println("B BUTTON PRESSED");
 			aimingContinuousShoot(distance, selectedAngle, 0.4);
 			SmartDashboard.putNumber("camNumber", 0);
 			staleCount = 0;
@@ -114,18 +114,16 @@ public class Teleoperated {
 			teleopFunctions.setTurnStatus(true);
 			aimCounts = 0;
 			aimShootState = AimShootStates.AIMING;
-			manipulator.sensorAdvanceGeneva(false, false);
 			rotSpeed = 0;
 		} else {
 			// SmartDashboard.putNumber("camNumber", 1);
 			manipulator.resetManipulatorElements();
-			aimCounts = 0;
-			aimShootState = AimShootStates.AIMING;
 		}
 	}
 
 	public void aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
 		double rpm = manipulator.getSelectedRPM(distance);
+		SmartDashboard.putNumber("Target Shooting Velocity", rpm);
 		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
 
 		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
