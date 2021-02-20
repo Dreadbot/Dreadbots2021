@@ -1,0 +1,11 @@
+7 motor turns = 1 wheel turn
+Circumference: 20in
+Track Width: 26.5in
+
+kS: 0.128
+kV: 0.0454
+kA: 0.0119
+r^2: 0.991
+Track Width: 29.5668
+kP: 0.563
+kD: 0.0

@@ -6,6 +6,9 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.utility.DreadbotMath;
 
 import java.util.ArrayList;
@@ -17,13 +20,18 @@ public class SparkDrive extends Subsystem {
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
 
+	private final DifferentialDriveOdometry odometry;
+
 	public SparkDrive() {
 		super("SparkDrive");
 		this.motors = new ArrayList<>();
 		for (int i = 0; i < 4; i++)
 			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
+
 		this.gyroscope = new AHRS(SPI.Port.kMXP);
 		this.gyroscope.reset();
+
+		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
 
 		this.stop();
 
@@ -46,6 +54,55 @@ public class SparkDrive extends Subsystem {
 		// Runs a rotation (negative) drive test for 2.5s, then stops the drivetrain.
 		addTest(() -> tankDrive(0.0d, -1.0d, DriveMode.TURTLE, 0.0d), "Negative Rotation Drive Test", 2.5d);
 		addTest(this::stop, 1.0d);
+	}
+
+	public void periodic() {
+		odometry.update(gyroscope.getRotation2d(),
+			getMotorEncoder(1).getPosition(),
+			getMotorEncoder(2).getPosition());
+	}
+
+	public Pose2d getPose() {
+		return odometry.getPoseMeters();
+	}
+
+	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+		return new DifferentialDriveWheelSpeeds(
+			getMotorEncoder(1).getVelocity(),
+			getMotorEncoder(2).getVelocity());
+	}
+
+	public void resetOdometry(Pose2d pose) {
+		resetEncoders();
+		odometry.resetPosition(pose, gyroscope.getRotation2d());
+	}
+
+	public void tankDriveVolts(double leftVolts, double rightVolts) {
+		for(int i = 1; i < 5; i += 2)
+			motors.get(i).set(leftVolts / 2);
+		for(int i = 2; i < 5; i += 2)
+			motors.get(i).set(rightVolts / 2);
+	}
+
+	public void resetEncoders() {
+		getMotorEncoder(1).setPosition(0.0);
+		getMotorEncoder(2).setPosition(0.0);
+	}
+
+	public double getAverageEncoderDistance() {
+		return (getMotorEncoder(1).getPosition() + getMotorEncoder(2).getPosition()) / 2;
+	}
+
+	public void zeroHeading() {
+		gyroscope.reset();
+	}
+
+	public double getHeading() {
+		return gyroscope.getYaw();
+	}
+
+	public double getTurnRate() {
+		return -gyroscope.getRate();
 	}
 
 	/**
@@ -139,22 +196,22 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public CANSparkMax getMotor(int port) {
-		if(!DreadbotMath.inRange(port, 0, motors.size()))
+		if (!DreadbotMath.inRange(port, 0, motors.size()))
 			return null;
 		return motors.get(port);
 	}
-	
+
 	public CANEncoder getMotorEncoder(int port) {
 		CANSparkMax motor = getMotor(port);
-		if(motor == null)
+		if (motor == null)
 			return null;
-		
+
 		return motor.getEncoder();
 	}
 
 	public CANPIDController getMotorPIDController(int port) {
 		CANSparkMax motor = getMotor(port);
-		if(motor == null)
+		if (motor == null)
 			return null;
 
 		return motor.getPIDController();

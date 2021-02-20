@@ -1,5 +1,14 @@
 package frc.robot.gamestate;
 
+import edu.wpi.first.wpilibj.controller.RamseteController;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.gamestate.routine.AutonSegment;
 import frc.robot.gamestate.routine.AutonTimer;
 
@@ -25,6 +34,31 @@ public class Autonomous {
 		// Manually add segments to the routine (will be changed in the future)
 		this.autonSegments.add(new AutonTimer(1.0));
 		this.autonSegments.add(new AutonTimer(1.0));
+
+		System.out.println("Starting to generate trajectory...");
+		Pose2d startWaypoint = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
+		Pose2d endWaypoint = new Pose2d(Units.feetToMeters(2.5), Units.feetToMeters(2.5), Rotation2d.fromDegrees(90));
+
+		ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
+
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(1.0, 1.5);
+
+		Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+			startWaypoint,
+			interiorWaypoints,
+			endWaypoint,
+			trajectoryConfig
+		);
+
+		System.out.println("Finished generating trajectory...");
+		System.out.println("trajectory = " + trajectory);
+
+		RamseteController controller = new RamseteController();
+
+		Trajectory.State goal = trajectory.sample(0.0);
+		System.out.println("goal = " + goal);
+
+		// ChassisSpeeds adjustedSpeeds = controller.calculate(currentRobotPosition, goal);
 	}
 
 	/**
