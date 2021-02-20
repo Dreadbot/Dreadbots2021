@@ -75,7 +75,6 @@ public class Teleoperated {
 	public void teleopShooter() {
 		SmartDashboard.putNumber("Current Angle", sparkDrive.getGyroscope().getYaw());
 		double hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
-		double pValue = SmartDashboard.getNumber("Turn P Value", 0.002);
 
 		if (SmartDashboard.getNumber("detectionCount", lastCount) == lastCount)
 			staleCount++;
@@ -90,17 +89,17 @@ public class Teleoperated {
 
 		//if we are done turning (not currently turning), then update angle from vision
 		if (teleopFunctions.getTurnStatus()) {
-			selectedAngle = (sparkDrive.getGyroscope().getYaw() - SmartDashboard.getNumber("selectedAngle", 0.0));
+			selectedAngle = SmartDashboard.getNumber("selectedAngle", 0.0);
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
-
 		if (secondaryJoystick.isYButtonPressed()) {
 			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
 			System.out.println("Cont Shooting");
 			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.isBButtonPressed() && staleCount < 5) {
-			aimingContinuousShoot(distance, pValue, selectedAngle, 0.4);
+			//System.out.println("B BUTTON PRESSED");
+			aimingContinuousShoot(distance, selectedAngle, 0.4);
 			SmartDashboard.putNumber("camNumber", 0);
 			staleCount = 0;
 		} else if (secondaryJoystick.isBButtonPressed()) {
@@ -109,47 +108,31 @@ public class Teleoperated {
 			manipulator.sensorAdvanceGeneva(true, true);
 		} else if (secondaryJoystick.isLeftBumperPressed()) {
 			manipulator.sensorAdvanceGeneva(true, false);
-		} else if (manipulator.getSensorAdvanceGenevaState() == 2) {
+		} else if (manipulator.getSensorAdvanceGenevaState() == 2) { //2 means Geneva is stopped
 			//std::cout << "Reseting" << std::endl;
 			manipulator.resetManipulatorElements();
 			teleopFunctions.setTurnStatus(true);
 			aimCounts = 0;
 			aimShootState = AimShootStates.AIMING;
-			manipulator.sensorAdvanceGeneva(false, false);
 			rotSpeed = 0;
 		} else {
-			SmartDashboard.putNumber("camNumber", 1);
+			// SmartDashboard.putNumber("camNumber", 1);
+			manipulator.resetManipulatorElements();
 		}
 	}
 
 	public void aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
 		double rpm = manipulator.getSelectedRPM(distance);
+		SmartDashboard.putNumber("Target Shooting Velocity", rpm);
 		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
 
 		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
 
 		switch (aimShootState) {
 			case AIMING:
-				rotSpeed = teleopFunctions.calculateTurnToAngle(targetAngle);
-				manipulator.prepareShot(rpm, hoodPosition);
-				break;
-			case SHOOTING:
-				sparkDrive.stop();
-				manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
-				break;
-		}
-		aimCounts++;
-	}
-
-	public void aimingContinuousShoot(double rpm, double hoodPosition, double targetAngle, double genevaSpeed) {
-		SmartDashboard.putNumber("aim counts", aimCounts);
-
-		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
-
-		switch (aimShootState) {
-			case AIMING:
+				// rotSpeed = teleopFunctions.calculateTurnToAngle(targetAngle);
 				teleopFunctions.WPITurnToAngle(targetAngle);
-				manipulator.prepareShot(rpm, hoodPosition);
+				manipulator.prepareShot(-rpm, hoodPosition);
 				break;
 			case SHOOTING:
 				sparkDrive.stop();
@@ -158,6 +141,24 @@ public class Teleoperated {
 		}
 		aimCounts++;
 	}
+
+	// public void aimingContinuousShoot(double rpm, double hoodPosition, double targetAngle, double genevaSpeed) {
+	// 	SmartDashboard.putNumber("aim counts", aimCounts);
+
+	// 	aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
+
+	// 	switch (aimShootState) {
+	// 		case AIMING:
+	// 			teleopFunctions.WPITurnToAngle(targetAngle);
+	// 			manipulator.prepareShot(rpm, hoodPosition);
+	// 			break;
+	// 		case SHOOTING:
+	// 			sparkDrive.stop();
+	// 			manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
+	// 			break;
+	// 	}
+	// 	aimCounts++;
+	// }
 
 	public void resetAimCounts() {
 		aimCounts = 0;

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
 import frc.robot.subsystem.*;
+import frc.robot.subsystem.SparkDrive.DriveMode;
+import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotController;
 
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class Robot extends TimedRobot {
 			shooter);
 
 		System.out.println("Ultrasonic Initialization...");
-		sonic1 = new Ultra(6, 7);
+		sonic1 = new Ultra(Constants.ULTRA_PING_CHANNEL_ID, Constants.ULTRA_ECHO_CHANNEL_ID);
 		// sonic2 = new Ultra(6, 7);
 
 		// Game State Initialization
@@ -125,13 +127,22 @@ public class Robot extends TimedRobot {
 		shooter.setLowerBool(false);
 		shooter.setAimReadiness(false);
 
+		sparkDrive.getGyroscope().reset();
+
 		intake.deployIntake();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		// Teleop Logic
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis());
+		DriveMode mode = DriveMode.NORMAL;
+		if(primaryJoystick.isRightBumperPressed()){
+			mode = DriveMode.TURTLE;
+		}
+		else if (primaryJoystick.isLeftBumperPressed()){
+			mode = DriveMode.TURBO;
+		}
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis(), mode);
 
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
 			SmartDashboard.getNumber("Shooter I", 3.3e-7),
@@ -152,21 +163,7 @@ public class Robot extends TimedRobot {
 		// 	manipulator.resetManipulatorElements();
 		// }
 
-		if (primaryJoystick.isRightBumperPressed()) {
-			manipulator.sensorAdvanceGeneva(true, true);
-		} else if (primaryJoystick.isLeftBumperPressed()) {
-			manipulator.sensorAdvanceGeneva(true, false);
-		} else {
-			manipulator.sensorAdvanceGeneva(false, false);
-		}
-
-		if (primaryJoystick.isXButtonPressed()) {
-			intake.setSpeed(-4000);
-		} else if (primaryJoystick.isAButtonPressed()) {
-			intake.setSpeed(4000);
-		} else {
-			intake.setPercentOutput(0);
-		}
+		teleoperated.teleopIntake();
 
 		SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		teleoperated.teleopShooter();

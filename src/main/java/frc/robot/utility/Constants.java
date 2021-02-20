@@ -10,4 +10,11 @@ public class Constants{
     // Solenoids
     public static final int INTAKE_PIN_ID = 0;
     public static final int PUNCH_SOLENOID_ID = 2;
+
+    //Ultra
+    public static final int ULTRA_PING_CHANNEL_ID = 6;
+    public static final int ULTRA_ECHO_CHANNEL_ID = 7;
+
+    //DRIVE CONSTANTS
+    public static final double DRIVE_SPEED_MULTIPLIER = 0.75;
 }

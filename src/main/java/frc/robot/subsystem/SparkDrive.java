@@ -6,6 +6,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -27,8 +28,7 @@ public class SparkDrive extends Subsystem {
 		this.motors = new ArrayList<>();
 		for (int i = 0; i < 4; i++)
 			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
-
-		this.gyroscope = new AHRS(SPI.Port.kMXP);
+		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
 
 		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
@@ -138,7 +138,7 @@ public class SparkDrive extends Subsystem {
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
 	                      final DriveMode driveMode) {
-		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.05);
+		tankDrive(forwardAxisFactor, rotationAxisFactor, driveMode, 0.09);
 	}
 
 	/**
@@ -157,9 +157,14 @@ public class SparkDrive extends Subsystem {
 	                      final double joystickDeadband) {
 		double[] speedControllerOutputs = new double[4];
 
+		// System.out.println("TankDrive: forward:" + forwardAxisFactor
+		// 	+ " rotation:" + rotationAxisFactor + "  mode: " + driveMode
+		// 	+ " deadband: " + joystickDeadband );
 		// Clamp Values to Acceptable Ranges (between -1.0 and 1.0).
 		forwardAxisFactor = DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
 		rotationAxisFactor = DreadbotMath.clampValue(rotationAxisFactor, -1.0d, 1.0d);
+		//forwardAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
+		//rotationAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
 
 		// Apply an Optional Joystick Deadband
 		forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);

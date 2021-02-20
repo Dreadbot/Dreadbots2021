@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.gamestate.routine.AutonSegment;
 import frc.robot.gamestate.routine.AutonTimer;
+import frc.robot.subsystem.Ultra;
 
 import java.util.ArrayList;
 

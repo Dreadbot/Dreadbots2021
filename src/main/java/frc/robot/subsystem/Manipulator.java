@@ -53,23 +53,25 @@ public class Manipulator extends Subsystem{
 
 	public double getSelectedRPM(double inches){
 		inches /= 12;
-		//below math really should have been commented in the C++ original, but wasn't
+		//equation from a regression we did by trial and error.
 		return ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000;
 	}
 
 	public double getSelectedHoodPosition(double inches){
 		inches /= 12;
-		//below math really should have been commented in the C++ original, but wasn't
+		//equation from a regression we did by trial and error
 		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
 	}
 
 	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
-System.out.println("Shooter state: " + shooterState.ordinal());
+// System.out.println("Shooter state: " + shooterState.ordinal());
 
 		//Find difference between intended speed and actual speed
 		int speedDifference = (int) (Math.abs(shooter.getShootingSpeed()) - shootingRPM);
-
+		System.out.println("**********speed diff: "+speedDifference);
+		System.out.println("*************shooter state: "+shooterState);
+		System.out.println("feeder.getPunchSwitchState(): " + feeder.getPunchSwitchState());
 		//if speed is within acceptable margin of error, switch to punching
 		if(shooterState == shooterStates.RAMPING && speedDifference < 300 && speedDifference > 0){
 			shooterState = shooterStates.PUNCHING;
@@ -145,6 +147,7 @@ System.out.println("Shooter state: " + shooterState.ordinal());
 			shooter.setHoodPosition(0);
 		}
 		shooter.setShootingPercentOutput(0);
+		sensorAdvanceGeneva(false, false);
 	}
 
 	public int getNumPunches(){
@@ -152,7 +155,7 @@ System.out.println("Shooter state: " + shooterState.ordinal());
 	}
 
 	public void sensorAdvanceGeneva(boolean spin, boolean forward){
-		double genevaSpeed = 0.4;
+		double genevaSpeed = 0.5;
 		if(genevaState == genevaStates.STOPPED && spin){
 			if(forward){
 				feeder.setSpin(-genevaSpeed);

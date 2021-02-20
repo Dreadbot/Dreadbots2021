@@ -26,9 +26,9 @@ public class TeleopFunctions {
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
 
-		p = 0.021;
-		i = 0.019;
-		d = 0.0;
+		p = 0.008;
+		i = 0.0;
+		d = 0.000001;
 
 		SmartDashboard.putNumber("Turn P Value", p);
 		SmartDashboard.putNumber("Turn I Value", i);
@@ -41,33 +41,37 @@ public class TeleopFunctions {
 
 	public void turnToAngle(double targetAngle, double proportion) {
 		targetAngle += SmartDashboard.getNumber("Turn Fudge Factor", 0.0);
-		//If a button is pressed, reset the counter, and signal that a turn is initiiated
+		// If a button is pressed, reset the counter, and signal that a turn is
+		// initiiated
 		minimumRotationSpeed = SmartDashboard.getNumber("Min Rot Speed", 0.15);
-		//SmartDashboard.PutBoolean("turn complete?", turn_complete);
-		//Find the difference between the current angle and the target angle, multiply by a set value, and use that to find the rate
+		// SmartDashboard.PutBoolean("turn complete?", turn_complete);
+		// Find the difference between the current angle and the target angle, multiply
+		// by a set value, and use that to find the rate
 		double error = (double) sparkDrive.getGyroscope().getYaw() - targetAngle;
 		System.out.println("Error: " + error);
 		currentRotationRate = error * proportion;
 		System.out.println(" 1: " + currentRotationRate);
 
-		//Set the lower bound of the rotation speed so it is not less than the power necessary to turn the robot
+		// Set the lower bound of the rotation speed so it is not less than the power
+		// necessary to turn the robot
 		if (currentRotationRate > 0)
 			currentRotationRate += minimumRotationSpeed;
 		else if (currentRotationRate < 0)
 			currentRotationRate -= minimumRotationSpeed;
 		System.out.println(" 2: " + currentRotationRate);
-		//Set the upper bound of the rotation rate
+		// Set the upper bound of the rotation rate
 		currentRotationRate = (currentRotationRate > 1) ? 1 : currentRotationRate;
 		currentRotationRate = (currentRotationRate < -1) ? -1 : currentRotationRate;
 		System.out.println(" 3: " + currentRotationRate);
 
-		//if we are not within the slop, then we are not done with the turn
+		// if we are not within the slop, then we are not done with the turn
 		if (Math.abs(error) > slop) {
 			turnComplete = false;
 			turnButtonTimeout = 0;
 		}
 
-		//If the turn has made it within the allowable error constant, increment the count
+		// If the turn has made it within the allowable error constant, increment the
+		// count
 		if (Math.abs(error) < slop) {
 			turnButtonTimeout++;
 		}
@@ -76,20 +80,22 @@ public class TeleopFunctions {
 		SmartDashboard.putNumber("Current Rotation Rate", currentRotationRate);
 		SmartDashboard.putNumber("Target Angle", targetAngle);
 
-		//Drive the robot using the SparkDrive::TankDrive function, with the forward/backward axis still based on
-		//controller input, but the rotation axis of the drive base based on the rotation rate found
-		//TODO Write this better
+		// Drive the robot using the SparkDrive::TankDrive function, with the
+		// forward/backward axis still based on
+		// controller input, but the rotation axis of the drive base based on the
+		// rotation rate found
+		// TODO Write this better
 		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
 
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
-			-currentRotationRate,
-			driveMode);
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(), -currentRotationRate, driveMode);
 
-		//If the difference between the current angle and the target angle is within an allowable constant,
-		//and enough time has elapsed in while within that bound to allow for the turning to settle,
-		//declare the turn finished and reset the gyro
+		// If the difference between the current angle and the target angle is within an
+		// allowable constant,
+		// and enough time has elapsed in while within that bound to allow for the
+		// turning to settle,
+		// declare the turn finished and reset the gyro
 		if (Math.abs(error) < slop && turnButtonTimeout > timeToAdjust) {
 			turnComplete = true;
 			sparkDrive.stop();
@@ -97,71 +103,87 @@ public class TeleopFunctions {
 	}
 
 	public void WPITurnToAngle(double targetAngle) {
-		//If a button is pressed, reset the counter, and signal that a turn is initiiated
-		//frc::SmartDashboard::PutBoolean("turn complete?", turn_complete);
-		//Find the difference between the current angle and the target angle, multiply by a set value, and use that to find the rate
-		double error = ((double) sparkDrive.getGyroscope().getYaw()) - targetAngle;
-		//std::cout << "Error: " << error;
+		// If a button is pressed, reset the counter, and signal that a turn is
+		// initiiated
+		// frc::SmartDashboard::PutBoolean("turn complete?", turn_complete);
+		// Find the difference between the current angle and the target angle, multiply
+		// by a set value, and use that to find the rate
+		// System.out.println("Gyroscope Angle: " 	+sparkDrive.getGyroscope().getYaw());
+		double error = (((double) sparkDrive.getGyroscope().getYaw()) - targetAngle) * -1;
+		System.out.println("Yaw: " + sparkDrive.getGyroscope().getYaw() + " ERROR: " + error);
 
+		// std::cout << "Error: " << error;
+
+		p = SmartDashboard.getNumber("Turn P Value", 0.002);
+		i = SmartDashboard.getNumber("Turn I Value", 0.019);
+		d = SmartDashboard.getNumber("Turn D Value", 0.000001);
 		updatePIDController();
+
 
 		currentRotationRate = pidController.calculate(error);
 
-		//Set the upper bound of the rotation rate
+		// Set the upper bound of the rotation rate
 		DreadbotMath.clampValue(currentRotationRate, -1.0, 1.0);
 
 		SmartDashboard.putNumber("Error", error);
 		SmartDashboard.putNumber("Current Rotation Rate", currentRotationRate);
 		SmartDashboard.putNumber("Target Angle", targetAngle);
 
-		//Drive the robot using the SparkDrive::TankDrive function, with the forward/backward axis still based on
-		//controller input, but the rotation axis of the drive base based on the rotation rate found
+		// Drive the robot using the SparkDrive::TankDrive function, with the
+		// forward/backward axis still based on
+		// controller input, but the rotation axis of the drive base based on the
+		// rotation rate found
 		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
 
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
-			-currentRotationRate,
-			driveMode);
+		sparkDrive.tankDrive(primaryJoystick.getYAxis(), -currentRotationRate, driveMode);
 
-		//If the difference between the current angle and the target angle is within an allowable constant,
-		//and enough time has elapsed in while within that bound to allow for the turning to settle,
-		//declare the turn finished and reset the gyro
+		// If the difference between the current angle and the target angle is within an
+		// allowable constant,
+		// and enough time has elapsed in while within that bound to allow for the
+		// turning to settle,
+		// declare the turn finished and reset the gyro
 		if (Math.abs(error) < slop && turnButtonTimeout > timeToAdjust) {
 			turnComplete = true;
-			//m_sparkDrive->GetGyroscope()->ZeroYaw();
+			// m_sparkDrive->GetGyroscope()->ZeroYaw();
 			sparkDrive.stop();
 		}
 	}
 
 	public double calculateTurnToAngle(double targetAngle) {
-		//If a button is pressed, reset the counter, and signal that a turn is initiiated
-		//SmartDashboard.PutBoolean("turn complete?", turn_complete);
-		//Find the difference between the current angle and the target angle, multiply by a set value, and use that to find the rate
+		// If a button is pressed, reset the counter, and signal that a turn is
+		// initiiated
+		// SmartDashboard.PutBoolean("turn complete?", turn_complete);
+		// Find the difference between the current angle and the target angle, multiply
+		// by a set value, and use that to find the rate
 		double error = ((double) sparkDrive.getGyroscope().getYaw()) - targetAngle;
-		//std::cout << "Error: " << error;
+		// std::cout << "Error: " << error;
 
 		updatePIDController();
 
 		currentRotationRate = pidController.calculate(error);
 
-		//Set the upper bound of the rotation rate
+		// Set the upper bound of the rotation rate
 		DreadbotMath.clampValue(currentRotationRate, -1.0, 1.0);
 
 		SmartDashboard.putNumber("Error", error);
 		SmartDashboard.putNumber("Current Rotation Rate", currentRotationRate);
 		SmartDashboard.putNumber("Target Angle", targetAngle);
 
-		//Drive the robot using the SparkDrive::TankDrive function, with the forward/backward axis still based on
-		//controller input, but the rotation axis of the drive base based on the rotation rate found
+		// Drive the robot using the SparkDrive::TankDrive function, with the
+		// forward/backward axis still based on
+		// controller input, but the rotation axis of the drive base based on the
+		// rotation rate found
 
-
-		//If the difference between the current angle and the target angle is within an allowable constant,
-		//and enough time has elapsed in while within that bound to allow for the turning to settle,
-		//declare the turn finished and reset the gyro
+		// If the difference between the current angle and the target angle is within an
+		// allowable constant,
+		// and enough time has elapsed in while within that bound to allow for the
+		// turning to settle,
+		// declare the turn finished and reset the gyro
 		if (Math.abs(error) < slop && turnButtonTimeout > timeToAdjust) {
 			turnComplete = true;
-			//m_sparkDrive->GetGyroscope()->ZeroYaw();
+			// m_sparkDrive->GetGyroscope()->ZeroYaw();
 			currentRotationRate = 0;
 		}
 
@@ -169,9 +191,9 @@ public class TeleopFunctions {
 	}
 
 	public void updatePIDController() {
-		SmartDashboard.putNumber("Turn P Value", p);
-		SmartDashboard.putNumber("Turn I Value", i);
-		SmartDashboard.putNumber("Turn D Value", d);
+		// SmartDashboard.putNumber("Turn P Value", p);
+		// SmartDashboard.putNumber("Turn I Value", i);
+		// SmartDashboard.putNumber("Turn D Value", d);
 
 		pidController.setPID(p, i, d);
 	}
