@@ -113,7 +113,14 @@ public class Autonomous {
 		// in the same on/off cycle of the robot.
 		autonRoutineIndex = 0;
 		autonCompleted = false;
-		for(AutonSegment routine : autonSegments)
+		for(AutonSegment routine : autonSegments){
 			routine.setComplete(false);
+			routine.disabledInit();
+		}
+			
+	}
+
+	public void addRoutine(AutonSegment a){
+		this.autonSegments.add(a);
 	}
 }
