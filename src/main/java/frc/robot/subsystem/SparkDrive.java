@@ -5,9 +5,11 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.utility.DreadbotMath;
@@ -18,10 +20,22 @@ import java.util.List;
 public class SparkDrive extends Subsystem {
 	public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
 
+	// Feedforward gains
+	public static final double kSVolts = 0.128d;
+	public static final double kVVoltSecondsPerMeter = 0.0454d;
+	public static final double kAVoltSecondsSquaredPerMeter = 0.0119d;
+	public static final double kPDriveVel = 0.563d;
+
+	public static final double kMaxSpeedMetersPerSecond = 0.5d;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
+
+	public static final double kTrackwidthMeters = 0.6731d;
+
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
 
 	private final DifferentialDriveOdometry odometry;
+	private final DifferentialDriveKinematics kinematics;
 
 	public SparkDrive() {
 		super("SparkDrive");
@@ -32,10 +46,13 @@ public class SparkDrive extends Subsystem {
 		this.gyroscope.reset();
 
 		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
+		this.kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
 		this.stop();
 
 		configureTests();
+
+
 	}
 
 	private void configureTests() {
