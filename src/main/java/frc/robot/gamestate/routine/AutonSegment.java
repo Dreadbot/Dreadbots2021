@@ -49,4 +49,11 @@ public abstract class AutonSegment {
 	 * This method is called multiple times per second while this segment is the current segment of the routine.
 	 */
 	public abstract void autonomousPeriodic();
+
+	/**
+	 * Optional method that can be overloaded in derived classes
+	 */
+	public void disabledInit(){
+		//default disabledInit()
+	};
 }
