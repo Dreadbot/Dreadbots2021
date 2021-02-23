@@ -35,8 +35,7 @@ public class SparkDrive extends Subsystem {
 	private final AHRS gyroscope;
 
 	private final DifferentialDriveOdometry odometry;
-	public static final DifferentialDriveKinematics kinematics =
-			new DifferentialDriveKinematics(kTrackwidthMeters);
+	private final DifferentialDriveKinematics kinematics;
 
 	public SparkDrive() {
 		super("SparkDrive");
@@ -47,6 +46,8 @@ public class SparkDrive extends Subsystem {
 		this.gyroscope.reset();
 
 		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
+		this.kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
 		this.stop();
 
 		configureTests();
