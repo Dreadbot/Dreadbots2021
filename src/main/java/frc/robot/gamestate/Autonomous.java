@@ -1,6 +1,7 @@
 package frc.robot.gamestate;
 
-import edu.wpi.first.wpilibj.Controller;
+import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -32,6 +33,8 @@ public class Autonomous {
 
 	private RamseteController controller;
 	private Trajectory trajectory;
+	private Timer timer;
+
 	/**
 	 * Default Constructor (no-args)
 	 */
@@ -78,6 +81,8 @@ public class Autonomous {
 		System.out.println("goal = " + goal);
 
 		sparkDrive.resetOdometry(trajectory.getInitialPose());
+
+		timer = new Timer();
 		// ChassisSpeeds adjustedSpeeds = controller.calculate(currentRobotPosition, goal);
 	}
 
@@ -88,17 +93,8 @@ public class Autonomous {
 	public void autonomousInit() {
 		System.out.println("Autonomous.autonomousInit");
 
-		Trajectory.State goal = trajectory.sample(.5);
-		System.out.println("something unike");
-		ChassisSpeeds adjustedSpeeds = controller.calculate(sparkDrive.getPose(), goal);
-		System.out.println(adjustedSpeeds);
+		timer.start();
 
-		DifferentialDriveWheelSpeeds wheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(adjustedSpeeds);
-		System.out.println(wheelSpeeds);
-		double left = wheelSpeeds.leftMetersPerSecond;
-		System.out.println(left);
-		double right = wheelSpeeds.rightMetersPerSecond;
-		System.out.println(right);
 		// Call init method for first autonomous segment in the routine
 //		autonSegments.get(autonRoutineIndex).autonomousInit();
 	}
@@ -108,6 +104,23 @@ public class Autonomous {
 	 * in order of how they were added.
 	 */
 	public void autonomousPeriodic() {
+		if(timer.get() >= trajectory.getTotalTimeSeconds())
+			return;
+
+		Trajectory.State goal = trajectory.sample(timer.get());
+		ChassisSpeeds adjustedSpeeds = controller.calculate(sparkDrive.getPose(), goal);
+
+		DifferentialDriveWheelSpeeds wheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(adjustedSpeeds);
+		double left = wheelSpeeds.leftMetersPerSecond;
+		double right = wheelSpeeds.rightMetersPerSecond;
+
+		System.out.println("avg velocity = " + (right + left) / 2);
+
+		sparkDrive.getMotorPIDController(0).setReference(left, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(2).setReference(left, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(1).setReference(right, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(3).setReference(right, ControlType.kVelocity);
+
 		// // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		// // running after the routine is finished.
 		// if(autonCompleted)
