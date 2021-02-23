@@ -114,7 +114,7 @@ public class Autonomous {
 		double left = wheelSpeeds.leftMetersPerSecond;
 		double right = wheelSpeeds.rightMetersPerSecond;
 
-		System.out.println("avg velocity = " + (right + left) / 2);
+		System.out.println("left = " + left + ", right = " + right + ", avg velocity = " + (right + left) / 2);
 
 		sparkDrive.getMotorPIDController(0).setReference(left, ControlType.kVelocity);
 		sparkDrive.getMotorPIDController(2).setReference(left, ControlType.kVelocity);
