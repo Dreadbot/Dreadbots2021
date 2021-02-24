@@ -231,7 +231,7 @@ public class SparkDrive extends Subsystem {
 	public CANSparkMax getMotor(int port) {
 		if (!DreadbotMath.inRange(port, 0, motors.size() + 1))
 			return null;
-		return motors.get(port);
+		return motors.get(port - 1);
 	}
 
 	public CANEncoder getMotorEncoder(int port) {
