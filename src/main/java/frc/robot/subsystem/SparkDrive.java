@@ -41,8 +41,21 @@ public class SparkDrive extends Subsystem {
 	public SparkDrive() {
 		super("SparkDrive");
 		this.motors = new ArrayList<>();
-		for (int i = 0; i < 4; i++)
-			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
+		for (int i = 0; i < 4; i++) {
+			CANSparkMax sparkMax = new CANSparkMax(i + 1, K_MOTORTYPE);
+			sparkMax.restoreFactoryDefaults();
+
+			// Setup PIDs
+			final CANPIDController pidController = sparkMax.getPIDController();
+			pidController.setP(0.2);
+			pidController.setI(1e-4);
+			pidController.setD(1);
+			pidController.setIZone(0.1);
+			pidController.setFF(0);
+			pidController.setOutputRange(-1, 1);
+
+			this.motors.add(sparkMax);
+		}
 		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
 
@@ -51,8 +64,6 @@ public class SparkDrive extends Subsystem {
 		this.stop();
 
 		configureTests();
-
-
 	}
 
 	private void configureTests() {
