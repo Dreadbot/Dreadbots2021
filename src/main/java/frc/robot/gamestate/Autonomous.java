@@ -116,10 +116,10 @@ public class Autonomous {
 
 		System.out.println("left = " + left + ", right = " + right + ", avg velocity = " + (right + left) / 2);
 
-		sparkDrive.getMotorPIDController(0).setReference(left, ControlType.kVelocity);
-		sparkDrive.getMotorPIDController(2).setReference(left, ControlType.kVelocity);
-		sparkDrive.getMotorPIDController(1).setReference(right, ControlType.kVelocity);
-		sparkDrive.getMotorPIDController(3).setReference(right, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(1).setReference(left, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(3).setReference(left, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(2).setReference(right, ControlType.kVelocity);
+		sparkDrive.getMotorPIDController(4).setReference(right, ControlType.kVelocity);
 
 		// // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		// // running after the routine is finished.
