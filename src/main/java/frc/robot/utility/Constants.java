@@ -17,4 +17,6 @@ public class Constants{
 
     //DRIVE CONSTANTS
     public static final double DRIVE_SPEED_MULTIPLIER = 0.75;
+
+    public static final double metersPerSecondToRevolutionsPerMinute = 118.11d;
 }

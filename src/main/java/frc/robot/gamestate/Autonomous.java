@@ -20,6 +20,8 @@ import frc.robot.subsystem.SparkDrive;
 
 import java.util.ArrayList;
 
+import static frc.robot.utility.Constants.metersPerSecondToRevolutionsPerMinute;
+
 /**
  * Logic Container for the Autonomous Period and Infinite Recharge at Home Challenges.
  */
@@ -113,6 +115,9 @@ public class Autonomous {
 		DifferentialDriveWheelSpeeds wheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(adjustedSpeeds);
 		double left = wheelSpeeds.leftMetersPerSecond;
 		double right = wheelSpeeds.rightMetersPerSecond;
+
+		left *= metersPerSecondToRevolutionsPerMinute;
+		right *= metersPerSecondToRevolutionsPerMinute;
 
 		System.out.println("left = " + left + ", right = " + right + ", avg velocity = " + (right + left) / 2);
 
