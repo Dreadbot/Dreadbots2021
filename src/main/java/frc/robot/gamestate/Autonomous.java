@@ -122,9 +122,9 @@ public class Autonomous {
 		sparkDrive.getMotorPIDController(4).setReference(right, ControlType.kVelocity);
 
 		System.out.println("Front Left (RPM)" + sparkDrive.getMotorEncoder(1).getVelocity());
-		System.out.println("Back Left (RPM)" + sparkDrive.getMotorEncoder(1).getVelocity());
-		System.out.println("Front Right (RPM)" + sparkDrive.getMotorEncoder(1).getVelocity());
-		System.out.println("Back Right (RPM)" + sparkDrive.getMotorEncoder(1).getVelocity());
+		System.out.println("Back Left (RPM)" + sparkDrive.getMotorEncoder(3).getVelocity());
+		System.out.println("Front Right (RPM)" + sparkDrive.getMotorEncoder(2).getVelocity());
+		System.out.println("Back Right (RPM)" + sparkDrive.getMotorEncoder(4).getVelocity());
 
 		// // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		// // running after the routine is finished.
