@@ -59,7 +59,8 @@ public class Autonomous {
 			SparkDrive.kSVolts,
 			SparkDrive.kVVoltSecondsPerMeter,
 			SparkDrive.kAVoltSecondsSquaredPerMeter);
-		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
+		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+			simpleMotorFeedforward,
 			SparkDrive.kinematics,
 			6);
 
@@ -76,9 +77,9 @@ public class Autonomous {
 			trajectoryConfig
 		);
 
-		controller = new RamseteController();
-
 		sparkDrive.resetOdometry(trajectory.getInitialPose());
+
+		controller = new RamseteController();
 
 		timer = new Timer();
 	}
@@ -114,8 +115,10 @@ public class Autonomous {
 		// Determine times and whether to continue
 		final double currentTime = timer.get();
 		final double deltaTime = currentTime - previousTime;
-		if (currentTime >= trajectory.getTotalTimeSeconds())
+		if (currentTime >= trajectory.getTotalTimeSeconds()) {
+			sparkDrive.tankDriveVolts(0, 0);
 			return;
+		}
 
 		// First iteration setup
 		if (previousTime < 0) {
