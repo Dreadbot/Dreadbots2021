@@ -1,6 +1,5 @@
 package frc.robot.gamestate;
 
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -20,24 +19,25 @@ import frc.robot.gamestate.routine.AutonTimer;
 import frc.robot.subsystem.SparkDrive;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Logic Container for the Autonomous Period and Infinite Recharge at Home Challenges.
  */
 public class Autonomous {
+	private final SimpleMotorFeedforward simpleMotorFeedforward;
 	// Routine Data
-	private ArrayList<AutonSegment> autonSegments;
+	private final ArrayList<AutonSegment> autonSegments;
+	private final SparkDrive sparkDrive;
+	private final RamseteController controller;
+	private final Trajectory trajectory;
+	private final Timer timer;
+	private final PIDController leftPIDController;
+	private final PIDController rightPIDController;
 	private int autonRoutineIndex;
 	private boolean autonCompleted;
-
-	private SparkDrive sparkDrive;
-
-	private RamseteController controller;
-	private final SimpleMotorFeedforward simpleMotorFeedforward;
-	private Trajectory trajectory;
-	private Timer timer;
-	private PIDController leftPIDController;
-	private PIDController rightPIDController;
+	private DifferentialDriveWheelSpeeds previousWheelSpeeds;
+	private double previousTime;
 
 	/**
 	 * Default Constructor (no-args)
@@ -52,46 +52,35 @@ public class Autonomous {
 		this.autonSegments.add(new AutonTimer(1.0));
 		this.autonSegments.add(new AutonTimer(1.0));
 
-		System.out.println("Starting to generate trajectory...");
-		Pose2d startWaypoint = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0));
-		Pose2d endWaypoint = new Pose2d(Units.feetToMeters(2.5), Units.feetToMeters(2.5), Rotation2d.fromDegrees(90));
-
 		leftPIDController = new PIDController(SparkDrive.kPDriveVel, 0, 0);
 		rightPIDController = new PIDController(SparkDrive.kPDriveVel, 0, 0);
-
-		ArrayList<Translation2d> interiorWaypoints = new ArrayList<Translation2d>();
 
 		simpleMotorFeedforward = new SimpleMotorFeedforward(
 			SparkDrive.kSVolts,
 			SparkDrive.kVVoltSecondsPerMeter,
 			SparkDrive.kAVoltSecondsSquaredPerMeter);
 		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(simpleMotorFeedforward,
-			SparkDrive.kinematics, 
-			10);
+			SparkDrive.kinematics,
+			6);
 
-		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(1.0, 1.5)
-		.setKinematics(SparkDrive.kinematics)
-		.addConstraint(autoVoltageConstraint);
+		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
+			SparkDrive.kMaxSpeedMetersPerSecond,
+			SparkDrive.kMaxAccelerationMetersPerSecondSquared)
+			.setKinematics(SparkDrive.kinematics)
+			.addConstraint(autoVoltageConstraint);
 
 		trajectory = TrajectoryGenerator.generateTrajectory(
-			startWaypoint,
-			interiorWaypoints,
-			endWaypoint,
+			new Pose2d(0, 0, new Rotation2d(0)),
+			List.of(),
+			new Pose2d(0.5, 0.5, new Rotation2d(90)),
 			trajectoryConfig
 		);
 
-		System.out.println("Finished generating trajectory...");
-		System.out.println("trajectory = " + trajectory);
-
 		controller = new RamseteController();
-
-		Trajectory.State goal = trajectory.sample(0.0);
-		System.out.println("goal = " + goal);
 
 		sparkDrive.resetOdometry(trajectory.getInitialPose());
 
 		timer = new Timer();
-		// ChassisSpeeds adjustedSpeeds = controller.calculate(currentRobotPosition, goal);
 	}
 
 	/**
@@ -102,7 +91,7 @@ public class Autonomous {
 		System.out.println("Autonomous.autonomousInit");
 
 		previousTime = -1;
-		var initialState = trajectory.sample(0.0d);
+		var initialState = trajectory.sample(0);
 		previousWheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(
 			new ChassisSpeeds(
 				initialState.velocityMetersPerSecond,
@@ -117,74 +106,55 @@ public class Autonomous {
 //		autonSegments.get(autonRoutineIndex).autonomousInit();
 	}
 
-	// TODO CLEANUP
-	private DifferentialDriveWheelSpeeds previousWheelSpeeds;
-	private double previousTime;
-
 	/**
 	 * Called directly from Robot.autonomousPeriodic() function. Runs the routine's segments
 	 * in order of how they were added.
 	 */
 	public void autonomousPeriodic() {
-		System.out.println("Autonomous.autonomousPeriodic");
-
+		// Determine times and whether to continue
 		final double currentTime = timer.get();
 		final double deltaTime = currentTime - previousTime;
-		if(currentTime >= trajectory.getTotalTimeSeconds())
+		if (currentTime >= trajectory.getTotalTimeSeconds())
 			return;
 
-		System.out.println("here1");
-
-		if(previousTime < 0) {
+		// First iteration setup
+		if (previousTime < 0) {
 			sparkDrive.tankDriveVolts(0, 0);
 			previousTime = currentTime;
 			return;
 		}
 
-		System.out.println("here2");
-
+		// Get the target and current wheel speeds for operations.
 		var targetWheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(
 			controller.calculate(sparkDrive.getPose(), trajectory.sample(currentTime))
 		);
 		var currentWheelSpeeds = sparkDrive.getWheelSpeeds();
 
-		System.out.println("here3");
-
-		var left = targetWheelSpeeds.leftMetersPerSecond;
-		var right = targetWheelSpeeds.rightMetersPerSecond;
-
-		System.out.println("here4");
-
+		// Calculate the feedforward in Volts.
 		double leftFeedforward =
-			simpleMotorFeedforward.calculate(left,
-				(left - previousWheelSpeeds.leftMetersPerSecond) / deltaTime);
+			simpleMotorFeedforward.calculate(targetWheelSpeeds.leftMetersPerSecond,
+				(targetWheelSpeeds.leftMetersPerSecond - previousWheelSpeeds.leftMetersPerSecond) / deltaTime);
 		double rightFeedforward =
-			simpleMotorFeedforward.calculate(right,
-				(right - previousWheelSpeeds.rightMetersPerSecond) / deltaTime);
+			simpleMotorFeedforward.calculate(targetWheelSpeeds.rightMetersPerSecond,
+				(targetWheelSpeeds.rightMetersPerSecond - previousWheelSpeeds.rightMetersPerSecond) / deltaTime);
 
-		System.out.println("here5");
-
+		// Add in error calculated from the PID controllers.
 		var leftOutput =
 			leftFeedforward + leftPIDController.calculate(
 				currentWheelSpeeds.leftMetersPerSecond,
 				targetWheelSpeeds.leftMetersPerSecond);
-
 		var rightOutput =
 			rightFeedforward + rightPIDController.calculate(
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		System.out.println("here6");
+		System.out.println("leftOutput = " + leftFeedforward);
+		System.out.println("rightOutput = " + rightFeedforward);
 
-		System.out.println("left: " + leftOutput + ", right: " + rightOutput);
 		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
-
-		System.out.println("here7");
 
 		previousTime = currentTime;
 		previousWheelSpeeds = targetWheelSpeeds;
-
-		System.out.println("here8");
 
 		// // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		// // running after the routine is finished.
@@ -223,14 +193,15 @@ public class Autonomous {
 		// in the same on/off cycle of the robot.
 		autonRoutineIndex = 0;
 		autonCompleted = false;
-		for(AutonSegment routine : autonSegments){
+		for (AutonSegment routine : autonSegments) {
 			routine.setComplete(false);
 			routine.disabledInit();
 		}
-			
+
+		timer.stop();
 	}
 
-	public void addRoutine(AutonSegment a){
+	public void addRoutine(AutonSegment a) {
 		this.autonSegments.add(a);
 	}
 }
