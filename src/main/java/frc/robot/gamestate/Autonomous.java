@@ -176,7 +176,8 @@ public class Autonomous {
 
 		System.out.println("here6");
 
-		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
+		System.out.println("left: " + leftOutput + ", right: " + rightOutput);
+		//sparkDrive.tankDriveVolts(leftOutput, rightOutput);
 
 		System.out.println("here7");
 
