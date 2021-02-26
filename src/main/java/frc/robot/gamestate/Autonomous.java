@@ -126,10 +126,14 @@ public class Autonomous {
 	 * in order of how they were added.
 	 */
 	public void autonomousPeriodic() {
+		System.out.println("Autonomous.autonomousPeriodic");
+
 		final double currentTime = timer.get();
 		final double deltaTime = currentTime - previousTime;
 		if(currentTime >= trajectory.getTotalTimeSeconds())
 			return;
+
+		System.out.println("here1");
 
 		if(previousTime < 0) {
 			sparkDrive.tankDriveVolts(0, 0);
@@ -137,17 +141,19 @@ public class Autonomous {
 			return;
 		}
 
-		Trajectory.State goal = trajectory.sample(currentTime);
-		ChassisSpeeds adjustedSpeeds = controller.calculate(sparkDrive.getPose(), goal);
+		System.out.println("here2");
 
-		DifferentialDriveWheelSpeeds targetWheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(adjustedSpeeds);
-		double left = targetWheelSpeeds.leftMetersPerSecond;
-		double right = targetWheelSpeeds.rightMetersPerSecond;
+		var targetWheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(
+			controller.calculate(sparkDrive.getPose(), trajectory.sample(currentTime))
+		);
+		var currentWheelSpeeds = sparkDrive.getWheelSpeeds();
 
-		DifferentialDriveWheelSpeeds currentWheelSpeeds = sparkDrive.getWheelSpeeds();
+		System.out.println("here3");
 
-		double leftOutput;
-		double rightOutput;
+		var left = targetWheelSpeeds.leftMetersPerSecond;
+		var right = targetWheelSpeeds.rightMetersPerSecond;
+
+		System.out.println("here4");
 
 		double leftFeedforward =
 			simpleMotorFeedforward.calculate(left,
@@ -156,20 +162,28 @@ public class Autonomous {
 			simpleMotorFeedforward.calculate(right,
 				(right - previousWheelSpeeds.rightMetersPerSecond) / deltaTime);
 
-		leftOutput =
+		System.out.println("here5");
+
+		var leftOutput =
 			leftFeedforward + leftPIDController.calculate(
 				currentWheelSpeeds.leftMetersPerSecond,
 				targetWheelSpeeds.leftMetersPerSecond);
 
-		rightOutput =
+		var rightOutput =
 			rightFeedforward + rightPIDController.calculate(
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
+		System.out.println("here6");
+
 		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
+
+		System.out.println("here7");
 
 		previousTime = currentTime;
 		previousWheelSpeeds = targetWheelSpeeds;
+
+		System.out.println("here8");
 
 		// // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		// // running after the routine is finished.
