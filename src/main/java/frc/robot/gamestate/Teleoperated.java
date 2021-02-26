@@ -1,5 +1,7 @@
 package frc.robot.gamestate;
 
+import javax.security.auth.x500.X500Principal;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystem.Manipulator;
@@ -26,6 +28,8 @@ public class Teleoperated {
 
 	double distance = 120;
 	double rotSpeed = 0;
+
+	boolean firstAim = true;
 
 	public Teleoperated(DreadbotController primaryJoystick,
 	                    DreadbotController secondaryJoystick,
@@ -88,8 +92,9 @@ public class Teleoperated {
 		lastCount = (int) SmartDashboard.getNumber("detectionCount", lastCount);
 
 		//if we are done turning (not currently turning), then update angle from vision
-		if (teleopFunctions.getTurnStatus()) {
+		if (teleopFunctions.getTurnStatus() && firstAim) {
 			selectedAngle = SmartDashboard.getNumber("selectedAngle", 0.0);
+			firstAim = false;
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
 		if (secondaryJoystick.isYButtonPressed()) {
@@ -115,6 +120,8 @@ public class Teleoperated {
 			aimCounts = 0;
 			aimShootState = AimShootStates.AIMING;
 			rotSpeed = 0;
+			sparkDrive.getGyroscope().reset();
+			firstAim = true;
 		} else {
 			// SmartDashboard.putNumber("camNumber", 1);
 			manipulator.resetManipulatorElements();
@@ -127,7 +134,7 @@ public class Teleoperated {
 		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
 
 		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
-
+		SmartDashboard.putNumber("aimShootState", aimShootState.ordinal());
 		switch (aimShootState) {
 			case AIMING:
 				// rotSpeed = teleopFunctions.calculateTurnToAngle(targetAngle);
