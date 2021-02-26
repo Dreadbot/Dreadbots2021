@@ -154,7 +154,7 @@ public class Autonomous {
 		System.out.println("leftOutput = " + leftFeedforward);
 		System.out.println("rightOutput = " + rightFeedforward);
 
-		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
+		sparkDrive.tankDriveVolts(leftFeedforward, rightFeedforward);
 
 		previousTime = currentTime;
 		previousWheelSpeeds = targetWheelSpeeds;
