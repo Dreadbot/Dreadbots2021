@@ -106,10 +106,10 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public void tankDriveVolts(double leftVolts, double rightVolts) {
-		for(int i = 1; i < 5; i += 2)
-			motors.get(i).set(leftVolts / 2);
-		for(int i = 2; i < 5; i += 2)
-			motors.get(i).set(rightVolts / 2);
+		motors.get(0).set(leftVolts / 12);
+		motors.get(2).set(leftVolts / 12);
+		motors.get(1).set(rightVolts / 12);
+		motors.get(3).set(rightVolts / 12);
 	}
 
 	public void resetEncoders() {
