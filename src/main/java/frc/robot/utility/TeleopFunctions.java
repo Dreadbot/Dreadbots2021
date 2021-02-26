@@ -26,9 +26,9 @@ public class TeleopFunctions {
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
 
-		p = 0.008;
+		p = 0.015;
 		i = 0.0;
-		d = 0.000001;
+		d = 0.00135;
 
 		SmartDashboard.putNumber("Turn P Value", p);
 		SmartDashboard.putNumber("Turn I Value", i);
@@ -126,6 +126,7 @@ public class TeleopFunctions {
 		DreadbotMath.clampValue(currentRotationRate, -1.0, 1.0);
 
 		SmartDashboard.putNumber("Error", error);
+		SmartDashboard.putNumber("Gyro Angle", sparkDrive.getGyroscope().getYaw());
 		SmartDashboard.putNumber("Current Rotation Rate", currentRotationRate);
 		SmartDashboard.putNumber("Target Angle", targetAngle);
 
@@ -144,10 +145,20 @@ public class TeleopFunctions {
 		// and enough time has elapsed in while within that bound to allow for the
 		// turning to settle,
 		// declare the turn finished and reset the gyro
-		if (Math.abs(error) < slop && turnButtonTimeout > timeToAdjust) {
+
+		// if (Math.abs(error) < slop && turnButtonTimeout > timeToAdjust) {
+		// 	turnComplete = true;
+		// 	// m_sparkDrive->GetGyroscope()->ZeroYaw();
+		// 	sparkDrive.stop();
+		// }
+
+		if (Math.abs(error) < slop) {
 			turnComplete = true;
 			// m_sparkDrive->GetGyroscope()->ZeroYaw();
 			sparkDrive.stop();
+		}
+		else{
+			turnComplete = false;
 		}
 	}
 

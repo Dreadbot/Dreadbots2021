@@ -5,13 +5,12 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotMath;
 
 import java.util.ArrayList;
@@ -30,29 +29,38 @@ public class SparkDrive extends Subsystem {
 	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
 
 	public static final double kTrackwidthMeters = 0.6731d;
-
+	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
-
 	private final DifferentialDriveOdometry odometry;
-	private final DifferentialDriveKinematics kinematics;
+
 
 	public SparkDrive() {
 		super("SparkDrive");
 		this.motors = new ArrayList<>();
-		for (int i = 0; i < 4; i++)
-			this.motors.add(new CANSparkMax(i + 1, K_MOTORTYPE));
+		for (int i = 0; i < 4; i++) {
+			CANSparkMax sparkMax = new CANSparkMax(i + 1, K_MOTORTYPE);
+			sparkMax.restoreFactoryDefaults();
+
+			// Setup PIDs
+			final CANPIDController pidController = sparkMax.getPIDController();
+			pidController.setP(0.2);
+			pidController.setI(1e-4);
+			pidController.setD(1);
+			pidController.setIZone(0.1);
+			pidController.setFF(0);
+			pidController.setOutputRange(-1, 1);
+
+			this.motors.add(sparkMax);
+		}
 		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
 
 		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
-		this.kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
 		this.stop();
 
 		configureTests();
-
-
 	}
 
 	private void configureTests() {
@@ -75,8 +83,8 @@ public class SparkDrive extends Subsystem {
 
 	public void periodic() {
 		odometry.update(gyroscope.getRotation2d(),
-			getMotorEncoder(1).getPosition(),
-			getMotorEncoder(2).getPosition());
+			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters,
+			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters);
 	}
 
 	public Pose2d getPose() {
@@ -85,8 +93,8 @@ public class SparkDrive extends Subsystem {
 
 	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return new DifferentialDriveWheelSpeeds(
-			getMotorEncoder(1).getVelocity(),
-			getMotorEncoder(2).getVelocity());
+			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond,
+			getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond);
 	}
 
 	public void resetOdometry(Pose2d pose) {
@@ -95,10 +103,10 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public void tankDriveVolts(double leftVolts, double rightVolts) {
-		for(int i = 1; i < 5; i += 2)
-			motors.get(i).set(leftVolts / 2);
-		for(int i = 2; i < 5; i += 2)
-			motors.get(i).set(rightVolts / 2);
+		motors.get(0).setVoltage(leftVolts);
+		motors.get(2).setVoltage(leftVolts);
+		motors.get(1).setVoltage(-rightVolts);
+		motors.get(3).setVoltage(-rightVolts);
 	}
 
 	public void resetEncoders() {
@@ -147,10 +155,9 @@ public class SparkDrive extends Subsystem {
 	 * An improved and more readable version of the Dreadbot's homemade tank
 	 * drive function with default values for the joystick deadband.
 	 *
-	 * @param forwardAxisFactor    The forward factor of the drivetrain control.
-	 * @param rotationAxisFactor   The rotational factor of the drivetrain control.
-	 * @param finalValueMultiplier The final multiplier of the result of the
-	 *                             function.
+	 * @param forwardAxisFactor  The forward factor of the drivetrain control.
+	 * @param rotationAxisFactor The rotational factor of the drivetrain control.
+	 * @param driveMode          The drive mode setting (final multiplier).
 	 */
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
@@ -162,11 +169,10 @@ public class SparkDrive extends Subsystem {
 	 * An improved and more readable version of the Dreadbot's homemade tank
 	 * drive function.
 	 *
-	 * @param forwardAxisFactor    The forward factor of the drivetrain control.
-	 * @param rotationAxisFactor   The rotational factor of the drivetrain control.
-	 * @param finalValueMultiplier The final multiplier of the result of the
-	 *                             function.
-	 * @param joystickDeadband     The applied joystick deadband.
+	 * @param forwardAxisFactor  The forward factor of the drivetrain control.
+	 * @param rotationAxisFactor The rotational factor of the drivetrain control.
+	 * @param driveMode          The drive mode setting (final multiplier).
+	 * @param joystickDeadband   The applied joystick deadband.
 	 */
 	public void tankDrive(double forwardAxisFactor,
 	                      double rotationAxisFactor,
@@ -218,9 +224,9 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public CANSparkMax getMotor(int port) {
-		if (!DreadbotMath.inRange(port, 0, motors.size()))
+		if (!DreadbotMath.inRange(port, 0, motors.size() + 1))
 			return null;
-		return motors.get(port);
+		return motors.get(port - 1);
 	}
 
 	public CANEncoder getMotorEncoder(int port) {

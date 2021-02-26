@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
 			secondaryJoystick,
 			manipulator,
 			sparkDrive);
-		autonomous = new Autonomous();
+		autonomous = new Autonomous(sparkDrive);
 
 		// Testing Initialization
 		System.out.println("Testing Initialization...");
@@ -96,11 +96,12 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotPeriodic() {
+		sparkDrive.periodic();
 	}
 
 	@Override
 	public void autonomousInit() {
-		shooter.setVisionLight(true);
+	//	shooter.setVisionLight(true);
 
 		autonomous.autonomousInit();
 	}

@@ -2,6 +2,7 @@ package frc.robot.gamestate.routine;
 
 import frc.robot.subsystem.Ultra;
 import frc.robot.utility.DreadbotMath;
+import frc.robot.utility.TeleopFunctions;
 import frc.robot.subsystem.SparkDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import java.lang.Math;
@@ -27,7 +28,6 @@ public class ApproachBall extends AutonSegment{
 	@Override
 	public void autonomousInit() {
 		SmartDashboard.putNumber("Approach Ball: Speed Scale", 1.0);
-		
 	}
 
 	@Override
