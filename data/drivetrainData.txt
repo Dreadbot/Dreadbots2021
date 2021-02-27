@@ -1,5 +1,5 @@
 7 motor turns = 1 wheel turn
-Circumference: 18.8in
+Circumference: 18.8in,
 
 Max Voltage: 7
 kS: 0.164
