@@ -62,7 +62,7 @@ public class Autonomous {
 		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
 			simpleMotorFeedforward,
 			SparkDrive.kinematics,
-			6);
+			7);
 
 		TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
 			SparkDrive.kMaxSpeedMetersPerSecond,
@@ -73,7 +73,7 @@ public class Autonomous {
 		trajectory = TrajectoryGenerator.generateTrajectory(
 			new Pose2d(0, 0, new Rotation2d(0)),
 			List.of(),
-			new Pose2d(0.5, 0.5, new Rotation2d(90)),
+			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(3), new Rotation2d(0)),
 			trajectoryConfig
 		);
 
@@ -151,8 +151,16 @@ public class Autonomous {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		System.out.println("leftOutput = " + leftFeedforward);
-		System.out.println("rightOutput = " + rightFeedforward);
+		leftFeedforward *= 7; // V
+		rightFeedforward *= 7; // V
+
+		System.out.println("leftOutput = " + leftOutput);
+		System.out.println("rightOutput = " + rightOutput);
+
+		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
+
+		System.out.println("leftFeedOutput = " + leftFeedforward);
+		System.out.println("rightFeedOutput = " + rightFeedforward);
 
 		sparkDrive.tankDriveVolts(leftFeedforward, rightFeedforward);
 

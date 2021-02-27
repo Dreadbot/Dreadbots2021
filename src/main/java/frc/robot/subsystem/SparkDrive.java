@@ -20,15 +20,15 @@ public class SparkDrive extends Subsystem {
 	public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
 
 	// Feedforward gains
-	public static final double kSVolts = 0.128d;
-	public static final double kVVoltSecondsPerMeter = 0.0454d;
-	public static final double kAVoltSecondsSquaredPerMeter = 0.0119d;
-	public static final double kPDriveVel = 0.563d;
+	public static final double kSVolts = 0.164d;
+	public static final double kVVoltSecondsPerMeter = 0.0467d;
+	public static final double kAVoltSecondsSquaredPerMeter = 0.0784d;
+	public static final double kPDriveVel = 0.366d;
 
 	public static final double kMaxSpeedMetersPerSecond = 0.5d;
 	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
 
-	public static final double kTrackwidthMeters = 0.6731d;
+	public static final double kTrackwidthMeters = 0.705d;
 	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
@@ -41,6 +41,7 @@ public class SparkDrive extends Subsystem {
 		for (int i = 0; i < 4; i++) {
 			CANSparkMax sparkMax = new CANSparkMax(i + 1, K_MOTORTYPE);
 			sparkMax.restoreFactoryDefaults();
+			sparkMax.setIdleMode(CANSparkMax.IdleMode.kCoast);
 
 			// Setup PIDs
 			final CANPIDController pidController = sparkMax.getPIDController();
@@ -83,8 +84,8 @@ public class SparkDrive extends Subsystem {
 
 	public void periodic() {
 		odometry.update(gyroscope.getRotation2d(),
-			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters,
-			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters);
+			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters / 7,
+			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters / 7);
 	}
 
 	public Pose2d getPose() {
@@ -93,8 +94,8 @@ public class SparkDrive extends Subsystem {
 
 	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return new DifferentialDriveWheelSpeeds(
-			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond,
-			getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond);
+			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7,
+			getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7);
 	}
 
 	public void resetOdometry(Pose2d pose) {
