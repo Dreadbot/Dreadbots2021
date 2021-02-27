@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -83,7 +84,7 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public void periodic() {
-		odometry.update(gyroscope.getRotation2d(),
+		odometry.update(Rotation2d.fromDegrees(gyroscope.getYaw()),
 			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters,
 			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters);
 	}
@@ -94,8 +95,8 @@ public class SparkDrive extends Subsystem {
 
 	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return new DifferentialDriveWheelSpeeds(
-			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7,
-			-getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7);
+			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond,
+			-getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond);
 	}
 
 	public void resetOdometry(Pose2d pose) {
