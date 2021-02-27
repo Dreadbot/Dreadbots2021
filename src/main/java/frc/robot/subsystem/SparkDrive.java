@@ -119,7 +119,7 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public double getAverageEncoderDistance() {
-		return (getMotorEncoder(1).getPosition() + getMotorEncoder(2).getPosition()) / 2;
+		return (getMotorEncoder(1).getPosition() + getMotorEncoder(2).getPosition()) * (0.5 * Constants.revolutionsToMeters);
 	}
 
 	public void zeroHeading() {
