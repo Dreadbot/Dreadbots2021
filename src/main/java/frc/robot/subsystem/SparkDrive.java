@@ -95,7 +95,7 @@ public class SparkDrive extends Subsystem {
 	public DifferentialDriveWheelSpeeds getWheelSpeeds() {
 		return new DifferentialDriveWheelSpeeds(
 			getMotorEncoder(1).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7,
-			getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7);
+			-getMotorEncoder(2).getVelocity() * Constants.revolutionsPerMinuteToMetersPerSecond / 7);
 	}
 
 	public void resetOdometry(Pose2d pose) {

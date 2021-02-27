@@ -151,13 +151,18 @@ public class Autonomous {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		leftOutput *= 7; // V
-		rightOutput *= 7; // V
+		// leftOutput *= 7; // V
+		// rightOutput *= 7; // V
+
+		System.out.println("leftFeedforward = " + leftFeedforward);
+		System.out.println("rightFeedforward = " + rightFeedforward);
 
 		System.out.println("leftOutput = " + leftOutput);
 		System.out.println("rightOutput = " + rightOutput);
 
 		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
+		System.out.println("sparkDrive.getHeading() = " + sparkDrive.getHeading());
+		
 
 		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
 
