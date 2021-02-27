@@ -24,7 +24,7 @@ public class SparkDrive extends Subsystem {
 	public static final double kSVolts = 0.164d;
 	public static final double kVVoltSecondsPerMeter = 0.0467d;
 	public static final double kAVoltSecondsSquaredPerMeter = 0.0784d;
-	public static final double kPDriveVel = 1d; //3.83e-8d
+	public static final double kPDriveVel = 3.83e-8d;
 
 	public static final double kMaxSpeedMetersPerSecond = 0.5d;
 	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
@@ -58,7 +58,7 @@ public class SparkDrive extends Subsystem {
 		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
 
-		this.odometry = new DifferentialDriveOdometry(gyroscope.getRotation2d());
+		this.odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyroscope.getYaw()));
 
 		this.stop();
 
@@ -114,6 +114,8 @@ public class SparkDrive extends Subsystem {
 	public void resetEncoders() {
 		getMotorEncoder(1).setPosition(0.0);
 		getMotorEncoder(2).setPosition(0.0);
+		getMotorEncoder(3).setPosition(0.0);
+		getMotorEncoder(4).setPosition(0.0);
 	}
 
 	public double getAverageEncoderDistance() {
