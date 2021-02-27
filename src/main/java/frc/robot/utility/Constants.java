@@ -21,6 +21,6 @@ public class Constants{
     public static final double metersPerSecondToRevolutionsPerMinute = 125.6d;
     public static final double revolutionsPerMinuteToMetersPerSecond = 7.96E-03;
 
-    public static final double metersToRevolutions = 0.478;
-    public static final double revolutionsToMeters = 2.092;
+    public static final double metersToRevolutions = 14.64;
+    public static final double revolutionsToMeters = 0.0683;
 }

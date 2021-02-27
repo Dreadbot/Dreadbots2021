@@ -23,7 +23,7 @@ public class SparkDrive extends Subsystem {
 	public static final double kSVolts = 0.164d;
 	public static final double kVVoltSecondsPerMeter = 0.0467d;
 	public static final double kAVoltSecondsSquaredPerMeter = 0.0784d;
-	public static final double kPDriveVel = 0.366d;
+	public static final double kPDriveVel = 1d; //3.83e-8d
 
 	public static final double kMaxSpeedMetersPerSecond = 0.5d;
 	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
@@ -84,8 +84,8 @@ public class SparkDrive extends Subsystem {
 
 	public void periodic() {
 		odometry.update(gyroscope.getRotation2d(),
-			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters / 7,
-			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters / 7);
+			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters,
+			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters);
 	}
 
 	public Pose2d getPose() {
