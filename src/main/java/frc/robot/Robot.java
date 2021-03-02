@@ -135,16 +135,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		// Teleop Logic
-		DriveMode mode = DriveMode.NORMAL;
-		if(primaryJoystick.isRightBumperPressed()){
-			mode = DriveMode.TURTLE;
-		}
-		else if (primaryJoystick.isLeftBumperPressed()){
-			mode = DriveMode.TURBO;
-		}
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis(), mode);
+		// Drive
+		teleoperated.teleopDrive();
 
+		// Shooter
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
 			SmartDashboard.getNumber("Shooter I", 3.3e-7),
 			SmartDashboard.getNumber("Shooter D", 0.03));
@@ -152,24 +146,16 @@ public class Robot extends TimedRobot {
 
 		shooter.hoodCalibration();
 
-		// if (primaryJoystick.getRawButton(Constants.X_BUTTON)) {
-		// 	manipulator.prepareShot(2500, 0.75);
-		// } else {
-		// 	shooter.setShootingPercentOutput(0);
-		// }
-		// if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
-		// 	manipulator.continuousShoot(0.5, 0.75, 3550);
-		// } else {
-		// 	// feeder.setPunchExtension(false);
-		// 	manipulator.resetManipulatorElements();
-		// }
-
-		teleoperated.teleopIntake();
-
 		SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		teleoperated.teleopShooter();
+
+		// Intake
+		teleoperated.teleopIntake();
+
+		// Ultrasonics;
 		Ultra.automatic();
-		double a = sonic1.getRangeInches();
+
+		// double a = sonic1.getRangeInches();
 		// System.out.println(a);
 	}
 
