@@ -1,0 +1,11 @@
+7 motor turns = 1 wheel turn
+Circumference: 18.8in,
+
+Max Voltage: 7
+kS: 0.164
+kV: 0.0467
+kA: 0.0784
+r^2: 0.997
+Track Width: 27.737
+kP: 0.366
+kD: 0.0
