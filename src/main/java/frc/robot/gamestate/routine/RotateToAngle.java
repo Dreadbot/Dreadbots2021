@@ -24,7 +24,7 @@ public class RotateToAngle extends AutonSegment{
         // TODO Auto-generated method stub
         if(teleopFunctions.getTurnStatus()) {
             teleopFunctions.setTurnStatus(false);
-            complete = true;
+            //complete = true;
         }
     }
     

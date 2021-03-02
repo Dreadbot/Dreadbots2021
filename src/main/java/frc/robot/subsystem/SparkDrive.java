@@ -26,8 +26,8 @@ public class SparkDrive extends Subsystem {
 	public static final double kAVoltSecondsSquaredPerMeter = 0.0784d;
 	public static final double kPDriveVel = 3.83e-8d;
 
-	public static final double kMaxSpeedMetersPerSecond = 0.5d;
-	public static final double kMaxAccelerationMetersPerSecondSquared = 0.25d;
+	public static final double kMaxSpeedMetersPerSecond = 1d;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 1d;
 
 	public static final double kTrackwidthMeters = 0.705d;
 	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
@@ -84,9 +84,15 @@ public class SparkDrive extends Subsystem {
 	}
 
 	public void periodic() {
-		odometry.update(Rotation2d.fromDegrees(gyroscope.getYaw()),
-			getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters,
-			getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters);
+		final double leftPosition = getMotorEncoder(1).getPosition() * Constants.revolutionsToMeters;
+		final double rightPosition = getMotorEncoder(2).getPosition() * Constants.revolutionsToMeters;
+		final var newPose = odometry.update(gyroscope.getRotation2d(),
+				leftPosition,
+				-rightPosition);
+
+//		System.out.println("leftPosition = " + leftPosition);
+//		System.out.println("rightPosition = " + rightPosition);
+//		System.out.println("newPose = " + newPose);
 	}
 
 	public Pose2d getPose() {

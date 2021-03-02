@@ -76,6 +76,8 @@ public class AutonTrajectory extends AutonSegment {
 			trajectoryConfig
 		);
 
+		System.out.println("trajectory = " + trajectory);
+
 		sparkDrive.resetOdometry(trajectory.getInitialPose());
 
 		controller = new RamseteController();
@@ -103,6 +105,7 @@ public class AutonTrajectory extends AutonSegment {
 		// Determine times and whether to continue
 		final double currentTime = timer.get();
 		final double deltaTime = currentTime - previousTime;
+		System.out.println("trajectory.getTotalTimeSeconds() = " + trajectory.getTotalTimeSeconds());
 		if (currentTime >= trajectory.getTotalTimeSeconds()) {
 			sparkDrive.tankDrive(0, 0);
 			complete = true;
@@ -122,6 +125,9 @@ public class AutonTrajectory extends AutonSegment {
 		);
 		var currentWheelSpeeds = sparkDrive.getWheelSpeeds();
 
+		System.out.println("targetWheelSpeeds.leftMetersPerSecond = " + targetWheelSpeeds.leftMetersPerSecond);
+		System.out.println("targetWheelSpeeds.rightMetersPerSecond = " + targetWheelSpeeds.rightMetersPerSecond);
+		
 		// Calculate the feedforward in Volts.
 		double leftFeedforward =
 			simpleMotorFeedforward.calculate(targetWheelSpeeds.leftMetersPerSecond,
@@ -140,9 +146,6 @@ public class AutonTrajectory extends AutonSegment {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		// leftOutput *= 7; // V
-		// rightOutput *= 7; // V
-
 		System.out.println("leftFeedforward = " + leftFeedforward);
 		System.out.println("rightFeedforward = " + rightFeedforward);
 
@@ -152,6 +155,8 @@ public class AutonTrajectory extends AutonSegment {
 		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
 		System.out.println("sparkDrive.getHeading() = " + sparkDrive.getHeading());
 
+		leftOutput *= 7;
+		rightOutput *= 7;
 
 		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
 
