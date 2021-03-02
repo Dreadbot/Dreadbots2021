@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.gamestate.routine.AutonSegment;
 import frc.robot.gamestate.routine.AutonTimer;
 import frc.robot.gamestate.routine.AutonTrajectory;
+import frc.robot.gamestate.routine.RotateToAngle;
 import frc.robot.subsystem.SparkDrive;
+import frc.robot.utility.TeleopFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +31,16 @@ public class Autonomous {
 	// Routine Data
 	private final ArrayList<AutonSegment> autonSegments;
 	private final SparkDrive sparkDrive;
+	private final TeleopFunctions teleopFunctions;
 	private int autonRoutineIndex;
 	private boolean autonCompleted;
 
 	/**
 	 * Default Constructor (no-args)
 	 */
-	public Autonomous(SparkDrive sparkDrive) {
+	public Autonomous(SparkDrive sparkDrive, TeleopFunctions teleopFunctions) {
 		this.sparkDrive = sparkDrive;
+		this.teleopFunctions = teleopFunctions;
 
 		this.autonSegments = new ArrayList<>();
 		this.autonRoutineIndex = 0;
@@ -46,8 +50,13 @@ public class Autonomous {
 		this.autonSegments.add(new AutonTrajectory(
 			sparkDrive,
 			new Pose2d(0, 0, new Rotation2d(0)),
-			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(3), new Rotation2d(0))
+			List.of(
+					new Translation2d(Units.feetToMeters(5), 0),
+					new Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(3))
+			),
+			new Pose2d(Units.feetToMeters(10), Units.feetToMeters(7), new Rotation2d(0))
 		));
+		this.autonSegments.add(new RotateToAngle(0, teleopFunctions));
 	}
 
 	/**
@@ -56,6 +65,8 @@ public class Autonomous {
 	 */
 	public void autonomousInit() {
 		System.out.println("Autonomous.autonomousInit");
+
+		sparkDrive.getGyroscope().reset();
 
 		// Call init method for first autonomous segment in the routine
 		autonSegments.get(autonRoutineIndex).autonomousInit();

@@ -123,7 +123,7 @@ public class TeleopFunctions {
 		currentRotationRate = pidController.calculate(error);
 
 		// Set the upper bound of the rotation rate
-		DreadbotMath.clampValue(currentRotationRate, -1.0, 1.0);
+		DreadbotMath.clampValue(currentRotationRate, -.1, .1);
 
 		SmartDashboard.putNumber("Error", error);
 		SmartDashboard.putNumber("Gyro Angle", sparkDrive.getGyroscope().getYaw());

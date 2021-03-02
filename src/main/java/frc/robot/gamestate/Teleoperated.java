@@ -171,7 +171,11 @@ public class Teleoperated {
 		aimCounts = 0;
 	}
 
-	private enum AimShootStates {
+    public TeleopFunctions getTeleopFunctions() {
+		return teleopFunctions;
+    }
+
+    private enum AimShootStates {
 		AIMING,
 		SHOOTING;
 	}

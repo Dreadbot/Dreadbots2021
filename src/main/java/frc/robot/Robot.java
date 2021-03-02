@@ -82,7 +82,7 @@ public class Robot extends TimedRobot {
 			secondaryJoystick,
 			manipulator,
 			sparkDrive);
-		autonomous = new Autonomous(sparkDrive);
+		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions());
 
 		// Testing Initialization
 		System.out.println("Testing Initialization...");
