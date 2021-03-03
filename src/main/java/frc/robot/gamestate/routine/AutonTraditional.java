@@ -9,7 +9,7 @@ public class AutonTraditional extends AutonSegment {
 
 	public AutonTraditional(double driveLength, int angle, SparkDrive sparkDrive, TeleopFunctions teleopFunctions) {
 		driveSegment = new AutonDrive(driveLength, sparkDrive);
-		rotateSegment = new RotateToAngle(angle, teleopFunctions);
+		rotateSegment = new RotateToAngle(angle, sparkDrive, teleopFunctions);
 	}
 
 	@Override

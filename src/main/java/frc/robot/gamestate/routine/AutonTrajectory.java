@@ -78,8 +78,6 @@ public class AutonTrajectory extends AutonSegment {
 
 		System.out.println("trajectory = " + trajectory);
 
-		sparkDrive.resetOdometry(trajectory.getInitialPose());
-
 		controller = new RamseteController();
 
 		timer = new Timer();
@@ -88,6 +86,9 @@ public class AutonTrajectory extends AutonSegment {
 	@Override
 	public void autonomousInit() {
 		previousTime = -1;
+
+		sparkDrive.resetOdometry(trajectory.getInitialPose());
+
 		var initialState = trajectory.sample(0);
 		previousWheelSpeeds = SparkDrive.kinematics.toWheelSpeeds(
 			new ChassisSpeeds(

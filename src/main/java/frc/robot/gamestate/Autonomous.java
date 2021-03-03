@@ -1,28 +1,15 @@
 package frc.robot.gamestate;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.controller.RamseteController;
-import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.gamestate.routine.AutonSegment;
-import frc.robot.gamestate.routine.AutonTimer;
 import frc.robot.gamestate.routine.AutonTrajectory;
 import frc.robot.gamestate.routine.RotateToAngle;
 import frc.robot.subsystem.SparkDrive;
 import frc.robot.utility.TeleopFunctions;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Logic Container for the Autonomous Period and Infinite Recharge at Home Challenges.
@@ -50,13 +37,21 @@ public class Autonomous {
 		this.autonSegments.add(new AutonTrajectory(
 			sparkDrive,
 			new Pose2d(0, 0, new Rotation2d(0)),
-			List.of(
-					new Translation2d(Units.feetToMeters(5), 0),
-					new Translation2d(Units.feetToMeters(7.5), Units.feetToMeters(3))
-			),
-			new Pose2d(Units.feetToMeters(10), Units.feetToMeters(7), new Rotation2d(0))
+			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0))
 		));
-		this.autonSegments.add(new RotateToAngle(0, teleopFunctions));
+		this.autonSegments.add(new AutonTrajectory(
+			sparkDrive,
+			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0)),
+			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(0))
+		));
+		this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
+		this.autonSegments.add(new RotateToAngle(-90, sparkDrive, teleopFunctions));
+		this.autonSegments.add(new AutonTrajectory(
+			sparkDrive,
+			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(-90)),
+			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(3), new Rotation2d(-90))
+		));
+		this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
 	}
 
 	/**
@@ -80,28 +75,30 @@ public class Autonomous {
 		 // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		 // running after the routine is finished.
 		 if(autonCompleted)
-		 	return;
+			return;
 
 		 // Run the current segment's autonomousPeriodic() code.
 		 autonSegments.get(autonRoutineIndex).autonomousPeriodic();
 
+		 System.out.println("autonRoutineIndex = " + autonRoutineIndex);
+
 		 // Check to see if the current segment's task has been completed
 		 if(autonSegments.get(autonRoutineIndex).isComplete()) {
-		 	// Move to the next segment of the routine
-		 	autonRoutineIndex++;
+			// Move to the next segment of the routine
+			autonRoutineIndex++;
 
-		 	// If there are no more segments in the routine, stop the execution
-		 	// of the autonomous logic.
-		 	if(autonRoutineIndex >= autonSegments.size()) {
-		 		// Prevents the autonomous logic from being run until the next time
-		 		// the autonomous period starts.
-		 		autonCompleted = true;
-		 		return;
-		 	}
+			// If there are no more segments in the routine, stop the execution
+			// of the autonomous logic.
+			if(autonRoutineIndex >= autonSegments.size()) {
+				// Prevents the autonomous logic from being run until the next time
+				// the autonomous period starts.
+				autonCompleted = true;
+				return;
+			}
 
-		 	// If there are more segments in the routine,
-		 	// call the next segment's init method.
-		 	autonSegments.get(autonRoutineIndex).autonomousInit();
+			// If there are more segments in the routine,
+			// call the next segment's init method.
+			autonSegments.get(autonRoutineIndex).autonomousInit();
 		 }
 	}
 
