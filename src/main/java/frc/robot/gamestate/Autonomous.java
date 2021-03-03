@@ -4,8 +4,11 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.gamestate.routine.AutonSegment;
+import frc.robot.gamestate.routine.AutonShoot;
+import frc.robot.gamestate.routine.AutonTimer;
 import frc.robot.gamestate.routine.AutonTrajectory;
 import frc.robot.gamestate.routine.RotateToAngle;
+import frc.robot.subsystem.Manipulator;
 import frc.robot.subsystem.SparkDrive;
 import frc.robot.utility.TeleopFunctions;
 
@@ -19,13 +22,17 @@ public class Autonomous {
 	private final ArrayList<AutonSegment> autonSegments;
 	private final SparkDrive sparkDrive;
 	private final TeleopFunctions teleopFunctions;
+	private final Manipulator manipulator;
+	private final Teleoperated teleoperated;
 	private int autonRoutineIndex;
 	private boolean autonCompleted;
 
 	/**
 	 * Default Constructor (no-args)
 	 */
-	public Autonomous(SparkDrive sparkDrive, TeleopFunctions teleopFunctions) {
+	public Autonomous(SparkDrive sparkDrive, TeleopFunctions teleopFunctions, Manipulator manipulator, Teleoperated teleoperated) {
+		this.teleoperated = teleoperated;
+		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
 		this.teleopFunctions = teleopFunctions;
 
@@ -39,12 +46,13 @@ public class Autonomous {
 			new Pose2d(0, 0, new Rotation2d(0)),
 			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0))
 		));
+		this.autonSegments.add(new AutonShoot(teleoperated, manipulator, 3));
+		//this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
 		this.autonSegments.add(new AutonTrajectory(
 			sparkDrive,
 			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0)),
 			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(0))
 		));
-		this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
 		this.autonSegments.add(new RotateToAngle(-90, sparkDrive, teleopFunctions));
 		this.autonSegments.add(new AutonTrajectory(
 			sparkDrive,
@@ -65,6 +73,12 @@ public class Autonomous {
 
 		// Call init method for first autonomous segment in the routine
 		autonSegments.get(autonRoutineIndex).autonomousInit();
+
+		manipulator.getShooter().setVisionLight(true);
+		manipulator.getShooter().setHoodPercentOutput(0.25);
+		manipulator.getShooter().setUpperBool(false);
+		manipulator.getShooter().setLowerBool(false);
+		manipulator.getShooter().setAimReadiness(false);
 	}
 
 	/**
@@ -74,6 +88,7 @@ public class Autonomous {
 	public void autonomousPeriodic() {
 		 // Prevent IndexOutOfBoundsExceptions and allows the robot to remain
 		 // running after the routine is finished.
+		 manipulator.getShooter().hoodCalibration();
 		 if(autonCompleted)
 			return;
 

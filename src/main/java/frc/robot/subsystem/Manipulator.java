@@ -63,7 +63,7 @@ public class Manipulator extends Subsystem{
 		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
 	}
 
-	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
+	public int continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
 // System.out.println("Shooter state: " + shooterState.ordinal());
 
@@ -73,10 +73,10 @@ public class Manipulator extends Subsystem{
 		System.out.println("*************shooter state: "+shooterState);
 		System.out.println("feeder.getPunchSwitchState(): " + feeder.getPunchSwitchState());
 		//if speed is within acceptable margin of error, switch to punching
-		if(shooterState == shooterStates.RAMPING && speedDifference < 300 && speedDifference > 0){
+		if(shooterState == shooterStates.RAMPING && speedDifference < 200 && speedDifference > 0){
 			shooterState = shooterStates.PUNCHING;
 		}
-		else if(shooterState == shooterStates.RAMPING && speedDifference > -100 && speedDifference < 0){
+		else if(shooterState == shooterStates.RAMPING && speedDifference > -25 && speedDifference < 0){
 			shooterState = shooterStates.PUNCHING;
 		}
 		//Change state based on a counter so the punch has enough time to extend
@@ -122,6 +122,7 @@ public class Manipulator extends Subsystem{
 		shooter.shoot(-shootingRPM);
 
 		lastShooterState = shooterState;
+		return numPunches;
 	}
 
 	public void resetManipulatorElements(){

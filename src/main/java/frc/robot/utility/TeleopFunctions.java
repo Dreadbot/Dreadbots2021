@@ -26,7 +26,7 @@ public class TeleopFunctions {
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
 
-		p = 0.015;
+		p = 0.018;
 		i = 0.0;
 		d = 0.00135;
 
@@ -123,7 +123,7 @@ public class TeleopFunctions {
 		currentRotationRate = pidController.calculate(error);
 
 		// Set the upper bound of the rotation rate
-		DreadbotMath.clampValue(currentRotationRate, -.2, .2);
+		DreadbotMath.clampValue(currentRotationRate, -1.0, 1.0);
 
 		SmartDashboard.putNumber("Error", error);
 		SmartDashboard.putNumber("Gyro Angle", sparkDrive.getGyroscope().getYaw());
@@ -135,10 +135,10 @@ public class TeleopFunctions {
 		// controller input, but the rotation axis of the drive base based on the
 		// rotation rate found
 		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
-		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
-
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(), -currentRotationRate, driveMode);
+		/*driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
+		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;*/
+		driveMode = SparkDrive.DriveMode.TURTLE;
+		sparkDrive.tankDrive(0, -currentRotationRate, driveMode);
 
 		// If the difference between the current angle and the target angle is within an
 		// allowable constant,
@@ -152,7 +152,7 @@ public class TeleopFunctions {
 		// 	sparkDrive.stop();
 		// }
 
-		if (Math.abs(error) < slop && Math.abs(sparkDrive.getWheelSpeeds().leftMetersPerSecond) < 0.6) {
+		if (Math.abs(error) < slop && Math.abs(sparkDrive.getWheelSpeeds().leftMetersPerSecond) < 1) {
 			turnComplete = true;
 			// m_sparkDrive->GetGyroscope()->ZeroYaw();
 			sparkDrive.stop();
