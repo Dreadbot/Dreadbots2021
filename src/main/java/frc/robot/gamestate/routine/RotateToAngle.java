@@ -1,14 +1,17 @@
 package frc.robot.gamestate.routine;
 
+import frc.robot.subsystem.SparkDrive;
 import frc.robot.utility.TeleopFunctions;
 
 public class RotateToAngle extends AutonSegment{
-
     private int turnToAngle;
+
+    private final SparkDrive sparkDrive;
     private TeleopFunctions teleopFunctions;
 
-    public RotateToAngle(int turnToAngle, TeleopFunctions teleopFunctions) {
-        this.turnToAngle = turnToAngle;
+    public RotateToAngle(int turnToAngle, SparkDrive sparkDrive, TeleopFunctions teleopFunctions) {
+        this.turnToAngle = -turnToAngle;
+        this.sparkDrive = sparkDrive;
         this.teleopFunctions = teleopFunctions;
     }
 
@@ -24,7 +27,8 @@ public class RotateToAngle extends AutonSegment{
         // TODO Auto-generated method stub
         if(teleopFunctions.getTurnStatus()) {
             teleopFunctions.setTurnStatus(false);
-            //complete = true;
+            sparkDrive.stop();
+            complete = true;
         }
     }
     
