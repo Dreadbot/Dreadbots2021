@@ -60,6 +60,21 @@ public class AutonRoutine {
         }
     }
 
+    /**
+	 * Called directly from Robot.disabledInit() function. Resets the routine management
+	 * data so that the routine can be run in the same on/off cycle of the robot.
+	 */
+	public void disabledInit() {
+		// Performs a reset of all the routine data so it can be run multiple times
+		// in the same on/off cycle of the robot.
+		segmentIndex = 0;
+		completed = false;
+		for (AutonSegment segment : segments) {
+			segment.setComplete(false);
+			segment.disabledInit();
+		}
+	}
+
     public boolean isCompleted() {
         return completed;
     }
