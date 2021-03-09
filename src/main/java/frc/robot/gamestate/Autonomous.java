@@ -3,7 +3,9 @@ package frc.robot.gamestate;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.util.Units;
+import edu.wpi.first.wpilibj.shuffleboard.senda;
 import frc.robot.gamestate.routine.AutonSegment;
+import frc.robot.gamestate.routine.AutonRoutine;
 import frc.robot.gamestate.routine.AutonTrajectory;
 import frc.robot.gamestate.routine.RotateToAngle;
 import frc.robot.subsystem.SparkDrive;
@@ -16,11 +18,16 @@ import java.util.ArrayList;
  */
 public class Autonomous {
 	// Routine Data
+	private final ArrayList<AutonRoutine> autonRoutines;
+
 	private final ArrayList<AutonSegment> autonSegments;
 	private final SparkDrive sparkDrive;
 	private final TeleopFunctions teleopFunctions;
 	private int autonRoutineIndex;
 	private boolean autonCompleted;
+
+	// SmartDashboard
+	private final SendableChooser<String> autonChooser;
 
 	/**
 	 * Default Constructor (no-args)
@@ -28,30 +35,41 @@ public class Autonomous {
 	public Autonomous(SparkDrive sparkDrive, TeleopFunctions teleopFunctions) {
 		this.sparkDrive = sparkDrive;
 		this.teleopFunctions = teleopFunctions;
+		
+		this.autonRoutines = new ArrayList<>();
 
 		this.autonSegments = new ArrayList<>();
 		this.autonRoutineIndex = 0;
 		this.autonCompleted = false;
 
-		// Manually add segments to the routine (will be changed in the future)
-		this.autonSegments.add(new AutonTrajectory(
-			sparkDrive,
-			new Pose2d(0, 0, new Rotation2d(0)),
-			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0))
-		));
-		this.autonSegments.add(new AutonTrajectory(
-			sparkDrive,
-			new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0)),
-			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(0))
-		));
-		this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
-		this.autonSegments.add(new RotateToAngle(-90, sparkDrive, teleopFunctions));
-		this.autonSegments.add(new AutonTrajectory(
-			sparkDrive,
-			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(-90)),
-			new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(3), new Rotation2d(-90))
-		));
-		this.autonSegments.add(new RotateToAngle(0, sparkDrive, teleopFunctions));
+		this.autonRoutines.add(new AutonRoutine(sparkDrive)
+			// Trajectory straight forward
+			.addSegment(new AutonTrajectory(
+				sparkDrive,
+				new Pose2d(0, 0, new Rotation2d(0)),
+				new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0))))
+			
+			// Trajectory avoiding obstacles
+			.addSegment(new AutonTrajectory(
+				sparkDrive,
+				new Pose2d(Units.feetToMeters(7.5), Units.feetToMeters(0), new Rotation2d(0)),
+				new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(0))))
+			
+			// Turn to angle 0
+			.addSegment(new RotateToAngle(0, sparkDrive, teleopFunctions))
+			
+			// Turn to angle -90
+			.addSegment(new RotateToAngle(-90, sparkDrive, teleopFunctions))
+			
+			// Trajectory back through chair obstacles
+			.addSegment(new AutonTrajectory(
+				sparkDrive,
+				new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(-90)),
+				new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(3), new Rotation2d(-90))))
+			
+			// Rotate to angle 0
+			.addSegment(new RotateToAngle(0, sparkDrive, teleopFunctions))
+		);
 	}
 
 	/**
