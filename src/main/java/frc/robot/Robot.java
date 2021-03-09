@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
+import frc.robot.gamestate.routine.AutonShoot;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
@@ -82,7 +83,7 @@ public class Robot extends TimedRobot {
 			secondaryJoystick,
 			manipulator,
 			sparkDrive);
-		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions());
+		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions(), manipulator, teleoperated);
 
 		// Testing Initialization
 		System.out.println("Testing Initialization...");
@@ -102,7 +103,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 	//	shooter.setVisionLight(true);
-
 		autonomous.autonomousInit();
 	}
 

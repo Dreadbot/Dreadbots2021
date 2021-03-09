@@ -128,7 +128,8 @@ public class Teleoperated {
 		}
 	}
 
-	public void aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
+	public int aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
+		int numPunches = 0;
 		double rpm = manipulator.getSelectedRPM(distance);
 		SmartDashboard.putNumber("Target Shooting Velocity", rpm);
 		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
@@ -138,15 +139,16 @@ public class Teleoperated {
 		switch (aimShootState) {
 			case AIMING:
 				// rotSpeed = teleopFunctions.calculateTurnToAngle(targetAngle);
-				teleopFunctions.WPITurnToAngle(targetAngle);
-				manipulator.prepareShot(-rpm, hoodPosition);
+				teleopFunctions.WPITurnToAngle(targetAngle-6.0);
+				manipulator.prepareShot(-rpm-400, hoodPosition-.075);
 				break;
 			case SHOOTING:
 				sparkDrive.stop();
-				manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
+				numPunches = manipulator.continuousShoot(hoodPosition-0.075, genevaSpeed, rpm+400);
 				break;
 		}
 		aimCounts++;
+		return numPunches;
 	}
 
 	// public void aimingContinuousShoot(double rpm, double hoodPosition, double targetAngle, double genevaSpeed) {
@@ -175,8 +177,15 @@ public class Teleoperated {
 		return teleopFunctions;
     }
 
-    private enum AimShootStates {
+    public enum AimShootStates {
 		AIMING,
 		SHOOTING;
+	}
+
+	public void setAimShootState(AimShootStates a){
+		aimShootState = a;
+	}
+	public AimShootStates getAimShootStates(){
+		return aimShootState;
 	}
 }
