@@ -147,7 +147,7 @@ public class Shooter {
 	}
 
 	public void setHoodPosition(double position) {
-		DreadbotMath.clampValue(position, 0.0d, 1.0d);
+		position = DreadbotMath.clampValue(position, -0.12d, 1.0d);
 
 		position = minHoodPosition + (position * range);
 

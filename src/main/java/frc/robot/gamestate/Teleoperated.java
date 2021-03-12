@@ -99,9 +99,11 @@ public class Teleoperated {
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
 		if (secondaryJoystick.isYButtonPressed()) {
-			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
+			// double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
+			double shooting_rpm = SmartDashboard.getNumber("Shooter Target Speed", 4000);
 			System.out.println("Cont Shooting");
-			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
+			// double rpm = manipulator.getSelectedRPM(distance);
+			manipulator.continuousShoot(-0.12, 0.4, shooting_rpm);
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.isBButtonPressed() && staleCount < 5) {
 			//System.out.println("B BUTTON PRESSED");
