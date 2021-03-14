@@ -44,7 +44,6 @@ public class Autonomous {
 		this.teleopFunctions = teleopFunctions;
 		
 		this.autonRoutines = new HashMap<>();
-		this.selectedRoutine = "judge_demo";
 
 		this.selectedRoutine = "judge_demo";
 
