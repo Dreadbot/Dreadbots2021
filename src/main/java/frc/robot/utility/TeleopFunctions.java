@@ -26,7 +26,7 @@ public class TeleopFunctions {
 		this.manipulator = manipulator;
 		this.sparkDrive = sparkDrive;
 
-		p = 0.018;
+		p = 0.032;
 		i = 0.0;
 		d = 0.00135;
 

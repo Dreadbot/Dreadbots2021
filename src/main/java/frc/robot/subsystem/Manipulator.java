@@ -1,5 +1,7 @@
 package frc.robot.subsystem;
 
+import frc.robot.utility.DreadbotMath;
+
 public class Manipulator extends Subsystem{
 	private Intake intake;
 	private Feeder feeder;
@@ -54,7 +56,9 @@ public class Manipulator extends Subsystem{
 	public double getSelectedRPM(double inches){
 		inches /= 12;
 		//equation from a regression we did by trial and error.
-		return ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000;
+		double value = ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000 + 200;
+		value = DreadbotMath.clampValue((Double)value, 0d, 4550d);
+		return value;
 	}
 
 	public double getSelectedHoodPosition(double inches){

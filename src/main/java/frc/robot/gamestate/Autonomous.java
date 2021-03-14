@@ -44,6 +44,7 @@ public class Autonomous {
 		this.teleopFunctions = teleopFunctions;
 		
 		this.autonRoutines = new HashMap<>();
+		this.selectedRoutine = "judge_demo";
 
 		this.selectedRoutine = "judge_demo";
 
@@ -99,7 +100,7 @@ public class Autonomous {
 		selectedRoutine = autonChooser.getSelected();
 
 		sparkDrive.getGyroscope().reset();
-
+		
 		// Call init method for first autonomous segment in the routine
 		autonRoutines.get(selectedRoutine).autonomousInit();
 
