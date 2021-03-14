@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotMath;
+import frc.robot.utility.InputSensitivityController;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,11 @@ public class SparkDrive extends Subsystem {
 
 	public static final double kTrackwidthMeters = 0.705d;
 	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
+
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
 	private final DifferentialDriveOdometry odometry;
-
+	private final InputSensitivityController inputSensitivityController;
 
 	public SparkDrive() {
 		super("SparkDrive");
@@ -57,6 +59,7 @@ public class SparkDrive extends Subsystem {
 		}
 		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
+		this.inputSensitivityController = new InputSensitivityController(-.40d);
 
 		this.odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyroscope.getYaw()));
 
@@ -190,18 +193,17 @@ public class SparkDrive extends Subsystem {
 	                      final double joystickDeadband) {
 		double[] speedControllerOutputs = new double[4];
 
-		// System.out.println("TankDrive: forward:" + forwardAxisFactor
-		// 	+ " rotation:" + rotationAxisFactor + "  mode: " + driveMode
-		// 	+ " deadband: " + joystickDeadband );
 		// Clamp Values to Acceptable Ranges (between -1.0 and 1.0).
 		forwardAxisFactor = DreadbotMath.clampValue(forwardAxisFactor, -1.0d, 1.0d);
 		rotationAxisFactor = DreadbotMath.clampValue(rotationAxisFactor, -1.0d, 1.0d);
-		//forwardAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
-		//rotationAxisFactor *= Constants.DRIVE_SPEED_MULTIPLIER;
 
 		// Apply an Optional Joystick Deadband
 		forwardAxisFactor = DreadbotMath.applyDeadbandToValue(forwardAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
 		rotationAxisFactor = DreadbotMath.applyDeadbandToValue(rotationAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
+
+		// Apply sensitivity control
+		forwardAxisFactor = inputSensitivityController.calculate(forwardAxisFactor);
+		rotationAxisFactor = inputSensitivityController.calculate(rotationAxisFactor);
 
 		// Essential Drive Math based on the two movement factors.
 		double leftFinalSpeed = -forwardAxisFactor + rotationAxisFactor;
@@ -218,7 +220,7 @@ public class SparkDrive extends Subsystem {
 			speedControllerOutputs[i] *= driveMode.finalValueMultiplier;
 
 		// Normalize the values to become between 1.0 and -1.0.
-		speedControllerOutputs = DreadbotMath.normalizeValues(speedControllerOutputs);
+		DreadbotMath.normalizeValues(speedControllerOutputs);
 
 		// Assign each value of the array to the motor output.
 		for (int i = 0; i < speedControllerOutputs.length; i++)

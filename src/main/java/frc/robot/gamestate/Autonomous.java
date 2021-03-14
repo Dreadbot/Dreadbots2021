@@ -45,11 +45,12 @@ public class Autonomous {
 		
 		this.autonRoutines = new HashMap<>();
 
+		this.selectedRoutine = "judge_demo";
 
 		this.autonChooser = new SendableChooser<>();
-		this.autonChooser.setDefaultOption("Judge Demo Auton", "judge_demo");
+		this.autonChooser.setDefaultOption("Judge Demo Auton", selectedRoutine);
 		
-		this.autonRoutines.put("judge_demo", new AutonRoutine(sparkDrive)
+		this.autonRoutines.put(selectedRoutine, new AutonRoutine(sparkDrive)
 			// Trajectory straight forward
 			.addSegment(new AutonTrajectory(
 				sparkDrive, 
