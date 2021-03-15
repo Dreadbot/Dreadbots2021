@@ -54,6 +54,10 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		System.out.println("Robot.robotInit\n");
 
+		// TODO temp
+		SmartDashboard.putNumber("tuning RPM", 3500);
+		SmartDashboard.putNumber("tuning Hood Position", 0.5);
+
 		System.out.println("Starting Initialization of RedFive 2021...");
 
 		// Joystick Initialization
