@@ -76,8 +76,6 @@ public class AutonTrajectory extends AutonSegment {
 			trajectoryConfig
 		);
 
-		System.out.println("trajectory = " + trajectory);
-
 		controller = new RamseteController();
 
 		timer = new Timer();

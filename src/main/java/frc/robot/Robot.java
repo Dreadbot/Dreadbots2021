@@ -13,6 +13,7 @@ import frc.robot.subsystem.*;
 import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotController;
+import frc.robot.utility.logger.RobotLogger;
 
 import java.util.ArrayList;
 
@@ -52,24 +53,24 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		System.out.println("Robot.robotInit\n");
+		RobotLogger.log("Robot.robotInit");
 
 		// TODO temp
 		SmartDashboard.putNumber("tuning RPM", 3500);
 		SmartDashboard.putNumber("tuning Hood Position", 0.5);
 
-		System.out.println("Starting Initialization of RedFive 2021...");
+		RobotLogger.log("Starting Initialization of RedFive 2021...");
 
 		// Joystick Initialization
-		System.out.println("Joystick Initialization...");
+		RobotLogger.log("Joystick Initialization...");
 		primaryJoystick = new DreadbotController(0);
 		secondaryJoystick = new DreadbotController(1);
 
 		// Subsystem Initialization
-		System.out.println("SparkDrive Initialization...");
+		RobotLogger.log("SparkDrive Initialization...");
 		sparkDrive = new SparkDrive();
 
-		System.out.println("Manipulator Initialization...");
+		RobotLogger.log("Manipulator Initialization...");
 		shooter = new Shooter();
 		intake = new Intake();
 		feeder = new Feeder();
@@ -77,12 +78,12 @@ public class Robot extends TimedRobot {
 			feeder,
 			shooter);
 
-		System.out.println("Ultrasonic Initialization...");
+		RobotLogger.log("Ultrasonic Initialization...");
 		sonic1 = new Ultra(Constants.ULTRA_PING_CHANNEL_ID, Constants.ULTRA_ECHO_CHANNEL_ID);
 		// sonic2 = new Ultra(6, 7);
 
 		// Game State Initialization
-		System.out.println("Game State Initialization...");
+		RobotLogger.log("Game State Initialization...");
 		teleoperated = new Teleoperated(primaryJoystick,
 			secondaryJoystick,
 			manipulator,
@@ -90,13 +91,13 @@ public class Robot extends TimedRobot {
 		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions(), manipulator, teleoperated);
 
 		// Testing Initialization
-		System.out.println("Testing Initialization...");
+		RobotLogger.log("Testing Initialization...");
 		testingSubsystems = new ArrayList<>();
 		testingSubsystems.add(sparkDrive);
 		//testingSubsystems.add(manipulator);
 
-		System.out.println("RedFive, standing by.");
-		System.out.println("GO DREADBOTS!");
+		RobotLogger.log("RedFive, standing by.");
+		RobotLogger.log("GO DREADBOTS!");
 	}
 
 	@Override
