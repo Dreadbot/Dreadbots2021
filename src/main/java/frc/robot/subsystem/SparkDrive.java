@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotMath;
 import frc.robot.utility.InputSensitivityController;
+import frc.robot.utility.supplier.SmartDashboardNumberSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,12 @@ public class SparkDrive extends Subsystem {
 	private final List<CANSparkMax> motors;
 	private final AHRS gyroscope;
 	private final DifferentialDriveOdometry odometry;
-	private final InputSensitivityController inputSensitivityController;
+
+
+	private final InputSensitivityController forwardAxisSensitivityController;
+	private final InputSensitivityController rotationalAxisSensitivityController;
+	private final SmartDashboardNumberSupplier forwardAxisSensitivitySupplier;
+	private final SmartDashboardNumberSupplier rotationalAxisSensitivitySupplier;
 
 	public SparkDrive() {
 		super("SparkDrive");
@@ -59,7 +65,11 @@ public class SparkDrive extends Subsystem {
 		}
 		this.gyroscope = new AHRS(SerialPort.Port.kUSB);
 		this.gyroscope.reset();
-		this.inputSensitivityController = new InputSensitivityController(-.40d);
+
+		this.forwardAxisSensitivityController = new InputSensitivityController(-.40d);
+		this.rotationalAxisSensitivityController = new InputSensitivityController(-.40d);
+		this.forwardAxisSensitivitySupplier = new SmartDashboardNumberSupplier("forwardSensitivity", -.40d);
+		this.rotationalAxisSensitivitySupplier = new SmartDashboardNumberSupplier("rotationalSensitivity", -.40d);
 
 		this.odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(gyroscope.getYaw()));
 
@@ -202,8 +212,11 @@ public class SparkDrive extends Subsystem {
 		rotationAxisFactor = DreadbotMath.applyDeadbandToValue(rotationAxisFactor, -joystickDeadband, joystickDeadband, 0.0d);
 
 		// Apply sensitivity control
-		forwardAxisFactor = inputSensitivityController.calculate(forwardAxisFactor);
-		rotationAxisFactor = inputSensitivityController.calculate(rotationAxisFactor);
+		forwardAxisSensitivityController.setPercentageSensitivity(forwardAxisSensitivitySupplier.get());
+		rotationalAxisSensitivityController.setPercentageSensitivity(rotationalAxisSensitivitySupplier.get());
+
+		forwardAxisFactor = forwardAxisSensitivityController.calculate(forwardAxisFactor);
+		rotationAxisFactor = rotationalAxisSensitivityController.calculate(rotationAxisFactor);
 
 		// Essential Drive Math based on the two movement factors.
 		double leftFinalSpeed = -forwardAxisFactor + rotationAxisFactor;
