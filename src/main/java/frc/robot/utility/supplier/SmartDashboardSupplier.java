@@ -1,4 +1,4 @@
-package frc.robot.utility.config;
+package frc.robot.utility.supplier;
 
 /**
  * Base class for suppliers to associated values in SmartDashboard/Shuffleboard.

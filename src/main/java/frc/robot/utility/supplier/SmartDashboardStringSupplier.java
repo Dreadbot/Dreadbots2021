@@ -1,20 +1,20 @@
-package frc.robot.utility.config;
+package frc.robot.utility.supplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Supplier to a number configurable on the SmartDashboard/Shuffleboard on the drive computer.
+ * Supplier to a String object configurable on the SmartDashboard/Shuffleboard on the drive computer.
  */
-public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
+public class SmartDashboardStringSupplier extends SmartDashboardSupplier {
     /**
      * Default or starting value on SmartDashbaord/Shuffleboard.
      */
-    private final double defaultValue;
+    private final String defaultValue;
 
     /**
-     * The current value in memory since the last sync with SmartDashbaord/Shuffleboard
+     * The current String value in memory since the last sync with SmartDashbaord/Shuffleboard
      */
-    private double currentValue;
+    private String currentValue;
 
     /**
      * Constructor with id of configurable setting in SmartDashboard/Shuffleboard and default value.
@@ -22,7 +22,7 @@ public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
      * @param id Id of the configurable setting in SmartDashboard/Shuffleboard.
      * @param defaultValue The default value to put in SmartDashboard/Shuffleboard.
      */
-    public SmartDashboardNumberSupplier(String id, double defaultValue) {
+    public SmartDashboardStringSupplier(String id, String defaultValue) {
         super(id);
 
         this.defaultValue = defaultValue;
@@ -39,7 +39,7 @@ public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
      * @param defaultValue The default value to put in SmartDashboard/Shuffleboard.
      * @param value The starting value in robot memory of the setting.
      */
-    public SmartDashboardNumberSupplier(String id, double defaultValue, double value) {
+    public SmartDashboardStringSupplier(String id, String defaultValue, String value) {
         super(id);
 
         this.defaultValue = defaultValue;
@@ -53,7 +53,7 @@ public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
      *
      * @return Current value in SmartDashboard/Shuffleboard.
      */
-    public double get() {
+    public String get() {
         this.updateFromSmartDashboard();
         return currentValue;
     }
@@ -63,16 +63,15 @@ public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
      *
      * @param value The value to set.
      */
-    public void set(double value) {
+    public void set(String value) {
         this.currentValue = value;
-        this.updateToSmartDashboard(value);
     }
 
     /**
      * Syncs the value in memory to the value in SmartDashboard/Shuffleboard.
      */
     public void updateFromSmartDashboard() {
-        currentValue = SmartDashboard.getNumber(id, defaultValue);
+        currentValue = SmartDashboard.getString(id, defaultValue);
     }
 
     /**
@@ -80,7 +79,7 @@ public class SmartDashboardNumberSupplier extends SmartDashboardSupplier {
      *
      * @param value The new value to sync to the SmartDashboard/Shuffleboard.
      */
-    public void updateToSmartDashboard(double value) {
-        SmartDashboard.putNumber(id, value);
+    public void updateToSmartDashboard(String value) {
+        SmartDashboard.putString(id, value);
     }
 }

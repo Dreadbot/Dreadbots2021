@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotMath;
 import frc.robot.utility.InputSensitivityController;
-import frc.robot.utility.config.SmartDashboardNumberSupplier;
+import frc.robot.utility.supplier.SmartDashboardNumberSupplier;
 
 import java.util.ArrayList;
 import java.util.List;
