@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
+import frc.robot.gamestate.routine.AutonShoot;
 import frc.robot.subsystem.*;
 import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
@@ -52,6 +53,10 @@ public class Robot extends TimedRobot {
 	public void robotInit() {
 		System.out.println("Robot.robotInit\n");
 
+		// TODO temp
+		SmartDashboard.putNumber("tuning RPM", 3500);
+		SmartDashboard.putNumber("tuning Hood Position", 0.5);
+
 		System.out.println("Starting Initialization of RedFive 2021...");
 
 		// Joystick Initialization
@@ -81,7 +86,7 @@ public class Robot extends TimedRobot {
 			secondaryJoystick,
 			manipulator,
 			sparkDrive);
-		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions());
+		autonomous = new Autonomous(sparkDrive, teleoperated.getTeleopFunctions(), manipulator, teleoperated);
 
 		// Testing Initialization
 		System.out.println("Testing Initialization...");
@@ -101,7 +106,6 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 	//	shooter.setVisionLight(true);
-
 		autonomous.autonomousInit();
 	}
 
@@ -134,16 +138,10 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopPeriodic() {
-		// Teleop Logic
-		DriveMode mode = DriveMode.NORMAL;
-		if(primaryJoystick.isRightBumperPressed()){
-			mode = DriveMode.TURTLE;
-		}
-		else if (primaryJoystick.isLeftBumperPressed()){
-			mode = DriveMode.TURBO;
-		}
-		sparkDrive.tankDrive(primaryJoystick.getYAxis(), primaryJoystick.getZAxis(), mode);
+		// Drive
+		teleoperated.teleopDrive();
 
+		// Shooter
 		shooter.setPID(SmartDashboard.getNumber("Shooter P", .0025),
 			SmartDashboard.getNumber("Shooter I", 3.3e-7),
 			SmartDashboard.getNumber("Shooter D", 0.03));
@@ -151,24 +149,16 @@ public class Robot extends TimedRobot {
 
 		shooter.hoodCalibration();
 
-		// if (primaryJoystick.getRawButton(Constants.X_BUTTON)) {
-		// 	manipulator.prepareShot(2500, 0.75);
-		// } else {
-		// 	shooter.setShootingPercentOutput(0);
-		// }
-		// if(primaryJoystick.getRawButton(Constants.Y_BUTTON)){
-		// 	manipulator.continuousShoot(0.5, 0.75, 3550);
-		// } else {
-		// 	// feeder.setPunchExtension(false);
-		// 	manipulator.resetManipulatorElements();
-		// }
-
-		teleoperated.teleopIntake();
-
 		SmartDashboard.putNumber("Shooter Velocity (Actual)", shooter.getShootingSpeed());
 		teleoperated.teleopShooter();
+
+		// Intake
+		teleoperated.teleopIntake();
+
+		// Ultrasonics;
 		Ultra.automatic();
-		double a = sonic1.getRangeInches();
+
+		// double a = sonic1.getRangeInches();
 		// System.out.println(a);
 	}
 

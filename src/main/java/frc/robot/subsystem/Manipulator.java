@@ -1,5 +1,7 @@
 package frc.robot.subsystem;
 
+import frc.robot.utility.DreadbotMath;
+
 public class Manipulator extends Subsystem{
 	private Intake intake;
 	private Feeder feeder;
@@ -54,16 +56,18 @@ public class Manipulator extends Subsystem{
 	public double getSelectedRPM(double inches){
 		inches /= 12;
 		//equation from a regression we did by trial and error.
-		return ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000;
+		double value = ((-0.0029 * inches * inches) + (0.188026 * inches) + 1.7676)*1000 + 200;
+		value = DreadbotMath.clampValue((Double)value, 0d, 4550d);
+		return value;
 	}
 
 	public double getSelectedHoodPosition(double inches){
 		inches /= 12;
 		//equation from a regression we did by trial and error
-		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
+		return ((7.14e-7 * inches * inches) + (8.51e-4 * inches) + 0.398);
 	}
 
-	public void continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
+	public int continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){
 		//finite state machine logic
 // System.out.println("Shooter state: " + shooterState.ordinal());
 
@@ -73,10 +77,10 @@ public class Manipulator extends Subsystem{
 		System.out.println("*************shooter state: "+shooterState);
 		System.out.println("feeder.getPunchSwitchState(): " + feeder.getPunchSwitchState());
 		//if speed is within acceptable margin of error, switch to punching
-		if(shooterState == shooterStates.RAMPING && speedDifference < 300 && speedDifference > 0){
+		if(shooterState == shooterStates.RAMPING && speedDifference < 200 && speedDifference > 0){
 			shooterState = shooterStates.PUNCHING;
 		}
-		else if(shooterState == shooterStates.RAMPING && speedDifference > -100 && speedDifference < 0){
+		else if(shooterState == shooterStates.RAMPING && speedDifference > -25 && speedDifference < 0){
 			shooterState = shooterStates.PUNCHING;
 		}
 		//Change state based on a counter so the punch has enough time to extend
@@ -122,6 +126,7 @@ public class Manipulator extends Subsystem{
 		shooter.shoot(-shootingRPM);
 
 		lastShooterState = shooterState;
+		return numPunches;
 	}
 
 	public void resetManipulatorElements(){

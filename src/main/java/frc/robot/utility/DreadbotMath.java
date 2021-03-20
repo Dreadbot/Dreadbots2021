@@ -76,9 +76,8 @@ public class DreadbotMath {
 	 * represent percentages of voltage.
 	 *
 	 * @param values The given values to normalize.
-	 * @return The values, now normalized.
 	 */
-	public static double[] normalizeValues(final double[] values) {
+	public static void normalizeValues(final double[] values) {
 		final double[] absoluteValues = new double[values.length];
 		for (int i = 0; i < absoluteValues.length; i++)
 			absoluteValues[i] = Math.abs(values[i]);
@@ -88,7 +87,6 @@ public class DreadbotMath {
 			for (int i = 0; i < values.length; i++)
 				values[i] /= magnitude;
 
-		return values;
 	}
 
 	/**
@@ -101,7 +99,7 @@ public class DreadbotMath {
 	 * @param values The given values to normalize.
 	 * @return The values, now normalized.
 	 */
-	public static float[] normalizeValues(final float[] values) {
+	public static void normalizeValues(final float[] values) {
 		final float[] absoluteValues = new float[values.length];
 		for (int i = 0; i < absoluteValues.length; i++)
 			absoluteValues[i] = Math.abs(values[i]);
@@ -110,8 +108,6 @@ public class DreadbotMath {
 		if (magnitude > 1.0)
 			for (int i = 0; i < values.length; i++)
 				values[i] /= magnitude;
-
-		return values;
 	}
 
 	/**
