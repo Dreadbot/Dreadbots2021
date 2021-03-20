@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class RobotLogger {
@@ -15,19 +16,32 @@ public class RobotLogger {
                     .withLocale(Locale.getDefault())
                     .withZone(ZoneId.systemDefault());
 
-    private static ArrayList<String> alreadyPrinted = new ArrayList<>();
-
     public interface Loggable {
         boolean canLog();
     }
 
+    private static ArrayList<String> alreadyPrinted = new ArrayList<>();
+    private static HashMap<String, String> lastPrint = new HashMap<>();
+
     public static void reset() {
         alreadyPrinted.clear();
+        lastPrint.clear();
     }
 
     public static void logOnce(String message) {
         if(logIf(message, () -> !alreadyPrinted.contains(message)))
             alreadyPrinted.add(message);
+    }
+
+    public static void logOnChange(String id, String message) {
+        if(!lastPrint.containsKey(id)) {
+            log(message);
+            lastPrint.put(id, message);
+            return;
+        }
+
+        logIf(message, () -> !lastPrint.get(id).equalsIgnoreCase(message));
+        lastPrint.put(id, message);
     }
 
     public static boolean logIf(String message, Loggable loggable) {

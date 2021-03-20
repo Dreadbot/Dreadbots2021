@@ -166,6 +166,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		RobotLogger.reset();
+
 		autonomous.disabledInit();
 
 		shooter.setVisionLight(false);
