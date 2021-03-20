@@ -94,13 +94,16 @@ public class Teleoperated {
 		//if we are done turning (not currently turning), then update angle from vision
 		if (teleopFunctions.getTurnStatus() && firstAim) {
 			selectedAngle = SmartDashboard.getNumber("selectedAngle", 0.0);
+			// selectedAngle = sparkDrive.getGyroscope().getYaw() - selectedAngle;
 			firstAim = false;
 		}
 		//Only turn and shoot when we hold the button, and we have seen the target recently
 		if (secondaryJoystick.isYButtonPressed()) {
-			double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
+			// double shooting_hood_position = SmartDashboard.getNumber("Hood Position", 0.5);
+			double shooting_rpm = SmartDashboard.getNumber("Shooter Target Speed", 4000);
 			System.out.println("Cont Shooting");
-			manipulator.continuousShoot(shooting_hood_position, 0.4, SmartDashboard.getNumber("Target Speed", 0));
+			// double rpm = manipulator.getSelectedRPM(distance);
+			manipulator.continuousShoot(-0.12, 0.4, shooting_rpm);
 			SmartDashboard.putNumber("camNumber", 0);
 		} else if (secondaryJoystick.isBButtonPressed() && staleCount < 5) {
 			//System.out.println("B BUTTON PRESSED");
@@ -128,10 +131,13 @@ public class Teleoperated {
 		}
 	}
 
-	public void aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
-		double rpm = manipulator.getSelectedRPM(distance);
+	public int aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
+		int numPunches = 0;
+//		double rpm = manipulator.getSelectedRPM(distance);
+		double rpm = SmartDashboard.getNumber("tuning RPM", 3500);
 		SmartDashboard.putNumber("Target Shooting Velocity", rpm);
-		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
+//		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
+		double hoodPosition = SmartDashboard.getNumber("tuning Hood Position", 0.5);
 
 		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
 		SmartDashboard.putNumber("aimShootState", aimShootState.ordinal());
@@ -143,10 +149,11 @@ public class Teleoperated {
 				break;
 			case SHOOTING:
 				sparkDrive.stop();
-				manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
+				numPunches = manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
 				break;
 		}
 		aimCounts++;
+		return numPunches;
 	}
 
 	// public void aimingContinuousShoot(double rpm, double hoodPosition, double targetAngle, double genevaSpeed) {
@@ -175,8 +182,15 @@ public class Teleoperated {
 		return teleopFunctions;
     }
 
-    private enum AimShootStates {
+    public enum AimShootStates {
 		AIMING,
 		SHOOTING;
+	}
+
+	public void setAimShootState(AimShootStates a){
+		aimShootState = a;
+	}
+	public AimShootStates getAimShootStates(){
+		return aimShootState;
 	}
 }
