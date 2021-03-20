@@ -64,7 +64,7 @@ public class Manipulator extends Subsystem{
 	public double getSelectedHoodPosition(double inches){
 		inches /= 12;
 		//equation from a regression we did by trial and error
-		return ((-0.0941 * inches * inches) + (4.96271 * inches) + 2.08)/100;
+		return ((7.14e-7 * inches * inches) + (8.51e-4 * inches) + 0.398);
 	}
 
 	public int continuousShoot(double aimPosition, double genevaSpeed, double shootingRPM){

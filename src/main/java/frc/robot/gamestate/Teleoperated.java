@@ -133,9 +133,11 @@ public class Teleoperated {
 
 	public int aimingContinuousShoot(double distance, double targetAngle, double genevaSpeed) {
 		int numPunches = 0;
-		double rpm = manipulator.getSelectedRPM(distance);
+//		double rpm = manipulator.getSelectedRPM(distance);
+		double rpm = SmartDashboard.getNumber("tuning RPM", 3500);
 		SmartDashboard.putNumber("Target Shooting Velocity", rpm);
-		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
+//		double hoodPosition = manipulator.getSelectedHoodPosition(distance);
+		double hoodPosition = SmartDashboard.getNumber("tuning Hood Position", 0.5);
 
 		aimShootState = (aimCounts < maxAimCounts) ? AimShootStates.AIMING : AimShootStates.SHOOTING;
 		SmartDashboard.putNumber("aimShootState", aimShootState.ordinal());
