@@ -1,9 +1,9 @@
 package frc.robot.utility.config;
 
-public abstract class RuntimeConfigurationValue {
+public abstract class SmartDashboardSupplier {
     protected final String id;
 
-    protected RuntimeConfigurationValue(String id) {
+    protected SmartDashboardSupplier(String id) {
         this.id = id;
     }
 
