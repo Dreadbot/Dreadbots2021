@@ -73,6 +73,10 @@ public class DreadbotController {
 		return joystick.getRawButton(button);
 	}
 
+	public boolean checkPOV(int POV){
+		return POV == joystick.getPOV();
+	}
+
 	public double getRawAxis(int axis) {
 		return joystick.getRawAxis(axis);
 	}

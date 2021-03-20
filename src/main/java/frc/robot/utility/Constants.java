@@ -23,4 +23,8 @@ public class Constants{
 
     public static final double metersToRevolutions = 14.64;
     public static final double revolutionsToMeters = 0.0683;
+
+    //Camera IDs
+    public static final int DRIVE_CAM_ID = 1;
+    public static final int VISION_CAM_ID = 0;
 }

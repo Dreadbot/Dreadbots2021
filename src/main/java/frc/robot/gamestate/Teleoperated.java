@@ -56,9 +56,10 @@ public class Teleoperated {
 	}
 
 	public void teleopIntake() {
-		if (secondaryJoystick.isXButtonPressed()) {
+		//Only allow intake to be operated if the geneva is oriented.
+		if (secondaryJoystick.isXButtonPressed() && manipulator.getFeeder().getGenevaSwitchState()) {
 			manipulator.getIntake().setSpeed(-4000);
-		} else if (secondaryJoystick.isAButtonPressed()) {
+		} else if (secondaryJoystick.isAButtonPressed() && manipulator.getFeeder().getGenevaSwitchState()) {
 			manipulator.getIntake().setSpeed(4000);
 		} else {
 			manipulator.getIntake().setPercentOutput(0);
@@ -74,6 +75,13 @@ public class Teleoperated {
 		sparkDrive.tankDrive(primaryJoystick.getYAxis(),
 			primaryJoystick.getZAxis(),
 			driveMode);
+
+		if(secondaryJoystick.checkPOV(0)){
+			SmartDashboard.putNumber("camNumber", Constants.VISION_CAM_ID);
+		}
+		else {
+			SmartDashboard.putNumber("camNumber", Constants.DRIVE_CAM_ID);
+		}
 	}
 
 	public void teleopShooter() {
