@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.gamestate.Autonomous;
 import frc.robot.gamestate.Teleoperated;
-import frc.robot.gamestate.routine.AutonShoot;
 import frc.robot.subsystem.*;
-import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotController;
 import frc.robot.utility.logger.RobotLogger;
@@ -53,12 +51,6 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
-		RobotLogger.log("Robot.robotInit");
-
-		// TODO temp
-		SmartDashboard.putNumber("tuning RPM", 3500);
-		SmartDashboard.putNumber("tuning Hood Position", 0.5);
-
 		RobotLogger.log("Starting Initialization of RedFive 2021...");
 
 		// Joystick Initialization
@@ -159,9 +151,6 @@ public class Robot extends TimedRobot {
 
 		// Ultrasonics;
 		Ultra.automatic();
-
-		// double a = sonic1.getRangeInches();
-		// System.out.println(a);
 	}
 
 	@Override

@@ -16,15 +16,12 @@ public class RotateToAngle extends AutonSegment{
     }
 
     @Override
-    public void autonomousInit() {
-        // TODO Auto-generated method stub
-    }
+    public void autonomousInit() { }
 
     @Override
     public void autonomousPeriodic() {
         teleopFunctions.WPITurnToAngle(turnToAngle);
 
-        // TODO Auto-generated method stub
         if(teleopFunctions.getTurnStatus()) {
             teleopFunctions.setTurnStatus(false);
             sparkDrive.stop();

@@ -84,8 +84,7 @@ public class TeleopFunctions {
 		// forward/backward axis still based on
 		// controller input, but the rotation axis of the drive base based on the
 		// rotation rate found
-		// TODO Write this better
-		SparkDrive.DriveMode driveMode = SparkDrive.DriveMode.NORMAL;
+		SparkDrive.DriveMode driveMode;
 		driveMode = primaryJoystick.isRightTriggerPressed() ? SparkDrive.DriveMode.TURBO : SparkDrive.DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightBumperPressed() ? SparkDrive.DriveMode.TURTLE : SparkDrive.DriveMode.NORMAL;
 

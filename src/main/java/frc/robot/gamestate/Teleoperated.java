@@ -45,6 +45,9 @@ public class Teleoperated {
 		aimShootState = AimShootStates.AIMING;
 		maxAimCounts = 150;
 		aimCounts = 0;
+
+		SmartDashboard.putNumber("tuning RPM", 3500);
+		SmartDashboard.putNumber("tuning Hood Position", 0.5);
 	}
 
 	public void initIntake() {
@@ -67,8 +70,7 @@ public class Teleoperated {
 	}
 
 	public void teleopDrive() {
-		//TODO Write this better
-		DriveMode driveMode = DriveMode.NORMAL;
+		DriveMode driveMode;
 		driveMode = primaryJoystick.isRightTriggerPressed() ? DriveMode.TURBO : DriveMode.NORMAL;
 		driveMode = primaryJoystick.isRightBumperPressed() ? DriveMode.TURTLE : DriveMode.NORMAL;
 
