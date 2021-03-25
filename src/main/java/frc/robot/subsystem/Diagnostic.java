@@ -1,12 +1,9 @@
 package frc.robot.subsystem;
 
-import edu.wpi.first.wpilibj.CAN;
-import edu.wpi.first.wpilibj.Joystick;
 import com.revrobotics.CANSparkMax;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Solenoid;
 import frc.robot.subsystem.SparkDrive.DriveMode;
-
-
 
 public class Diagnostic {
     public Joystick js1;
