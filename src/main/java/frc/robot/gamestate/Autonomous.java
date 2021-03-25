@@ -53,37 +53,7 @@ public class Autonomous {
 		this.autonRoutines.put(selectedRoutine, new AutonRoutine(sparkDrive)
 			// Trajectory straight forward
 			.addSegment(new AutonTrajectory(
-				sparkDrive, 
-				new Pose2d(0, 0, new Rotation2d(0)),
-				new Pose2d(Units.feetToMeters(7.5), 0, new Rotation2d(0))))
-			
-			// Shoot at the goal
-			.addSegment(new AutonShoot(
-				teleoperated, 
-				manipulator, 
-				3))
-			
-			// Trajectory through the chair obstacles
-			.addSegment(new AutonTrajectory(
-				sparkDrive,
-				new Pose2d(Units.feetToMeters(7.5), 0, new Rotation2d(0)),
-				new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(9), new Rotation2d(0))
-			))
-			
-			// Rotate to -90
-			.addSegment(new RotateToAngle(-90, sparkDrive, teleopFunctions))
-
-			// Trajectory back through the chair obstacles
-			.addSegment(new AutonTrajectory(
-				sparkDrive,
-				new Pose2d(Units.feetToMeters(10.5),Units.feetToMeters(9), new Rotation2d(-90)),
-				new Pose2d(Units.feetToMeters(10.5), Units.feetToMeters(3), new Rotation2d(-90)) ))
-			
-			// Rotate back to 0
-			.addSegment(new RotateToAngle(
-				0, 
-				sparkDrive, 
-				teleopFunctions))
+				sparkDrive, "paths/barrel.wpilib.json"))
 		);
 
 		SmartDashboard.putData(autonChooser);

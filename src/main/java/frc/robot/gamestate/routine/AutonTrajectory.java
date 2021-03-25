@@ -1,5 +1,8 @@
 package frc.robot.gamestate.routine;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -12,15 +15,19 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.subsystem.SparkDrive;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 public class AutonTrajectory extends AutonSegment {
 	// Trajectory data
-	private final Trajectory trajectory;
+	private Trajectory trajectory;
+	private boolean canDrive;
 
 	// Trajectory Tracking Error Feedback PIDs
 	private final PIDController leftPIDController;
@@ -46,6 +53,7 @@ public class AutonTrajectory extends AutonSegment {
 
 	public AutonTrajectory(SparkDrive sparkDrive, Pose2d initialPosition, List<Translation2d> interiorWaypoints, Pose2d finalPosition) {
 		this.sparkDrive = sparkDrive;
+		this.canDrive = true;
 
 		// Setup Tracking PIDs
 		leftPIDController = new PIDController(SparkDrive.kPDriveVel, 0, 0);
@@ -75,6 +83,40 @@ public class AutonTrajectory extends AutonSegment {
 			finalPosition,
 			trajectoryConfig
 		);
+
+		controller = new RamseteController();
+
+		timer = new Timer();
+	}
+
+	public AutonTrajectory(SparkDrive sparkDrive, String trajectoryJsonPathString) {
+		this.sparkDrive = sparkDrive;
+		this.canDrive = true;
+
+		// Setup Tracking PIDs
+		leftPIDController = new PIDController(SparkDrive.kPDriveVel, 0, 0);
+		rightPIDController = new PIDController(SparkDrive.kPDriveVel, 0, 0);
+
+		// Create the Voltage Constraints for the Trajectory Tracking
+		simpleMotorFeedforward = new SimpleMotorFeedforward(
+				SparkDrive.kSVolts,
+				SparkDrive.kVVoltSecondsPerMeter,
+				SparkDrive.kAVoltSecondsSquaredPerMeter);
+		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+				simpleMotorFeedforward,
+				SparkDrive.kinematics,
+				7);
+
+		// Read trajectory data from file
+		try {
+			Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJsonPathString);
+			trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+		} catch (IOException e) {
+			DriverStation.reportError("Unable to open trajectory: " + trajectoryJsonPathString, e.getStackTrace());
+		}
+		if (trajectory == null) {
+			canDrive = false;
+		}
 
 		controller = new RamseteController();
 
@@ -145,14 +187,14 @@ public class AutonTrajectory extends AutonSegment {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		System.out.println("leftFeedforward = " + leftFeedforward);
-		System.out.println("rightFeedforward = " + rightFeedforward);
-
-		System.out.println("leftOutput = " + leftOutput);
-		System.out.println("rightOutput = " + rightOutput);
-
-		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
-		System.out.println("sparkDrive.getHeading() = " + sparkDrive.getHeading());
+//		System.out.println("leftFeedforward = " + leftFeedforward);
+//		System.out.println("rightFeedforward = " + rightFeedforward);
+//
+//		System.out.println("leftOutput = " + leftOutput);
+//		System.out.println("rightOutput = " + rightOutput);
+//
+//		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
+//		System.out.println("sparkDrive.getHeading() = " + sparkDrive.getHeading());
 
 		leftOutput *= 7;
 		rightOutput *= 7;
