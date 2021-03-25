@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj.util.Units;
 import frc.robot.subsystem.SparkDrive;
+import frc.robot.utility.logger.RobotLogger;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -118,6 +119,8 @@ public class AutonTrajectory extends AutonSegment {
 			canDrive = false;
 		}
 
+		RobotLogger.log(String.valueOf(trajectory.getTotalTimeSeconds()));
+
 		controller = new RamseteController();
 
 		timer = new Timer();
@@ -146,7 +149,6 @@ public class AutonTrajectory extends AutonSegment {
 		// Determine times and whether to continue
 		final double currentTime = timer.get();
 		final double deltaTime = currentTime - previousTime;
-		System.out.println("trajectory.getTotalTimeSeconds() = " + trajectory.getTotalTimeSeconds());
 		if (currentTime >= trajectory.getTotalTimeSeconds()) {
 			sparkDrive.tankDrive(0, 0);
 			complete = true;
@@ -165,9 +167,6 @@ public class AutonTrajectory extends AutonSegment {
 			controller.calculate(sparkDrive.getPose(), trajectory.sample(currentTime))
 		);
 		var currentWheelSpeeds = sparkDrive.getWheelSpeeds();
-
-		System.out.println("targetWheelSpeeds.leftMetersPerSecond = " + targetWheelSpeeds.leftMetersPerSecond);
-		System.out.println("targetWheelSpeeds.rightMetersPerSecond = " + targetWheelSpeeds.rightMetersPerSecond);
 		
 		// Calculate the feedforward in Volts.
 		double leftFeedforward =
@@ -186,6 +185,8 @@ public class AutonTrajectory extends AutonSegment {
 			rightFeedforward + rightPIDController.calculate(
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
+
+		System.out.println("leftOutput = " + leftOutput);
 
 //		System.out.println("leftFeedforward = " + leftFeedforward);
 //		System.out.println("rightFeedforward = " + rightFeedforward);

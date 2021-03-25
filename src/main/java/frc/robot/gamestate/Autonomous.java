@@ -45,15 +45,33 @@ public class Autonomous {
 		
 		this.autonRoutines = new HashMap<>();
 
-		this.selectedRoutine = "judge_demo";
+		this.selectedRoutine = "bounce";
 
 		this.autonChooser = new SendableChooser<>();
 		this.autonChooser.setDefaultOption("Judge Demo Auton", selectedRoutine);
-		
-		this.autonRoutines.put(selectedRoutine, new AutonRoutine(sparkDrive)
-			// Trajectory straight forward
+
+		// Barrel Run Path
+		this.autonRoutines.put("barrel", new AutonRoutine(sparkDrive)
 			.addSegment(new AutonTrajectory(
 				sparkDrive, "paths/barrel.wpilib.json"))
+		);
+
+		// Bounce Path
+		this.autonRoutines.put("bounce", new AutonRoutine(sparkDrive)
+			.addSegment(new AutonTrajectory(
+				sparkDrive, "paths/bounce_start.wpilib.json"))
+			.addSegment(new AutonTrajectory(
+				sparkDrive, "paths/bounce_first.wpilib.json"))
+			.addSegment(new AutonTrajectory(
+				sparkDrive, "paths/bounce_second.wpilib.json"))
+			.addSegment(new AutonTrajectory(
+				sparkDrive, "paths/bounce_final.wpilib.json"))
+		);
+
+		// Slalom Path
+		this.autonRoutines.put("slalom", new AutonRoutine(sparkDrive)
+			.addSegment(new AutonTrajectory(
+				sparkDrive, "paths/slalom.wpilib.json"))
 		);
 
 		SmartDashboard.putData(autonChooser);
