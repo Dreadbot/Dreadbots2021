@@ -103,10 +103,6 @@ public class AutonTrajectory extends AutonSegment {
 				SparkDrive.kSVolts,
 				SparkDrive.kVVoltSecondsPerMeter,
 				SparkDrive.kAVoltSecondsSquaredPerMeter);
-		var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-				simpleMotorFeedforward,
-				SparkDrive.kinematics,
-				7);
 
 		// Read trajectory data from file
 		try {
