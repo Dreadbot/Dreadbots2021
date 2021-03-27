@@ -182,8 +182,6 @@ public class AutonTrajectory extends AutonSegment {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-		System.out.println("leftOutput = " + leftOutput);
-
 //		System.out.println("leftFeedforward = " + leftFeedforward);
 //		System.out.println("rightFeedforward = " + rightFeedforward);
 //
@@ -195,6 +193,8 @@ public class AutonTrajectory extends AutonSegment {
 
 		leftOutput *= 7;
 		rightOutput *= 7;
+
+		System.out.println("leftOutput = " + leftOutput);
 
 		sparkDrive.tankDriveVolts(leftOutput, rightOutput);
 

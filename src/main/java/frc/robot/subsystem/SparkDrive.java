@@ -25,7 +25,7 @@ public class SparkDrive extends Subsystem {
 	// Feedforward gains
 	public static final double kSVolts = 0.164d;
 	public static final double kVVoltSecondsPerMeter = 0.0467d;
-	public static final double kAVoltSecondsSquaredPerMeter = 0.0784d;
+	public static final double kAVoltSecondsSquaredPerMeter = 0.00784d;
 	public static final double kPDriveVel = 3.83e-8d;
 
 	public static final double kMaxSpeedMetersPerSecond = 1d;
@@ -276,7 +276,8 @@ public class SparkDrive extends Subsystem {
 	public enum DriveMode {
 		TURBO(0.9),
 		NORMAL(0.5),
-		TURTLE(0.2);
+		TURTLE(0.2),
+		ADJUSTMENT(0.1);
 
 		public double finalValueMultiplier;
 

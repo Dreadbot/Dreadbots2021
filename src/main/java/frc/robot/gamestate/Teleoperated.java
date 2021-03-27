@@ -9,6 +9,7 @@ import frc.robot.subsystem.SparkDrive;
 import frc.robot.subsystem.SparkDrive.DriveMode;
 import frc.robot.utility.Constants;
 import frc.robot.utility.DreadbotController;
+import frc.robot.utility.DreadbotMath;
 import frc.robot.utility.TeleopFunctions;
 
 public class Teleoperated {
@@ -154,7 +155,12 @@ public class Teleoperated {
 		switch (aimShootState) {
 			case AIMING:
 				// rotSpeed = teleopFunctions.calculateTurnToAngle(targetAngle);
-				teleopFunctions.WPITurnToAngle(targetAngle);
+				if(DreadbotMath.applyDeadbandToValue(primaryJoystick.getZAxis(), -0.02, 0.02, 0.0) != 0.0) {
+					sparkDrive.tankDrive(0.0, primaryJoystick.getZAxis(), DriveMode.ADJUSTMENT);
+				} else {
+					teleopFunctions.WPITurnToAngle(targetAngle);
+				}
+
 				manipulator.prepareShot(-rpm, hoodPosition);
 				break;
 			case SHOOTING:
