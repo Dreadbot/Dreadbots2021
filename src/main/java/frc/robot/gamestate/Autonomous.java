@@ -48,11 +48,12 @@ public class Autonomous {
         // Barrel Run Path
         this.autonRoutines.put("barrel", new AutonRoutine(sparkDrive)
             .addSegment(new AutonTrajectory(
-                sparkDrive, "paths/path_feet.wpilib.json"))
+                sparkDrive, "paths/path_feet_0.wpilib.json"))
         );
 
         // Bounce Path
-        this.autonRoutines.put("bounce", new AutonRoutine(sparkDrive)
+        this.autonRoutines.put("bounce", new
+                AutonRoutine(sparkDrive)
             .addSegment(new AutonTrajectory(
                 sparkDrive, "paths/bounce_start.wpilib.json"))
             .addSegment(new AutonTrajectory(
@@ -69,14 +70,11 @@ public class Autonomous {
                 sparkDrive, "paths/slalom.wpilib.json"))
         );
 
-        this.selectedRoutine = this.autonRoutines.keySet().iterator().next();
+        this.selectedRoutine = "bounce";
 
         this.autonChooser = new SendableChooser<>();
         this.autonChooser.setDefaultOption(selectedRoutine, selectedRoutine);
         for (String key : this.autonRoutines.keySet()) {
-            if (key.equals(selectedRoutine))
-                continue;
-
             this.autonChooser.addOption(key, key);
         }
 

@@ -23,13 +23,13 @@ public class SparkDrive extends Subsystem {
 	public static final CANSparkMaxLowLevel.MotorType K_MOTORTYPE = CANSparkMaxLowLevel.MotorType.kBrushless;
 
 	// Feedforward gains
-	public static final double kSVolts = 0.164d;
-	public static final double kVVoltSecondsPerMeter = 0.0467d;
-	public static final double kAVoltSecondsSquaredPerMeter = 0.00784d;
-	public static final double kPDriveVel = 3.83e-8d;
+	public static final double kSVolts = 0.229d;
+	public static final double kVVoltSecondsPerMeter = 0.0437d;
+	public static final double kAVoltSecondsSquaredPerMeter = 0.00521d;
+	public static final double kPDriveVel = 1.19e-10d;
 
 	public static final double kMaxSpeedMetersPerSecond = 3d;
-	public static final double kMaxAccelerationMetersPerSecondSquared = 3d;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 1.5d;
 
 	public static final double kTrackwidthMeters = 0.6858d;
 	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
