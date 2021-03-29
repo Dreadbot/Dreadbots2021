@@ -147,6 +147,7 @@ public class AutonTrajectory extends AutonSegment {
 		final double deltaTime = currentTime - previousTime;
 		if (currentTime >= trajectory.getTotalTimeSeconds()) {
 			sparkDrive.tankDrive(0, 0);
+			System.out.println("Done! " + currentTime);
 			complete = true;
 			return;
 		}
@@ -182,17 +183,8 @@ public class AutonTrajectory extends AutonSegment {
 				currentWheelSpeeds.rightMetersPerSecond,
 				targetWheelSpeeds.rightMetersPerSecond);
 
-//		System.out.println("leftFeedforward = " + leftFeedforward);
-//		System.out.println("rightFeedforward = " + rightFeedforward);
-//
-//		System.out.println("leftOutput = " + leftOutput);
-//		System.out.println("rightOutput = " + rightOutput);
-//
-//		System.out.println("sparkDrive.getPose() = " + sparkDrive.getPose());
-//		System.out.println("sparkDrive.getHeading() = " + sparkDrive.getHeading());
-
-		leftOutput *= 7;
-		rightOutput *= 7;
+		leftOutput *= 7 * 1.06;
+		rightOutput *= 7 * 1.06;
 
 		System.out.println("leftOutput = " + leftOutput);
 

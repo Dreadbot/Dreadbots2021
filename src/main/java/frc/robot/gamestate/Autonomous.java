@@ -48,7 +48,7 @@ public class Autonomous {
         // Barrel Run Path
         this.autonRoutines.put("barrel", new AutonRoutine(sparkDrive)
             .addSegment(new AutonTrajectory(
-                sparkDrive, "paths/barrel.wpilib.json"))
+                sparkDrive, "paths/path_feet.wpilib.json"))
         );
 
         // Bounce Path

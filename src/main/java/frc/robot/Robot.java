@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
 		// Subsystem Initialization
 		RobotLogger.log("SparkDrive Initialization...");
 		sparkDrive = new SparkDrive();
+		sparkDrive.tankDrive(0.1, 0.0);
 
 		RobotLogger.log("Manipulator Initialization...");
 		shooter = new Shooter();

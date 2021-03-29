@@ -28,10 +28,10 @@ public class SparkDrive extends Subsystem {
 	public static final double kAVoltSecondsSquaredPerMeter = 0.00784d;
 	public static final double kPDriveVel = 3.83e-8d;
 
-	public static final double kMaxSpeedMetersPerSecond = 1d;
-	public static final double kMaxAccelerationMetersPerSecondSquared = 1d;
+	public static final double kMaxSpeedMetersPerSecond = 3d;
+	public static final double kMaxAccelerationMetersPerSecondSquared = 3d;
 
-	public static final double kTrackwidthMeters = 0.705d;
+	public static final double kTrackwidthMeters = 0.6858d;
 	public static final DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 
 	private final List<CANSparkMax> motors;
