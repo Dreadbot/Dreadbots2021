@@ -126,6 +126,7 @@ public class AutonTrajectory extends AutonSegment {
 	public void autonomousInit() {
 		previousTime = -1;
 
+
 		sparkDrive.resetOdometry(trajectory.getInitialPose());
 
 		var initialState = trajectory.sample(0);

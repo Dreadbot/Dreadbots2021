@@ -80,9 +80,13 @@ public class Manipulator extends Subsystem{
 		if(shooterState == shooterStates.RAMPING && speedDifference < 200 && speedDifference > 0){
 			shooterState = shooterStates.PUNCHING;
 		}
-		else if(shooterState == shooterStates.RAMPING && speedDifference > -25 && speedDifference < 0){
+		else if(shooterState == shooterStates.RAMPING && speedDifference > -150 && speedDifference < 0){
 			shooterState = shooterStates.PUNCHING;
 		}
+
+//		if(shooterState == shooterStates.RAMPING && speedDifference < 200 && speedDifference > -100) {
+//			shooterState = shooterStates.PUNCHING;
+//		}
 		//Change state based on a counter so the punch has enough time to extend
 		else if(shooterState == shooterStates.PUNCHING && stateChangeCounter > countsToExtend){
 			shooterState = shooterStates.RETRACTING;
@@ -126,6 +130,7 @@ public class Manipulator extends Subsystem{
 		shooter.shoot(-shootingRPM);
 
 		lastShooterState = shooterState;
+
 		return numPunches;
 	}
 

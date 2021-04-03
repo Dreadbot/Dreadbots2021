@@ -104,6 +104,7 @@ public class Teleoperated {
 
 		//if we are done turning (not currently turning), then update angle from vision
 		if (teleopFunctions.getTurnStatus() && firstAim) {
+			System.out.println("Turn status is true");
 			selectedAngle = SmartDashboard.getNumber("selectedAngle", 0.0);
 			// selectedAngle = sparkDrive.getGyroscope().getYaw() - selectedAngle;
 			firstAim = false;
@@ -132,6 +133,7 @@ public class Teleoperated {
 			manipulator.resetManipulatorElements();
 			teleopFunctions.setTurnStatus(true);
 			aimCounts = 0;
+			System.out.println("RESET AIMCOUNTS");
 			aimShootState = AimShootStates.AIMING;
 			rotSpeed = 0;
 			sparkDrive.getGyroscope().reset();
@@ -167,10 +169,12 @@ public class Teleoperated {
 				break;
 			case SHOOTING:
 				sparkDrive.stop();
+				System.out.println("rpm = " + rpm);
 				numPunches = manipulator.continuousShoot(hoodPosition, genevaSpeed, rpm);
 				break;
 		}
 		aimCounts++;
+		System.out.println("aimCounts = " + aimCounts);
 		return numPunches;
 	}
 

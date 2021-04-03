@@ -5,6 +5,7 @@ import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.utility.Constants;
 
 public class Feeder {
@@ -16,6 +17,8 @@ public class Feeder {
 	private Solenoid punch;
 	private DigitalInput genevaLimitSwitch;
 	private DigitalInput punchLimitSwitch;
+
+	private Timer timer;
 
 	public Feeder() {
 		this.genevaDrive = new CANSparkMax(Constants.GENEVA_MOTOR_ID, CANSparkMax.MotorType.kBrushless);
@@ -34,6 +37,9 @@ public class Feeder {
 		genevaControler.setFF(.000015);
 		genevaControler.setIZone(0);
 		genevaControler.setOutputRange(-1.0, 1.0);
+
+		timer = new Timer();
+		timer.reset();
 	}
 
 	public void setSpin(double power) {
@@ -52,6 +58,12 @@ public class Feeder {
 		return !genevaLimitSwitch.get();
 	}
 
+	/**
+	 * Getting the limit switch on the punch mechanism determines if the punch is at risk
+	 * to be destroyed by the geneva mechanism
+	 *
+	 * @return Limit switch state on the punch mechanism
+	 */
 	public boolean getPunchSwitchState() {
 		return punchLimitSwitch.get();
 	}
